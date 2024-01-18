@@ -1,0 +1,27 @@
+{
+	"name": "webrtc-meet-for-stranger",
+	"version": "1.0.0",
+	"main": "server.js",
+	"license": "MIT",
+	"scripts": {
+		"prebuild": "yarn tailwindcss --input tailwind.css --output public/css/style.css",
+		"build": "yarn install",
+		"start": "node .",
+		"watch": "yarn prebuild --watch",
+		"dev:old": "NODE_ENV=development nodemon . --ext js,pug --ignore public",
+		"dev": "concurrently \"yarn watch\" \"yarn dev:old\""
+	},
+	"dependencies": {
+		"connect-livereload": "^0.6.1",
+		"express": "^4.18.2",
+		"livereload": "^0.9.3",
+		"pug": "^3.0.2",
+		"socket.io": "^4.7.3"
+	},
+	"devDependencies": {
+		"concurrently": "^8.2.2",
+		"eslint": "^8.56.0",
+		"nodemon": "^3.0.2",
+		"tailwindcss": "^3.4.1"
+	}
+}

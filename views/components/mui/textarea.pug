@@ -1,0 +1,14 @@
+mixin Textarea(props = {})
+	- 
+		const {
+			name='textarea',
+			rows=2,
+			placeholder='your text'
+		} = props
+	textarea(
+		name=name, 
+		rows=rows,
+		placeholder=placeholder
+		class='border border-blue-200 rounded w-full px-2 py-1 text-slate-700'
+		class='focus:outline-none focus:border-blue-500'
+	) 

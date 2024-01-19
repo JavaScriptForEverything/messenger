@@ -1,0 +1,59 @@
+//- Example:
+	+Badge({
+		icon:`svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2a2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6l2 2m-7 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2"`,
+		iconColor: 'secondary',
+		badgeColor: 'error',
+		badgeContent: '1',
+		badgeSize: 'small',
+
+	})
+	+Badge({
+		icon:`svg class='text-red-500' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M4.615 19q-.69 0-1.152-.462Q3 18.075 3 17.385V6.615q0-.69.463-1.152Q3.925 5 4.615 5h14.77q.69 0 1.152.463q.463.462.463 1.152v10.77q0 .69-.462 1.152q-.463.463-1.153.463H4.615ZM12 12.115l8-5.23L19.692 6L12 11L4.308 6L4 6 .885l8 5.23Z"`,
+		iconColor: 'secondary',
+		badgeColor: 'error',
+		badgeSize: 'dot',
+	})
+
+mixin Badge (props = {})
+	- 
+		const {
+			id='',
+			name='badge',
+			icon=`svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2a2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6l2 2m-7 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2"`,
+			badgeContent='0',
+			badgeColor = 'primary', 			// primary | info  | error | warning
+			badgeSize = 'medium', 				// small | medium | large  | dot
+			iconColor = 'secondary', 			// primary | secondary | info  | error | warning
+		} = props
+	
+	span(id=id name= name || 'badge-container' class=`inline-block relative 
+		${
+			iconColor === 'primary' ? 'text-blue-500' 
+			: iconColor === 'info' ? 'text-sky-500' 
+			: iconColor === 'error' ? 'text-red-500' 
+			: iconColor === 'warning' ? 'text-orange-500' 
+			: iconColor === 'secondary' ? 'text-slate-500' 
+			: 'text-slate-700'
+		}`)
+		#{icon}
+		if +badgeContent
+			span(name=`${name}-content` class=`absolute  rounded-full text-white 
+				${
+					!+badgeContent ? 'text-[length:0px]' 
+					: badgeSize === 'medium' ? '-top-2 -right-2 px-1.5 py-0.5 text-xs' 
+					: badgeSize === 'small' ? '-top-1 -right-1 px-1 py-[1] text-[length:10px]' 
+					: badgeSize === 'large' ? '-top-3 -right-3 px-2 py-0.5 text-sm' 
+					: badgeSize === 'dot' ? '-top-1 -right-1 p-1 text-[length:1px]' 
+					: '-top-3 -right-3 px-2 py-0.5 text-sm'
+				}
+
+				${
+					badgeColor === 'primary' ? 'bg-blue-500' 
+					: badgeColor === 'info' ? 'bg-sky-500' 
+					: badgeColor === 'error' ? 'bg-red-500' 
+					: badgeColor === 'warning' ? 'bg-orange-500' 
+					: badgeColor === 'secondary' ? 'bg-slate-500' 
+					: 'text-slate-500'
+				}
+			`) #{badgeContent}
+

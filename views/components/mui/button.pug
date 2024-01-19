@@ -1,0 +1,242 @@
+//-
+	+Button({
+		value: 'Register',
+		type: 'submit',
+		size: 'py-2',
+		variant: 'contained'
+	})
+
+
+mixin Button( props = {})
+	-
+		const {
+			id='',
+			name='',
+			value='Button',
+			type='button',
+			size='py-1',
+			uppercase=true,
+			disabled=false,
+			variant='outlined',
+			color='',
+			startIcon = '',
+			endIcon = '',
+			justify = 'center'
+		} = props
+
+	button(
+		type=type
+		id=id
+		name=name
+
+		class=size
+		class='border border-blue-300 px-3 shadow-sm rounded text-blue-500'
+		class='hover:bg-blue-50 active:bg-blue-600 active:text-white border-blue-600' 
+		class= uppercase ? 'uppercase' : 'normalcase'
+		class='disabled:text-slate-400 disabled:border-slate-400' 
+		class= variant==='contained' ? 'bg-blue-500 text-white hover:bg-blue-600 hover:text-white' : ''
+
+		class=color ? `bg-${color}-500 hover:bg-${color}-600 border-${color}-500` : ''
+		class=color ? `active:bg-${color}-700` : ''
+		disabled=disabled
+	)
+
+		div(
+			class='flex items-center justify-center'
+			class='[&>svg]:w-6 [&>svg]:h-6 fill-white'
+			class=startIcon || endIcon ? 'gap-2' : ''
+		)
+			span(class= startIcon ? 'order-1' : 'order-0')= value
+			if( startIcon )
+				#{startIcon}
+			if( endIcon )
+				#{endIcon}
+
+
+
+
+
+
+//-  It works 100% as Mui Button
+
+	+Button({ value: 'Send' })
+	+Button({ disabled: true })
+	//- +Button({ loading: true, variant: 'outlined' })
+
+	+Button({ variant: 'outlined', color: 'error' })
+	//- +Button({ 
+	//- 	variant: 'outlined', 
+	//- 	disabled: true,
+	//- 	startIcon: `svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14L21 3m0 0l-6.5 18a.55.55 0 0 1-1 0L10 14l-7-3.5a.55.55 0 0 1 0-1L21 3" `,
+	//- 	endIcon: `svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14L21 3m0 0l-6.5 18a.55.55 0 0 1-1 0L10 14l-7-3.5a.55.55 0 0 1 0-1L21 3" `,
+	//- })
+
+	+Button({ variant: 'contained' })
+	+Button({ variant: 'contained', color: 'info', })
+	+Button({ variant: 'contained', color: 'warning', })
+	+Button({ variant: 'contained', disabled: true })
+
+
+		mixin Button(props = {}) 
+			- 
+				const {
+					value='Button',
+					variant='text', 				// text | contained | outlined
+					color='primary', 				// primary | secondary | success | info | warning | error 
+					size='medium', 					// small | medium | large
+					startIcon=``,
+					endIcon=``,
+					disabled=false,
+					loading=false,
+					uppercase=true,
+				} = props
+
+
+
+			if color === 'primary'
+				button( type='button' disabled=disabled
+					class=`
+						rounded shadow-2xl
+						${uppercase ? 'uppercase' : ''}
+						${size === 'small' ? 'px-1 pb-1 pt-0.5 text-sm font-light' : size === 'large' ? 'px-4 py-2' : 'px-2 py-1.5'} 
+						${variant === 'text' ?  `
+								text-blue-600 bg-transparent hover:text-blue-700/95 
+								active:text-blue-800 active:bg-blue-50
+								disabled:bg-transparent disabled:text-slate-600 disabled:border-slate-400 
+							` : variant === 'outlined' 
+							? `
+								border border-blue-600 text-blue-600 bg-transparent 
+								hover:text-blue-700/95 active:text-blue-800 active:bg-blue-50  
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							` : `	
+								border border-blue-600 bg-blue-500 text-white hover:bg-blue-500/95 
+								active:bg-blue-600
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							`}
+					`
+				) 
+					span(class='flex gap-2')
+					if startIcon
+						span 
+							#{startIcon}
+
+					if loading
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8A8 8 0 0 1 12 20Z" opacity=".5"/><path fill="currentColor" d="M20 12h2A10 10 0 0 0 12 2V4A8 8 0 0 1 20 12Z"><animateTransform attributeName="transform" dur="1s" from="0 12 12" repeatCount="indefinite" to="360 12 12" type="rotate"/></path></svg>
+					else
+						span= value
+
+					if endIcon
+						span 
+							#{endIcon}
+
+
+			if color === 'error'
+				button( type='button' disabled=disabled
+					class=`
+						rounded shadow-2xl
+						${uppercase ? 'uppercase' : ''}
+						${size === 'small' ? 'px-1 pb-1 pt-0.5 text-sm font-light' : size === 'large' ? 'px-4 py-2' : 'px-2 py-1.5'} 
+						${variant === 'text' ?  `
+								text-red-600 bg-transparent hover:text-red-700/95 
+								active:text-red-800 active:bg-red-50
+								disabled:bg-transparent disabled:text-slate-600 disabled:border-slate-400 
+							` : variant === 'outlined' 
+							? `
+								border border-red-600 text-red-600 bg-transparent 
+								hover:text-red-700/95 active:text-red-800 active:bg-red-50  
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							` : `	
+								border border-red-600 bg-red-500 text-white hover:bg-red-500/95 
+								active:bg-red-600
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							`}
+					`
+				) 
+					span(class='flex gap-2')
+						if startIcon
+							span 
+								#{startIcon}
+
+						if loading
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8A8 8 0 0 1 12 20Z" opacity=".5"/><path fill="currentColor" d="M20 12h2A10 10 0 0 0 12 2V4A8 8 0 0 1 20 12Z"><animateTransform attributeName="transform" dur="1s" from="0 12 12" repeatCount="indefinite" to="360 12 12" type="rotate"/></path></svg>
+						else
+							span= value
+
+						if endIcon
+							span 
+								#{endIcon}
+
+			if color === 'warning'
+				button( type='button' disabled=disabled
+					class=`
+						rounded shadow-2xl
+						${uppercase ? 'uppercase' : ''}
+						${size === 'small' ? 'px-1 pb-1 pt-0.5 text-sm font-light' : size === 'large' ? 'px-4 py-2' : 'px-2 py-1.5'} 
+						${variant === 'text' ?  `
+								text-orange-600 bg-transparent hover:text-orange-700/95 
+								active:text-orange-800 active:bg-orange-50
+								disabled:bg-transparent disabled:text-slate-600 disabled:border-slate-400 
+							` : variant === 'outlined' 
+							? `
+								border border-orange-600 text-orange-600 bg-transparent 
+								hover:text-orange-700/95 active:text-orange-800 active:bg-orange-50  
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							` : `	
+								border border-orange-600 bg-orange-500 text-white hover:bg-orange-500/95 
+								active:bg-orange-600
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							`}
+					`
+				) 
+					span(class='flex gap-2')
+						if startIcon
+							span 
+								#{startIcon}
+
+						if loading
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8A8 8 0 0 1 12 20Z" opacity=".5"/><path fill="currentColor" d="M20 12h2A10 10 0 0 0 12 2V4A8 8 0 0 1 20 12Z"><animateTransform attributeName="transform" dur="1s" from="0 12 12" repeatCount="indefinite" to="360 12 12" type="rotate"/></path></svg>
+						else
+							span= value
+
+						if endIcon
+							span 
+								#{endIcon}
+
+			if color === 'info'
+				button( type='button' disabled=disabled
+					class=`
+						rounded shadow-2xl
+						${uppercase ? 'uppercase' : ''}
+						${size === 'small' ? 'px-1 pb-1 pt-0.5 text-sm font-light' : size === 'large' ? 'px-4 py-2' : 'px-2 py-1.5'} 
+						${variant === 'text' ?  `
+								text-sky-600 bg-transparent hover:text-sky-700/95 
+								active:text-sky-800 active:bg-sky-50
+								disabled:bg-transparent disabled:text-slate-600 disabled:border-slate-400 
+							` : variant === 'outlined' 
+							? `
+								border border-sky-600 text-sky-600 bg-transparent 
+								hover:text-sky-700/95 active:text-sky-800 active:bg-sky-50  
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							` : `	
+								border border-sky-600 bg-sky-500 text-white hover:bg-sky-500/95 
+								active:bg-sky-600
+								disabled:bg-slate-300 disabled:text-slate-600 disabled:border-slate-400 
+							`}
+					`
+				) 
+					span(class='flex gap-2')
+						if startIcon
+							span 
+								#{startIcon}
+
+						if loading
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8A8 8 0 0 1 12 20Z" opacity=".5"/><path fill="currentColor" d="M20 12h2A10 10 0 0 0 12 2V4A8 8 0 0 1 20 12Z"><animateTransform attributeName="transform" dur="1s" from="0 12 12" repeatCount="indefinite" to="360 12 12" type="rotate"/></path></svg>
+						else
+							span= value
+
+						if endIcon
+							span 
+								#{endIcon}
+
+
+

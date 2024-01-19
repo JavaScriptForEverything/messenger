@@ -1,0 +1,60 @@
+doctype html
+html(lang="en")
+	head
+		meta(charset="UTF-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		title Collapsable Slide Menu
+
+		script(src="/js/tailwind_cdn.js")
+		
+		style.
+			aside.hide-left-panel {
+				width: 0;
+				padding: 0;
+			}
+		//- aside:not(.hide-left-panel) + #middle-section button[name=hamburger] {
+				display: none;
+			}
+
+	body 
+		div(class='flex min-h-screen divide-x')
+			aside#left-panel(class='w-1/2 max-w-xs bg-slate-50'
+				class='transition-all duration-500'
+			) 
+				div(class='h-16 flex items-center justify-between border-b border-slate-200 px-2 py-3')
+					span(class='font-medium text-lg ') Documentation
+					button(name='left-arrow' class='hover:bg-slate-100 border border-slate-200/50 active:bg-slate-200 p-1 rounded-full')
+						<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 17.308L8.692 12L14 6.692l.708.708l-4.6 4.6l4.6 4.6z"/></svg>
+
+				div(class='px-2 py-3')
+					p Some text
+
+			section#middle-section(class='flex-1 bg-slate-50') 
+				div(class='h-16 flex items-center gap-2 border-b border-slate-200 px-2 py-3')
+					button(name='hamburger' class='hidden hover:bg-slate-100 border border-slate-200/50 active:bg-slate-200 p-1 rounded-full')
+						<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+					span(class='font-medium text-lg ') Title
+
+				div(class='px-2 py-3')
+					p Some text
+		
+		script.
+			const $ = (selector) => document.querySelector( selector )
+
+			const leftArrowButton = $('#left-panel button[name=left-arrow]')
+			const hamburger = $('#middle-section button[name=hamburger]')
+			const leftPanel = $('#left-panel')
+
+
+			leftArrowButton?.addEventListener('click', (evt) => {
+				leftPanel.classList.add('hide-left-panel')
+				setTimeout(() => {
+					hamburger.style.display = 'block'
+				}, 200)
+			})
+			hamburger?.addEventListener('click', (evt) => {
+				leftPanel.classList.remove('hide-left-panel')
+				setTimeout(() => {
+					hamburger.style.display = 'none'
+				}, 200)
+			})

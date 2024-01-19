@@ -1,0 +1,37 @@
+mixin Dialog(props = {})
+	-
+		const {
+			fullName = '',
+			username = '',
+			createdAt = Date.now(),
+			avatar = '/images/users/default.jpg',
+			replyAvatar = '/images/users/default.jpg',
+			tweet = '',
+			numberOfHeart=0,
+			numberOfRetweet=0,
+		} = props
+
+	dialog(open=true name="dialog" class="max-w-md text-slate-700 rounded border border-slate-300 shadow")
+		div(class="flex flex-col divide-y")
+			div(class="flex justify-between items-center px-4 py-2 " id="header")
+				h1(class="font-semibold text-slate-800") Dialog
+				button(name='dialog-close-button' class="p-1 rounded-full" type="button")
+					<svg class='w-3 h-3 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M2.93 17.07A10 10 0 1 1 17.07 2.93A10 10 0 0 1 2.93 17.07zM11.4 10l2.83-2.83l-1.41-1.41L10 8.59L7.17 5.76L5.76 7.17L8.59 10l-2.83 2.83l1.41 1.41L10 11.41l2.83 2.83l1.41-1.41L11.41 10z"/></svg>
+			
+			div(class="flex-1 py-4 " id="content")
+
+				div(name='tweet-container' class="flex gap-2 pb-2")
+
+				div(class="flex gap-2 px-3 pt-3")
+					img(class="w-8 h-8" src=replyAvatar alt=replyAvatar)
+					div
+						input( 
+							name='dialog-tweet-input' 
+							class="bg-slate-100/50 border border-slate-300 w-full px-2 py-0.5 rounded placeholder:text-sm outline-none focus:border-blue-500" 
+							type="text" 
+							placeholder="Type your reply"
+						)
+
+			div(class="px-4 py-3 my-1 flex justify-end items-end gap-2" id="footer")
+				button(name='dialog-cancel-button' class="disabled:bg-slate-500/50 disabled:text-slate-600 px-2 py-1 bg-slate-500 text-slate-100 rounded-md text-sm border border-slate-500 hover:bg-slate-600 hover:text-white" type="button") Cancel
+				button(name='dialog-submit-button' class="disabled:bg-slate-500/50 disabled:text-slate-600 disabled:border-slate-500 px-2 py-1 bg-blue-500 text-slate-100 rounded-md text-sm border border-blue-500 hover:bg-blue-600 hover:text-white" type="submit") Submit

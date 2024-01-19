@@ -1,0 +1,11 @@
+mixin Typography(props = {})
+	- 
+		const {
+			color='text-slate-700',
+			size='text-md',
+			text='',
+			weight='font-normal',
+			wrap=''
+		} = props
+
+	p(class=`${color} ${size} ${weight} ${wrap}`)= text

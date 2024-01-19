@@ -3,22 +3,14 @@ block script
 	script( defer type='module' src='/js/page/demo.js')
 	style.
 
-
 block body 
 	p(class='text-red-500 mb-12') #{title}
 
-	//- div(class='flex gap-2')
-	//- 	video(src="/videos/video.mp4" autoplay controls class='w-40 border border-blue') 
-	//- 	video(src="/videos/video.mp4" autoplay controls class='w-40 border border-red') 
-	//- 	video(src="/videos/video.mp4" autoplay controls class='w-40 border border-orange') 
-
-	video(src="/videos/video.mp4" poster='/images/logo.png')
+	div(class='w-20 h-10 border border-red-500 flex')
+		img(src='/images/logo.png' class='')
 	
-	button(name='play' class='px-2 py-1 rounded border border-blue-500') Play
-	button(name='pause' class='px-2 py-1 rounded border border-blue-500') Pause
-	button(name='stop' class='px-2 py-1 rounded border border-blue-500') Stop
 
-	script.
+	//- script.
 		const $ = (selector) => document.querySelector(selector)
 
 		const video = $('video')

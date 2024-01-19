@@ -6,7 +6,8 @@ block script
 	div(class='h-screen p-2')
 		div(class='flex h-full p-2 border border-slate-200 rounded-md')
 
-			//- div(name='left-side' class='w-1/4 flex flex-col')
+			//- left-side
+			div(name='left-side' class='w-1/4 flex flex-col')
 				div(name='left-top' class='h-16 mb-1 py-1 pr-1 border-b border-slate-300')
 					div(name='list-container' class='flex gap-2 h-full px-2 py-1 border border-slate-300 rounded')
 						img(src='/images/users/default.jpg' alt='avatar' class='border border-slate-300 rounded-full')
@@ -31,7 +32,7 @@ block script
 					label(for='search-friends' class='peer-focus/search-friends:text-blue-500 absolute left-2 text-slate-500 cursor-pointer')
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T9.5 3q2.725 0 4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5q0-1.875-1.312-3.187T9.5 5Q7.625 5 6.313 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14"/></svg>
 
-				div(name='left-main' class='h-full divide-y border border-slate-300 overflow-x-auto  bg-slate-100 rounded')
+				div(name='left-main' class='h-full divide-y mr-1 border border-slate-300 overflow-x-auto  bg-slate-50 rounded')
 					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded')
 						div(class='flex-shrink-0')
 							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
@@ -70,10 +71,11 @@ block script
 								<svg class='w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6z"/></svg>
 
 
+			//- middle-section
 			div(name='middle-section' class='flex-1 flex flex-col')
 				div(name='middle-top' class='h-16 mb-1 py-1 pr-1 border-b border-slate-300')
 					div(name='list-container' class='flex items-center gap-2 h-full px-2 py-1 border border-slate-300 rounded')
-						div(class='h-full relative')
+						div(class='h-full relative flex-shrink-0')
 							img(src='/images/users/default.jpg' alt='avatar' class='w-full h-full object-scale-down border border-slate-300 rounded-full')
 							div(class='absolute bottom-1 -right-1 w-3 h-3 rounded-full bg-green-500')
 
@@ -105,8 +107,7 @@ block script
 								)
 								<svg class='w-8 h-8 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none"><path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2m0 2a8 8 0 1 0 0 16a8 8 0 0 0 0-16m0 11a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-4.5a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3M12 6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3"/></g></svg>
 
-
-				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 rounded')
+				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 border border-slate-300 rounded')
 					div(class='px-3 py-1.5 text-slate-700')
 						p middle
 						p Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci eaque suscipit corrupti sapiente inventore repudiandae veniam minima hic eligendi accusantium quidem excepturi ratione recusandae, iste temporibus molestiae eius ut distinctio.
@@ -118,9 +119,9 @@ block script
 						p Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci eaque suscipit corrupti sapiente inventore repudiandae veniam minima hic eligendi accusantium quidem excepturi ratione recusandae, iste temporibus molestiae eius ut distinctio.
 						p Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci eaque suscipit corrupti sapiente inventore repudiandae veniam minima hic eligendi accusantium quidem excepturi ratione recusandae, iste temporibus molestiae eius ut distinctio.
 
-				div(name='middle-bottom' class='px-3 mt-4 ' class='relative flex justify-center items-center')
+				div(name='middle-bottom' class='px-1 mt-4 ' class='relative flex justify-center items-center')
 					input(type='search' placeholder='Write Your Message' 
-						class='w-full pl-10 pr-32 py-2 rounded-xl text-slate-800'
+						class='w-full pl-10 pr-32 py-2 rounded-md text-slate-800'
 						class='border border-slate-300'
 						class='focus:outline-none focus:border-blue-500'
 						)
@@ -166,11 +167,19 @@ block script
 							<svg class='w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21L23 12L2.01 3L2 10l15 2l-15 2z"/></svg>
 
 
+			//- right side
 			div(name='right-side' class='w-1/4 flex flex-col')
-				div(name='right-top' class='h-16 mb-1 bg-blue-300')
-					div(name='search-container')
-						input(type='search' class='w-full px-3 py-1.5 rounded-md border border-slate-300')
+				div(name='right-top' class='h-16 mb-1 py-1 px-1 border-b border-slate-300')
 
-				div(name='right-bottom' class='h-full overflow-x-auto  bg-blue-300 rounded')
+					div(name='search-container' class=' my-2 relative flex justify-center items-center')
+						input(type='search' id='search-friends' placeholder='Search People'
+							class='w-full pl-8 pr-3 py-1.5 rounded-md text-slate-700'
+							class='border border-slate-300 focus:outline-none focus:border-blue-500'
+							class='peer/search-friends'
+						)
+						label(for='search-friends' class='peer-focus/search-friends:text-blue-500 absolute left-2 text-slate-500 cursor-pointer')
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T9.5 3q2.725 0 4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5q0-1.875-1.312-3.187T9.5 5Q7.625 5 6.313 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14"/></svg>
+
+				div(name='right-main' class='ml-1 px-1 py-2 flex-1 overflow-x-auto text-slate-700 border border-slate-300 bg-slate-50 rounded')
 					p right 
-					//- p Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, optio in harum dolorum, quam odit nesciunt libero accusamus aperiam deserunt quis porro. Non iste natus animi quaerat magni voluptas eligendi. 
+					p Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, optio in harum dolorum, quam odit nesciunt libero accusamus aperiam deserunt quis porro. Non iste natus animi quaerat magni voluptas eligendi. 

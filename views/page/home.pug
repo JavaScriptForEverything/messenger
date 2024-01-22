@@ -39,6 +39,7 @@ block script
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T9.5 3q2.725 0 4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5q0-1.875-1.312-3.187T9.5 5Q7.625 5 6.313 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14"/></svg>
 
 				div(name='left-main' class='h-full divide-y border border-slate-300 overflow-x-auto  bg-slate-50 rounded')
+
 					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded')
 						div(class='flex-shrink-0')
 							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
@@ -54,27 +55,24 @@ block script
 									//- span(class='px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
 
-
-						
-						//- div(class='flex items-center justify-end')
-							button(name='left-arrow' type='button'
-								class='p-1 border border-slate-300 text-slate-500 rounded-full'
-							)
-								<svg class='w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6z"/></svg>
-
-					//- div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded')
-						div(class='h-full')
+					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded')
+						div(class='flex-shrink-0')
 							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
 
 						div(class='label-container' class='flex-1')
-							p(name='username' class='text-blue-600 font-medium w-48 truncate') Riajul Islam
-							p(name='title' class='text-slate-600 font-light text-sm -mt-1 w-48 truncate') Senior Developer 
+							div(name='name-container' class='flex items-center justify-between')
+								p(name='username' class='text-blue-600 font-medium max-w-36 truncate') Riajul Islam 
+								p(name='title' class='text-slate-600 font-light text-sm ') #{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+
+							div(name='name-container' class='relative flex items-center justify-between')
+								p(for='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate') Senior Developer 
+								p(name='title-icon' class=' text-blue-500 rounded-full ')
+									span(class='px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
+									//- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+
+
 						
-						div(class='flex items-center justify-end')
-							button(name='left-arrow' type='button'
-								class='p-1 border border-slate-300 text-slate-500 rounded-full'
-							)
-								<svg class='w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6z"/></svg>
+
 
 			//- middle-section
 			div(name='middle-section' class='bg-slate-50 flex-1 flex flex-col')
@@ -120,9 +118,8 @@ block script
 
 				hr(class='my-1 border-spacing-x-0.5 border-slate-100')
 				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 border border-slate-300 rounded')
+
 					div(name='message-container' class='px-3 py-1.5 text-slate-700')
-						p(class='bg-blue-300/80 text-blue-600 mb-4') middle
-						
 						div(name='their-message-container' class='flex items-start gap-2 mb-2') 
 							img(src='/images/logo.png' alt='their avatar' class='w-6 h-6 rounded-full')
 							div(class='max-w-[80%] px-2 py-1 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none')

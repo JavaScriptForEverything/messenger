@@ -2,31 +2,13 @@ extends ../layout
 block script
 	script( defer type='module' src='/js/page/demo.js')
 	style.
+		canvas {
+			width: 90%;
+			height: 400px;
+		}
 
 block body 
-	p(class='text-red-500 mb-12') #{title}
-
-	div(class='w-20 h-10 border border-red-500 flex')
-		img(src='/images/logo.png' class='')
 	
+	input(type='file')
 
-	//- script.
-		const $ = (selector) => document.querySelector(selector)
-
-		const video = $('video')
-		const playButton = $('[name=play]')
-		const pauseButton = $('[name=pause]')
-		const stopButton = $('[name=stop]')
-
-		playButton.addEventListener('click', () => {
-			video.play()
-		})
-		pauseButton.addEventListener('click', () => {
-			video.pause()
-		})
-		stopButton.addEventListener('click', () => {
-			//- video.pause()
-			//- video.currentTime = 0
-
-			video.load()
-		})
+	canvas

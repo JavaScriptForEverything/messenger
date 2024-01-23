@@ -19,10 +19,48 @@ const socket = io('/')
 // webRTCHandler.getLocalPreview()
 
 
-const messageContainer = $('[name=message-container]')
-
+const leftFriendPanel = $('[name=left-main]') 	
+const messageContainer = $('[name=message-container]') 	
 const playPauseButton = $('[name=play-pause]')
 
+
+elements.createFirendList(leftFriendPanel, {
+	avatar: '/images/users/default.jpg',
+	isActive: false,
+
+	createdAt: Date.now(), 
+	notificationValue:  2,
+})
+
+elements.createFirendList(leftFriendPanel, {
+	avatar: '/images/users/default.jpg',
+	name: 'Fiaz Sofeone Rakib',
+	title: 'businessman textile',
+
+	createdAt: Date.now(), 
+
+	isActive: true,
+	isMessageSuccess: true,
+	isNotification: false,
+	isNoNotification: false,
+	notificationValue:  2,
+})
+
+elements.createFirendList(leftFriendPanel, {
+	avatar: '/images/users/default.jpg',
+	name: 'Fiaz Sofeone Rakib',
+	title: 'businessman textile',
+
+	createdAt: Date.now(), 
+
+	isActive: true,
+	isMessageSuccess: true,
+	isNotification: true,
+	isNoNotification: true,
+	notificationValue:  2,
+})
+
+/*
 const theirWavesurfer = WaveSurfer.create({
 	container: '[name=their-audio] #waveform',
 	waveColor: '#7ca4d0aa',
@@ -51,13 +89,62 @@ playPauseButton.addEventListener('click', () => {
 	yourWavesurfer.playPause() 	
 })
 
-elements.createTheirMessage(messageContainer, 'hi')
-elements.createYourMessage(messageContainer, 'whats up')
+// elements.createTheirMessage(messageContainer, 'hi')
+// elements.createYourMessage(messageContainer, 'whats up')
 
-elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
-elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
+// elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
+// elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 
+*/
 
+elements.callingDialog({
+	title : 'Incomming Audio Call', 			// string
+	callSide: 'callee', 									// caller | callee
+	error: '', 														// string
+	onSuccess : (evt) => {
+		evt.target.remove()
+		console.log(evt.target)
+	},
+	onReject : (evt) => {
+		evt.target.remove()
+		console.log(evt.target)
+	},
+	onError : (evt) => {
+		setTimeout(() => {
+			evt.target.remove()
+		})
+	}
+})
+
+elements.callingDialog({
+	title : 'Calling', 										// string
+	callSide: 'caller', 									// caller | callee
+	error: '', 														// string
+	onSuccess : (evt) => {
+		evt.target.remove()
+		console.log(evt.target)
+	},
+	onReject : (evt) => {
+		evt.target.remove()
+		console.log(evt.target)
+	},
+	onError : (evt) => {
+		setTimeout(() => {
+			evt.target.remove()
+		})
+	}
+})
+
+elements.callingDialog({
+	title : 'Not Found', 									// string
+	callSide: 'caller', 									// caller | callee
+	error: 'caller may be busy', 					// string
+	onError : (evt) => {
+		setTimeout(() => {
+			evt.target.remove()
+		}, 3000)
+	}
+})
 
 
 

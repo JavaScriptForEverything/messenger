@@ -1,0 +1,13 @@
+---
+We can add content in 2 ways:
+	1. From Server-Side at first + Client-Side newly added (without page reload)
+	2. Only From Client-Side
+
+	- If SEO required then Method-1 is mandatory
+	- But here our message and friend list no need any SEO related task so client-side is easier way
+---
+
+
+. add audio duration and date dynamically
+. add tick mark to your audio message
+. add active indicator in left panel list item

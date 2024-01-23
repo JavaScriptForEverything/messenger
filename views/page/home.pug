@@ -38,11 +38,21 @@ block script
 					label(for='search-friends' class='peer-focus/search-friends:text-blue-500 absolute left-2 text-slate-500 cursor-pointer')
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T9.5 3q2.725 0 4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5q0-1.875-1.312-3.187T9.5 5Q7.625 5 6.313 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14"/></svg>
 
+
 				div(name='left-main' class='h-full divide-y border border-slate-300 overflow-x-auto  bg-slate-50 rounded')
 
-					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded')
-						div(class='flex-shrink-0')
+					//- if list-container has
+						.active 								= add active indicator
+						.message-success  			= Show success message tick
+						.message-notification 	= show notification message numbers
+								. 'message-notification' override 'message-success'
+								. to empty notification and success both class must be removed 
+					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded'
+						class='group/firend-list active message-success message-notification'
+						)
+						div(class='flex-shrink-0 relative ')
 							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
+							div(class='group-[.active]/firend-list:block hidden absolute bottom-2 -right-0.5 w-2 h-2 rounded-full bg-green-500')
 
 						div(class='label-container' class='flex-1')
 							div(name='name-container' class='flex items-center justify-between')
@@ -51,13 +61,21 @@ block script
 
 							div(name='name-container' class='relative flex items-center justify-between')
 								p(for='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate') Senior Developer 
-								p(name='title-icon' class=' text-blue-500 rounded-full ')
-									//- span(class='px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+								p(name='title-icon' class=' text-blue-500 rounded-full'
+									class='[&>*:first-child]:[group-[.message-success]/friend-list:block'
+									class='[&>*:last-child]:[&.message-notification]:block'
+									class='group-[.message-success]/firend-list:[&>*:first-child]:block'
+									class='group-[.message-notification]/firend-list:[&>*:last-child]:block'
+								)
+									<svg class='hidden' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+									span(class='hidden px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
 
-					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded')
-						div(class='flex-shrink-0')
+					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded'
+						class='group/firend-list active message-success '
+						)
+						div(class='flex-shrink-0 relative ')
 							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
+							div(class='group-[.active]/firend-list:block hidden absolute bottom-2 -right-0.5 w-2 h-2 rounded-full bg-green-500')
 
 						div(class='label-container' class='flex-1')
 							div(name='name-container' class='flex items-center justify-between')
@@ -66,9 +84,60 @@ block script
 
 							div(name='name-container' class='relative flex items-center justify-between')
 								p(for='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate') Senior Developer 
-								p(name='title-icon' class=' text-blue-500 rounded-full ')
-									span(class='px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
-									//- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+								p(name='title-icon' class=' text-blue-500 rounded-full'
+									class='[&>*:first-child]:[group-[.message-success]/friend-list:block'
+									class='[&>*:last-child]:[&.message-notification]:block'
+									class='group-[.message-success]/firend-list:[&>*:first-child]:block'
+									class='group-[.message-notification]/firend-list:[&>*:last-child]:block'
+								)
+									<svg class='hidden' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+									span(class='hidden px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
+
+					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded'
+						class='group/firend-list active '
+						)
+						div(class='flex-shrink-0 relative ')
+							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
+							div(class='group-[.active]/firend-list:block hidden absolute bottom-2 -right-0.5 w-2 h-2 rounded-full bg-green-500')
+
+						div(class='label-container' class='flex-1')
+							div(name='name-container' class='flex items-center justify-between')
+								p(name='username' class='text-blue-600 font-medium max-w-36 truncate') Riajul Islam 
+								p(name='title' class='text-slate-600 font-light text-sm ') #{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+
+							div(name='name-container' class='relative flex items-center justify-between')
+								p(for='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate') Senior Developer 
+								p(name='title-icon' class=' text-blue-500 rounded-full'
+									class='[&>*:first-child]:[group-[.message-success]/friend-list:block'
+									class='[&>*:last-child]:[&.message-notification]:block'
+									class='group-[.message-success]/firend-list:[&>*:first-child]:block'
+									class='group-[.message-notification]/firend-list:[&>*:last-child]:block'
+								)
+									<svg class='hidden' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+									span(class='hidden px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
+
+					div(name='list-container' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 border-0 border-slate-300 rounded'
+						class='group/firend-list '
+						)
+						div(class='flex-shrink-0 relative ')
+							img(src='/images/users/default.jpg' alt='avatar' class='h-10 border border-slate-300 rounded-full')
+							div(class='group-[.active]/firend-list:block hidden absolute bottom-2 -right-0.5 w-2 h-2 rounded-full bg-green-500')
+
+						div(class='label-container' class='flex-1')
+							div(name='name-container' class='flex items-center justify-between')
+								p(name='username' class='text-blue-600 font-medium max-w-36 truncate') Riajul Islam 
+								p(name='title' class='text-slate-600 font-light text-sm ') #{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+
+							div(name='name-container' class='relative flex items-center justify-between')
+								p(for='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate') Senior Developer 
+								p(name='title-icon' class=' text-blue-500 rounded-full'
+									class='[&>*:first-child]:[group-[.message-success]/friend-list:block'
+									class='[&>*:last-child]:[&.message-notification]:block'
+									class='group-[.message-success]/firend-list:[&>*:first-child]:block'
+									class='group-[.message-notification]/firend-list:[&>*:last-child]:block'
+								)
+									<svg class='hidden' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+									span(class='hidden px-1.5 rounded-full text-[length:12px] bg-blue-500 text-slate-50 absolute right-0 -top-1 ') 2 
 
 
 						

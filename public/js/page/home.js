@@ -23,7 +23,9 @@ const leftFriendPanel = $('[name=left-main]')
 const messageContainer = $('[name=message-container]') 	
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
+const videoContainer = $('[name=video-container]') 	
 
+// videoContainer.classList.add('active')
 
 audioCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')

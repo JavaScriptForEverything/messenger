@@ -24,3 +24,9 @@ export const stringToElement = ( htmlString ) => {
 	return doc.body.firstChild
 }
 
+
+// toggleClass(evt.target, 'active')
+export const toggleClass = (selector, className='active') => {
+	const { classList } = selector
+	classList.toggle(className, !classList.contains(className))
+}

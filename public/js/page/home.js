@@ -1,7 +1,7 @@
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { Snackbar } from '../module/components/index.js'
-import { $ } from '../module/utils.js'
+import { $, toggleClass } from '../module/utils.js'
 // import * as wss from '../module/wss.js'
 // import * as store from '../module/store.js'
 // import * as webRTCHandler from '../module/webRTCHandler.js'
@@ -21,7 +21,16 @@ const socket = io('/')
 
 const leftFriendPanel = $('[name=left-main]') 	
 const messageContainer = $('[name=message-container]') 	
-const playPauseButton = $('[name=play-pause]')
+const audioCallButton = $('[name=audio-call-button]') 	
+const videoCallButton = $('[name=video-call-button]') 	
+
+
+audioCallButton.addEventListener('click', (evt) => {
+	toggleClass(evt.target, 'active')
+})
+videoCallButton.addEventListener('click', (evt) => {
+	toggleClass(evt.target, 'active')
+})
 
 
 elements.createFirendList(leftFriendPanel, {
@@ -88,64 +97,63 @@ playPauseButton.addEventListener('click', () => {
 	theirWavesurfer.playPause() 	
 	yourWavesurfer.playPause() 	
 })
+*/
 
-// elements.createTheirMessage(messageContainer, 'hi')
-// elements.createYourMessage(messageContainer, 'whats up')
+elements.createTheirMessage(messageContainer, 'hi')
+elements.createYourMessage(messageContainer, 'whats up')
 
 // elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 // elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 
-*/
 
-elements.callingDialog({
-	title : 'Incomming Audio Call', 			// string
-	callSide: 'callee', 									// caller | callee
-	error: '', 														// string
-	onSuccess : (evt) => {
-		evt.target.remove()
-		console.log(evt.target)
-	},
-	onReject : (evt) => {
-		evt.target.remove()
-		console.log(evt.target)
-	},
-	onError : (evt) => {
-		setTimeout(() => {
-			evt.target.remove()
-		})
-	}
-})
+// elements.callingDialog({
+// 	title : 'Incomming Audio Call', 			// string
+// 	callSide: 'callee', 									// caller | callee
+// 	error: '', 														// string
+// 	onSuccess : (evt) => {
+// 		evt.target.remove()
+// 		console.log(evt.target)
+// 	},
+// 	onReject : (evt) => {
+// 		evt.target.remove()
+// 		console.log(evt.target)
+// 	},
+// 	onError : (evt) => {
+// 		setTimeout(() => {
+// 			evt.target.remove()
+// 		})
+// 	}
+// })
 
-elements.callingDialog({
-	title : 'Calling', 										// string
-	callSide: 'caller', 									// caller | callee
-	error: '', 														// string
-	onSuccess : (evt) => {
-		evt.target.remove()
-		console.log(evt.target)
-	},
-	onReject : (evt) => {
-		evt.target.remove()
-		console.log(evt.target)
-	},
-	onError : (evt) => {
-		setTimeout(() => {
-			evt.target.remove()
-		})
-	}
-})
+// elements.callingDialog({
+// 	title : 'Calling', 										// string
+// 	callSide: 'caller', 									// caller | callee
+// 	error: '', 														// string
+// 	onSuccess : (evt) => {
+// 		evt.target.remove()
+// 		console.log(evt.target)
+// 	},
+// 	onReject : (evt) => {
+// 		evt.target.remove()
+// 		console.log(evt.target)
+// 	},
+// 	onError : (evt) => {
+// 		setTimeout(() => {
+// 			evt.target.remove()
+// 		})
+// 	}
+// })
 
-elements.callingDialog({
-	title : 'Not Found', 									// string
-	callSide: 'caller', 									// caller | callee
-	error: 'caller may be busy', 					// string
-	onError : (evt) => {
-		setTimeout(() => {
-			evt.target.remove()
-		}, 3000)
-	}
-})
-
+// elements.callingDialog({
+// 	title : 'Not Found', 									// string
+// 	callSide: 'caller', 									// caller | callee
+// 	error: 'caller may be busy', 					// string
+// 	onError : (evt) => {
+// 		setTimeout(() => {
+// 			evt.target.remove()
+// 		}, 3000)
+// 	}
+// })
 
 
 
@@ -157,33 +165,3 @@ elements.callingDialog({
 
 
 
-// const $ = (selector) => document.querySelector( selector )
-
-// const playButton = $('[name=play]')
-// const stopButton = $('[name=stop]')
-
-// const audioContext = new AudioContext()
-// let audio = null
-
-// const url = '/music/ignite.mp3'
-
-// fetch(url)
-// 	.then(res => res.arrayBuffer())
-// 	.then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer)) 	// convert arrayBuffer => audioBuffer
-// 	.then( audioBuffer => {
-// 		audio = audioBuffer
-// 	})
-
-// const playback = () => {
-// 	const playSound = audioContext.createBufferSource() // container for buffer from audioBuffer
-// 	playSound.buffer = audio
-// 	playSound.connect( audioContext.destination )
-// 	playSound.start(audioContext.currentTime)
-
-// 	stopButton.addEventListener('click', () => {
-// 		playSound.stop()
-// 	})
-// }
-
-
-// playButton.addEventListener('click', playback)

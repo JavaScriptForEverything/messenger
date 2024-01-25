@@ -2,7 +2,7 @@
 import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { Snackbar } from '../module/components/index.js'
 import { $, toggleClass } from '../module/utils.js'
-// import * as wss from '../module/wss.js'
+import * as wss from '../module/wss.js'
 // import * as store from '../module/store.js'
 // import * as webRTCHandler from '../module/webRTCHandler.js'
 // import * as constants from '../module/constants.js'
@@ -15,7 +15,7 @@ import * as elements from '../module/elements.js'
 */
 
 const socket = io('/')
-// wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
+wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
 // webRTCHandler.getLocalPreview()
 
 
@@ -24,14 +24,46 @@ const messageContainer = $('[name=message-container]')
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
 const videoContainer = $('[name=video-container]') 	
+const writeMessageInput = $('[name=write-message-input]') 	
 
 // videoContainer.classList.add('active')
 
+
 audioCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')
+
 })
+
+
 videoCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')
+})
+
+
+let timer = null
+let controller = null
+
+writeMessageInput.addEventListener('input', async () => {
+	clearTimeout(timer)
+
+	timer = setTimeout(async() => {
+		if(controller) controller.abort('abort message')
+
+		controller = new AbortController()
+		const { signal } = controller
+
+		try {
+			const res = await fetch('/api/users', { signal })
+			const data = await res.json()
+			console.log(data)
+
+		} catch (err) {
+			if( err.name === 'AbortError') return
+
+			console.log(err)	
+			console.log(signal.reason, signal.aborted)
+		}
+	}, 1000);
 })
 
 

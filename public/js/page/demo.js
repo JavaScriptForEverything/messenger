@@ -1,38 +1,72 @@
-const margin = 10;
-const chunkSize = 50;
-const input = document.querySelector("input");
-const canvas = document.querySelector("canvas");
 
-const ctx = canvas.getContext("2d");
-const ac = new AudioContext();
 
-const { width, height } = canvas;
 
-const centerHeight = Math.ceil(height / 2);
-const scaleFactor = (height - margin * 2) / 2;
 
-async function drawToCanvas() {
-  const arrayBuffer = await input.files[0].arrayBuffer();
-  const audioBuffer = await ac.decodeAudioData(arrayBuffer);
+const button = document.querySelector('button')
+const progress = document.querySelector('progress')
+const span = document.querySelector('span')
 
-  const float32Array = audioBuffer.getChannelData(0);
-  const array = [];
-  let i = 0;
-  const length = float32Array.length;
-  while (i < length) {
-    array.push(
-      float32Array.slice(i, i += chunkSize).reduce(function (total, value) {
-        return Math.max(total, Math.abs(value));
-      })
-    );
-  }
-  canvas.width = Math.ceil(float32Array.length / chunkSize + margin * 2);
-  for (let index in array) {
-    ctx.strokeStyle = "black";
-    ctx.beginPath();
-    ctx.moveTo(margin + Number(index), centerHeight - array[index] * scaleFactor);
-    ctx.lineTo(margin + Number(index), centerHeight + array[index] * scaleFactor);
-    // ctx.****();
-  }
+const url = '/images/avatar.jpg'
+
+button.addEventListener('click', async () => {
+	const res = await fetch(url)
+	const blob = await res.blob()
+
+	const data = blob.stream()
+	console.log(data)
+})
+
+
+/*
+
+
+const updateUI = (value) => {
+	progress.value = value	
+	span.textContent = value.toFixed() + '%'
 }
-input.addEventListener("input", drawToCanvas);
+
+button.addEventListener('click', () => {
+	fetchData()
+})
+
+
+
+const largeFile = 'https://res.cloudinary.com/javascriptforeverything/video/upload/v1706136879/ba0ovmx1g5m85cxdhap4.mp4'
+const mediumFile = 'https://res.cloudinary.com/javascriptforeverything/image/upload/v1622711168/samples/cloudinary-group.jpg'
+const smallFile = 'https://res.cloudinary.com/javascriptforeverything/image/upload/v1639477991/next-amazona/images/pants3_ak1hql.jpg'
+
+const fetchData = async () => {
+	const res = await fetch(largeFile)
+	// const blob = await res.blob()
+	
+	const readableStream = res.body
+
+	const reader = readableStream.getReader()
+	const contentType = res.headers.get('content-type') 			// See Respose reader in network tab
+	const contentLength = +res.headers.get('content-length') 	// => make sure it number
+
+	const chunks = []
+	let receivedLength = 0
+
+	// eslint-disable-next-line no-constant-condition
+	while(true) {
+		const { done, value } = await reader.read()
+		if(done) break; 	 // if done then value also null or undefined and ignore before add
+
+		chunks.push(value)
+		receivedLength += value.length
+		const percentage = (receivedLength / contentLength ) * 100
+
+		updateUI(percentage)
+	}
+
+	const blob = new Blob(chunks, { type: contentType, size: contentLength })
+	const dataUrl = URL.createObjectURL(blob)
+
+	const a = document.createElement('a')
+	a.href = dataUrl
+	a.download = contentType.split('/').pop()
+	a.click()
+	URL.revokeObjectURL(dataUrl)
+}
+*/

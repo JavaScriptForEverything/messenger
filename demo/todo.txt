@@ -7,6 +7,8 @@ We can add content in 2 ways:
 	- But here our message and friend list no need any SEO related task so client-side is easier way
 ---
 
+. add logout popup in top-left user's avatar icon click handler
+
 
 . add audio duration and date dynamically
 . add tick mark to your audio message

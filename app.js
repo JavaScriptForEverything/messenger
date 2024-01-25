@@ -4,7 +4,8 @@ const connectLivereload = require('connect-livereload') 	// for reload browser
 const express = require('express')
 
 const errorController = require('./controllers/errorController')
-const pageRouter = require('./routes/pageRoute')
+const pageRouter = require('./routes/pageRoutes')
+const userRouter = require('./routes/userRoutes')
 
 const publicDirectory = path.join(process.cwd(), 'public')
 const app = express()
@@ -25,7 +26,8 @@ if(process.env.NODE_ENV === 'development') {
 }
 
 
-app.use(pageRouter)
+app.use('/', pageRouter)
+app.use('/api/users', userRouter)
 
 app.use(errorController.errorHandler)
 app.all('*', errorController.pageNotFound)

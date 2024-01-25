@@ -1,14 +1,27 @@
 extends ../layout
 block script
+	script( async type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
 	script( defer type='module' src='/js/page/demo.js')
 	style.
-		canvas {
-			width: 90%;
-			height: 400px;
-		}
 
 block body 
 	
-	input(type='file')
+	button(type='button' 
+		class='px-3 py-1.5 rounded-md bg-blue-500 text-slate-50'
+		class='disabled:bg-slate-300 disabled:text-slate-600'
+	) Download
 
-	canvas
+	div
+		progress(value=0 max=100)
+		span
+
+		//- emoji-picker
+
+	script.
+		//- const picker = document.querySelector('emoji-picker') 	// like other tage: 'button'
+		//- picker.addEventListener('emoji-click', (evt) => {
+		//- 	console.log(evt.detail)
+		//- })
+
+		//- const picker = new Picker({ emojiVersion: 15.0 })
+		console.log(Picker)

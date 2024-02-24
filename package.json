@@ -4,12 +4,15 @@
 	"main": "server.js",
 	"license": "MIT",
 	"scripts": {
-		"prebuild": "yarn tailwindcss --input tailwind.css --output public/css/style.css",
+		"tailwind": "yarn tailwindcss --input tailwind.css --output public/css/style.css",
+		"browser": "sleep 2 && browse http://localhost:5000",
+
 		"build": "yarn install",
+		"postbuild": "yarn tailwind",
 		"start": "node .",
-		"watch": "yarn prebuild --watch",
-		"dev:old": "NODE_ENV=development nodemon . --ext js,pug --ignore public",
-		"dev": "concurrently \"yarn watch\" \"yarn dev:old\""
+
+		"node-server": "NODE_ENV=development nodemon . --ext js,pug --ignore public",
+		"dev": "concurrently \"yarn tailwind --watch\" \"yarn node-server\" \"yarn browser\""
 	},
 	"dependencies": {
 		"connect-livereload": "^0.6.1",

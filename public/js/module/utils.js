@@ -30,3 +30,34 @@ export const toggleClass = (selector, className='active') => {
 	const { classList } = selector
 	classList.toggle(className, !classList.contains(className))
 }
+
+
+
+
+/*
+const cameraIconButtonInput = $('#camera-icon-button')
+cameraIconButtonInput.addEventListener('change', async (evt) => {
+	try {
+		const dataUrl = await readAsDataURL(evt.target.files[0])
+		elements.createYourMessage(messageContainer, { type: 'image', message: dataUrl })
+		elements.createTheirMessage(messageContainer, { type: 'image', message: dataUrl })
+
+	} catch (err) {
+		console.log(err.message)
+	}
+}) */
+export const readAsDataURL = (file, { type='image' } = {}) => {
+	return new Promise((resolve, reject) => {
+
+		if(type === 'image') {
+			const isImage = file?.type.match('image/*')
+			if(!isImage) return reject(new Error('Please select an image') )
+		}
+
+		const reader = new FileReader()
+		reader.readAsDataURL(file)
+		reader.addEventListener('loadend', () => {
+			resolve(reader.result)
+		})
+	})
+}

@@ -1,7 +1,7 @@
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { Snackbar } from '../module/components/index.js'
-import { $, toggleClass } from '../module/utils.js'
+import { $, readAsDataURL, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js'
 // import * as store from '../module/store.js'
 // import * as webRTCHandler from '../module/webRTCHandler.js'
@@ -135,8 +135,8 @@ playPauseButton.addEventListener('click', () => {
 })
 */
 
-elements.createTheirMessage(messageContainer, 'hi')
-elements.createYourMessage(messageContainer, 'whats up')
+elements.createTheirMessage(messageContainer, { type: 'text', message: 'hi'})
+elements.createYourMessage(messageContainer, { type: 'text', message: 'hi there whats up ?'})
 
 // elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 // elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
@@ -197,7 +197,17 @@ elements.createYourMessage(messageContainer, 'whats up')
 
 
 
+const cameraIconButtonInput = $('#camera-icon-button')
+cameraIconButtonInput.addEventListener('change', async (evt) => {
+	try {
+		const dataUrl = await readAsDataURL(evt.target.files[0])
+		elements.createYourMessage(messageContainer, { type: 'image', message: dataUrl })
+		elements.createTheirMessage(messageContainer, { type: 'image', message: dataUrl })
 
+	} catch (err) {
+		console.log(err.message)
+	}
+})
 
 
 

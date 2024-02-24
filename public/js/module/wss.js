@@ -23,7 +23,7 @@ export const registerSocketEvents = (socket) => {
 		socket.emit('user-join', { socketId: socket.id, userId })
 		socket.on('user-joinded', ({ rooms }) => {
 			const uniqueArray = [ ...new Set(rooms) ]
-			console.log(uniqueArray)
+			// console.log(uniqueArray)
 		})
 
 

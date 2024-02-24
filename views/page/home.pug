@@ -316,7 +316,8 @@ block script
 							)
 							<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="none" stroke="currentColor" d="m13.5 7.5l-5.757 5.757a4.243 4.243 0 0 1-6-6l5.929-5.929a2.828 2.828 0 0 1 4 4l-5.758 5.758a1.414 1.414 0 0 1-2-2L9.5 3.5"/></svg>
 
-						input(type='checkbox' hidden id='camera-icon-button' class='peer/camera-icon-button')
+						//- input(type='checkbox' hidden id='camera-icon-button' class='peer/camera-icon-button')
+						input(type='file' id='camera-icon-button' hidden accept='image/*')
 						label(for='camera-icon-button' type='button'
 							class='text-slate-500/80 rounded-full'
 							class='hover:bg-slate-50 hover:text-slate-500'

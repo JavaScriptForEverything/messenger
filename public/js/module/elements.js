@@ -6,17 +6,26 @@ import { encodeHTML, stringToElement } from './utils.js'
 
 
 // elements.createTheirMessage(messageContainer, 'hi')
-export const createTheirMessage = (selector, message) => {
+export const createTheirMessage = (selector, { type='text', message='' }) => {
 	const encodedMessage = encodeHTML(message)
 	const htmlString = `
 		<div name='their-message-container' class='flex items-start gap-2 mb-2'> 
 			<img src='/images/logo.png' alt='their avatar' class='w-6 h-6 rounded-full' />
-			<div class='max-w-[80%] px-2 py-1 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
-				<p name='their-message' class='text-slate-600'> ${encodedMessage} </p>
-			</div>
+				${
+					type === 'image'
+					? `
+						<div class='max-w-[80%] p-0.5 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
+							<img name='their-message' src='${message}' class='object-cover' />
+						</div>
+					` 
+					: `
+						<div class='max-w-[80%] px-2 py-1 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
+							<p name='their-message' class='text-slate-600'> ${encodedMessage} </p>
+						</div>
+					`
+				}
 		</div>
 	`
-	// selector.insertAdjacentHTML('beforeend', htmlString)
 
 	const element = stringToElement(htmlString)
 	selector.insertAdjacentElement('beforeend', element)
@@ -24,13 +33,24 @@ export const createTheirMessage = (selector, message) => {
 }
 
 // elements.createYourMessage(messageContainer, 'whats up')
-export const createYourMessage = (selector, message) => {
+export const createYourMessage = (selector, { type='text', message='', }) => {
 	const encodedMessage = encodeHTML(message)
 	const htmlString = `
 		<div name='your-message-container' class='flex items-end gap-2 mt-2'>
-			<div class='max-w-[80%] ml-auto px-2 py-1 bg-blue-200 border border-blue-300 rounded-md rounded-br-none'>
-				<p name='your-message' class='text-blue-950/80'>${encodedMessage}</p>
-			</div>
+			${
+				type === 'image'
+				? `
+					<div class='max-w-[80%] ml-auto p-0.5 bg-blue-200 border border-blue-300 rounded'>
+						<img name='your-message' src='${message}' class='object-cover' />
+					</div>
+				` 
+				: `
+					<div class='max-w-[80%] ml-auto px-2 py-1 bg-blue-200 border border-blue-300 rounded-md rounded-br-none'>
+						<p name='your-message' class='text-blue-950/80'>${encodedMessage}</p>
+					</div>
+				`
+			}
+
 			<span class='text-blue-500'>
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
 			</span>

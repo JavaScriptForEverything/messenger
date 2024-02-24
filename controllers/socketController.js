@@ -12,7 +12,7 @@ const testing = (io) => (socket) => {
 	// 	})
 	// })
 
-	console.log(socket.rooms)
+	// console.log(socket.rooms)
 	// console.log(io.sockets.adapter.rooms)
 }
 

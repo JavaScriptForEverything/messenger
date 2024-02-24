@@ -179,14 +179,15 @@ export const createYourAudio = (selector, { id=null, audioUrl= '' }) => {
 elements.createFirendList(leftFriendPanel, {
 	avatar: '/images/users/default.jpg',
 	name: 'Fiaz Sofeone Rakib',
-	title: 'businessman textile',
+	message: 'businessman textile', 		// required if type === 'text
+	type: 'text', 											// text | audio | image
 
 	createdAt: Date.now(), 
 
-	isActive: true,
+	isActive: true, 										// => Show blue circle to indicate active
 	isMessageSuccess: true,
-	isNotification: false,
-	isNoNotification: false,
+	isNotification=false, 							// override isMessageSuccess
+	isNoNotification=false, 						// override both isMessageSuccess and IsNotification
 	notificationValue:  2,
 }) */
 export const createFirendList = (selector, data) => {
@@ -194,8 +195,9 @@ export const createFirendList = (selector, data) => {
 		id=null,
 		avatar='/images/users/default.jpg',
 		name = 'Riajul Islam',
-		title = 'Senior Developer',
+		message = 'Senior Developer',
 		createdAt=Date.now(), 
+		type='text',
 
 		isActive=false,
 		isMessageSuccess=false,
@@ -229,7 +231,23 @@ export const createFirendList = (selector, data) => {
 				</div>
 
 				<div name='name-container' class=' relative flex items-center justify-between'>
-					<p for='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 capitalize truncate'> ${title} </p> 
+					<p for='title' class='text-slate-600 font-light text-sm max-w-40 capitalize truncate'> 
+						${
+							type === 'text' ? message 
+						: type === 'image' ? 
+						`<span class='flex gap-1 items-center text-slate-600'>
+							<svg class='w-4 h-4 ' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M9.75 13a2.25 2.25 0 1 1 4.5 0a2.25 2.25 0 0 1-4.5 0"/><path fill="currentColor" fill-rule="evenodd" d="M7.474 7.642A3.142 3.142 0 0 1 10.616 4.5h2.768a3.142 3.142 0 0 1 3.142 3.142a.03.03 0 0 0 .026.029l2.23.18c.999.082 1.82.82 2.007 1.805a22.07 22.07 0 0 1 .104 7.613l-.097.604a2.505 2.505 0 0 1-2.27 2.099l-1.943.157a56.61 56.61 0 0 1-9.166 0l-1.943-.157a2.505 2.505 0 0 1-2.27-2.1l-.097-.603c-.407-2.525-.371-5.1.104-7.613a2.226 2.226 0 0 1 2.007-1.804l2.23-.181a.028.028 0 0 0 .026-.029M12 9.25a3.75 3.75 0 1 0 0 7.5a3.75 3.75 0 0 0 0-7.5" clip-rule="evenodd"/></svg>
+							<span> Image
+						</span>`
+						: type === 'audio' ? 
+						`<span class='flex gap-1 items-center text-slate-500'>
+							<svg class='w-4 h-4 ' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3m7 9c0 3.53-2.61 6.44-6 6.93V21h-2v-3.07c-3.39-.49-6-3.4-6-6.93h2a5 5 0 0 0 5 5a5 5 0 0 0 5-5z"/></svg>
+							<span> Audio
+						</span>`
+						: ''}
+
+					</p> 
+
 					<p name='title-icon' class='
 						text-blue-500 rounded-full 
 						group-[.message-success]/firend-list:[&>*:first-child]:block 

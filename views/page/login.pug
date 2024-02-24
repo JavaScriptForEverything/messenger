@@ -1,0 +1,31 @@
+extends ../layout
+block body
+block script
+	script( defer type='module' src='/js/page/login.js')
+
+	div(class='h-screen ')
+		div(class='w-full max-w-[90%] mx-auto')
+			//- div(class='relative p-1 flex gap-1 h-full border border-slate-400 rounded-md')
+
+			h1 login
+
+			fieldset(
+				class='border border-slate-400 rounded-md px-3 pb-2'
+				class='group focus-within:border-blue-500 '
+				class=' invalid:border-red-500 invalid:focus-within:border-red-500'
+				class='peer'
+				)
+				legend(class='px-1 text-slate-800 group-focus-within:text-blue-500 '
+					class='group-invalid:text-red-500'
+					class='group-invalid:group-focus-within:text-red-500'
+					class='after:content-["_*_"] after:text-red-500 '
+				) Your Email
+				input(name='email' type='email' placeholder='abc@gmail.com' 
+					class='px-1 pb-0.5 w-full text-slate-700 border border-slate-50 rounded'
+					class='focus:outline-none focus:text-slate-800 focus:border-blue-200'
+					class='placeholder-shown:border-slate-200'
+					class='invalid:border-red-100 invalid:focus:border-red-200'
+					)
+			span(class='ml-1 mt-0.5 mb-2 text-xs hidden peer-invalid:block peer-invalid:text-red-500') invalid email address
+
+

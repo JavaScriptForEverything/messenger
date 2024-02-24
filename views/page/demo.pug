@@ -6,22 +6,8 @@ block script
 
 block body 
 	
-	button(type='button' 
-		class='px-3 py-1.5 rounded-md bg-blue-500 text-slate-50'
-		class='disabled:bg-slate-300 disabled:text-slate-600'
-	) Download
 
 	div
-		progress(value=0 max=100)
-		span
+		video(src='/music/video.mp4' controls )
 
-		//- emoji-picker
-
-	script.
-		//- const picker = document.querySelector('emoji-picker') 	// like other tage: 'button'
-		//- picker.addEventListener('emoji-click', (evt) => {
-		//- 	console.log(evt.detail)
-		//- })
-
-		//- const picker = new Picker({ emojiVersion: 15.0 })
-		console.log(Picker)
+	

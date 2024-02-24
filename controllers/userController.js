@@ -7,13 +7,8 @@ exports.getAllUsers = (req, res, next) => {
 		}
 	]
 
-
-
-	setTimeout(() => {
-		
 	res.status(200).json({
 		status: 'success',
 		users 	
 	})
-	}, 3000);
 }

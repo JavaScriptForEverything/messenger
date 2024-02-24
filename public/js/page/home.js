@@ -78,7 +78,8 @@ elements.createFirendList(leftFriendPanel, {
 elements.createFirendList(leftFriendPanel, {
 	avatar: '/images/users/default.jpg',
 	name: 'Fiaz Sofeone Rakib',
-	title: 'businessman textile',
+	message: 'businessman textile',
+	type: 'audio',
 
 	createdAt: Date.now(), 
 
@@ -92,7 +93,8 @@ elements.createFirendList(leftFriendPanel, {
 elements.createFirendList(leftFriendPanel, {
 	avatar: '/images/users/default.jpg',
 	name: 'Fiaz Sofeone Rakib',
-	title: 'businessman textile',
+	message: 'businessman textile',
+	type: 'image',
 
 	createdAt: Date.now(), 
 

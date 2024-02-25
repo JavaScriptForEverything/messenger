@@ -25,33 +25,35 @@ mixin TextField(props = {})
 			border=true,
 		} = props
 
-	fieldSet(
-		id=id
-		class=border ? 'border border-slate-500 pl-3 rounded-md ' : ''
-		class='pointer-events-none focus-within:border-blue-500 invalid:border-red-500'
-		class='group'
-		class='invalid:focus-within:border-red-500'
-		class='peer'
-	)
-		legend(
-			class='px-2 text-slate-700'
-			class='group-focus-within:text-blue-500 group-invalid:text-red-500'
-			class='group-invalid:group-focus-within:text-red-500'
-			class=required ? 'after:content-["*"] after:ml-1' : ''
-		)= label
-
-		input#email(
-			type=type
-			name=name
-			value=value
-			placeholder=placeholder
-			required=required
-			autofocus=autofocus
-			class='px-2 py-1.5 mb-1 w-full focus:outline-none text-slate-700 bg-inherit'
-			class='pointer-events-auto'
-			class='invalid:text-red-500'
+	div(id=id name='field-container' )
+		fieldSet(
+			class=border ? 'border border-slate-500 pl-2.5 rounded-md ' : ''
+			class='pointer-events-none focus-within:border-blue-500 invalid:border-red-500'
+			class='group'
+			class='invalid:focus-within:border-red-500'
+			class='peer'
 		)
+			legend(
+				class='px-1.5 text-slate-700 text-sm font-light'
+				class='group-focus-within:text-blue-700 group-invalid:text-red-500'
+				class='group-invalid:group-focus-within:text-red-500'
+				class=required ? 'after:content-["*"] after:ml-1 after:text-red-500' : ''
+			)= label
 
-	//- small(class='text-red-600 px-2 hidden peer-invalid:block')= helperText
+			input#email(
+				type=type
+				name=name
+				value=value
+				placeholder=placeholder
+				autofocus=autofocus
+				class='px-2 py-1.5 mb-1 w-full focus:outline-none text-slate-700 bg-inherit'
+				class='pointer-events-auto'
+				class='invalid:text-red-500'
+			)
+				//- required=required
+
+
+		small(name='error-message' class='text-red-600 mx-2 hidden peer-invalid:block')= helperText
+
 
 		

@@ -3,7 +3,86 @@ block body
 block script
 	script( defer type='module' src='/js/page/register.js')
 
-	div(class='h-screen ')
-		div(class='relative p-1 flex gap-1 h-full border border-slate-200 rounded-md')
+	.h-screen.flex.justify-center.items-center
+		.w-96.bg-slate-100.m-auto.px-4.py-3.shadow-md.rounded.border.border-slate-200
+			h1(class='text-blue-500 text-2xl text-center mb-6') Register
 
-		p register
+			form.flex.flex-col.gap-2.mb-2(name='register-form' action='/register' method='post')
+
+				h2#error.text-red-500.text-center.capitalize #{errorMessage}
+
+				div(class='flex gap-3')
+					+TextField({
+						label: 'First Name',
+						name: 'firstName',
+						placeholder: 'First Name',
+						value: firstName || '',
+						required: true,
+					})
+					+TextField({
+						label: 'Last Name',
+						name: 'lastName',
+						placeholder: 'Last Name',
+						value: lastName || '',
+					})
+
+				+TextField({
+					label: 'Your Email',
+					name: 'email',
+					type: 'email',
+					placeholder: 'abc@gmail.com',
+					value: email || '',
+					helperText: 'email address is invalied',
+					required: true
+				})
+				+TextField({
+					label: 'Your Password',
+					name: 'password',
+					type: 'text',
+					placeholder: 'yourPa$$w0rd',
+					value: password || '',
+					helperText: 'password is too short',
+					required: true
+				})
+				+TextField({
+					label: 'Confirm Password',
+					name: 'confirmPassword',
+					id: 'confirmPassword',
+					type: 'text',
+					placeholder: 're-type your password again',
+					value: confirmPassword || '',
+					helperText: 'confirmPassword not matched',
+					required: true
+				})
+
+				div(name='field-container' class='border border-slate-50 flex gap-3 items-center')
+					div(name='avatar-container' class='shrink-0 overflow-hidden cursor-pointer bg-slate-300 w-16 h-16 p-[1px] rounded-full shadow relative')
+						img(name='avatar-img' src='/images/users/default.jpg' alt=''
+							class='rounded-full object-cover peer/avatar'
+						)
+						label( name='avatar-label'
+							class='absolute bottom-1 text-xs bg-white px-2 ml-[50%]'
+							class='-translate-x-[50%] rounded cursor-pointer'
+							class='opacity-0 hover:opacity-100 peer-hover/avatar:opacity-100 transition-opacity duration-100'
+							) remove
+
+
+					div(name='file-container')
+						div(class='border border-slate-500 px-4 py-3 rounded-md text-slate-700')
+							input(type='file' name='avatar' accept='image/*' class='w-full')
+						small(name='error-message' class='text-red-600 mx-2 hidden' ) 
+
+
+				div(class='mt-1 ')
+					+Button({
+						value: 'Register',
+						type: 'submit',
+						size: 'py-2',
+						variant: 'contained',
+					})
+			
+			.text-center
+				a.text-blue-500.underline.decoration-dotted(href="/login") Already have an account ? login here
+
+
+

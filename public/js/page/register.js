@@ -4,9 +4,9 @@ const registerForm = $('[name=register-form]')
 
 const avatarContainer = $('[name=avatar-container]')
 const avatarImg = $('[name=avatar-img]')
-const avatarLabel = $('[name=avatar-label]')
 const avatarInput = $('[name=avatar]')
 const errorSmall = $('[name=file-container] [name=error-message]')
+const inputElements = document.querySelectorAll('[name=field-container] input')
 
 
 // clear form on page load
@@ -36,6 +36,12 @@ avatarInput.addEventListener('change', async (evt) => {
 })
 
 
+Array.from( inputElements ).forEach( el => {
+	el.addEventListener('input', (evt) => {
+		validateForm()
+	})
+})
+
 registerForm.addEventListener('submit', async (evt) => {
 	evt.preventDefault()
 
@@ -52,7 +58,6 @@ registerForm.addEventListener('submit', async (evt) => {
 const validateForm = () => {
 	let hasError = false
 
-	const inputElements = document.querySelectorAll('[name=field-container] input')
 	Array.from( inputElements ).forEach( el => {
 		// console.log({ name: el.name, value: el.value } )
 
@@ -69,7 +74,15 @@ const validateForm = () => {
 			return
 		}
 
-		// Step-2: check password length
+		// Step-2: check name length
+		if( (el.name === 'firstName' || el.name === 'lastName') && el.value.length <= 2) {
+			errorEl.classList.remove('hidden') 	// show the error element
+			errorEl.textContent = `[${el.name}]: is too short`
+			hasError = true
+			return
+		}
+
+		// Step-3: check password length
 		if(el.name === 'password' && el.value.length < 8) {
 			errorEl.classList.remove('hidden') 	// show the error element
 			errorEl.textContent = `[${el.name}]: password is too short`
@@ -77,7 +90,7 @@ const validateForm = () => {
 			return
 		}
 
-		// Step-3: check confirmPassword match
+		// Step-4: check confirmPassword match
 		if(el.name === 'confirmPassword' && el.value !== passwordInput.value) {
 			errorEl.classList.remove('hidden') 	// show the error element
 			errorEl.textContent = `[${el.name}]: password not matched`

@@ -24,6 +24,7 @@ block script
 						name: 'lastName',
 						placeholder: 'Last Name',
 						value: lastName || '',
+						required: true,
 					})
 
 				+TextField({
@@ -38,7 +39,7 @@ block script
 				+TextField({
 					label: 'Your Password',
 					name: 'password',
-					type: 'text',
+					type: 'password',
 					placeholder: 'yourPa$$w0rd',
 					value: password || '',
 					helperText: 'password is too short',
@@ -48,7 +49,7 @@ block script
 					label: 'Confirm Password',
 					name: 'confirmPassword',
 					id: 'confirmPassword',
-					type: 'text',
+					type: 'password',
 					placeholder: 're-type your password again',
 					value: confirmPassword || '',
 					helperText: 'confirmPassword not matched',

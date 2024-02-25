@@ -1,4 +1,4 @@
-import { $, readAsDataURL } from '../module/utils.js'
+import { $, readAsDataURL, redirectTo } from '../module/utils.js'
 
 const registerForm = $('[name=register-form]')
 
@@ -10,7 +10,7 @@ const inputElements = document.querySelectorAll('[name=field-container] input')
 
 
 // clear form on page load
-// registerForm.reset()
+registerForm.reset()
 
 // Reset file input on image click
 avatarContainer.addEventListener('click', (evt) => {
@@ -53,6 +53,7 @@ registerForm.addEventListener('submit', async (evt) => {
 
 	fields.avatar = avatarImg.src.startsWith('data:image') ? avatarImg.src : ''
 	console.log( fields )
+	redirectTo('/login')
 })
 
 const validateForm = () => {

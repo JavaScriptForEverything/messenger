@@ -1,4 +1,12 @@
+// const avatarEl = $('[name=avatar]')
 export const $ = (selector) => document.querySelector( selector )
+
+// redirectTo('/register')
+export const redirectTo = (path, { base='' } = {}) => {
+	const url = new URL( path, base || location.origin ) 		// get current url
+	location.href = url.href 	
+}
+
 
 // it prevent HTML XSS Attack
 export const encodeHTML = (string) => string

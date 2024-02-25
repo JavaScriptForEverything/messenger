@@ -27,7 +27,7 @@ loginForm.addEventListener('submit', async (evt) => {
 	const fields = Object.fromEntries( formData )
 
 	console.log( fields )
-	redirectTo('/register')
+	redirectTo('/')
 })
 
 const validateForm = () => {

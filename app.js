@@ -4,14 +4,14 @@ const connectLivereload = require('connect-livereload') 	// for reload browser
 const express = require('express')
 
 const errorController = require('./controllers/errorController')
-const pageRouter = require('./routes/pageRoutes')
-const userRouter = require('./routes/userRoutes')
+const routers = require('./routes')
 
 const publicDirectory = path.join(process.cwd(), 'public')
 const app = express()
 
 app.set('view engine', 'pug')
 app.use(express.static( publicDirectory ))
+app.use(express.json({ limit: '5mb' }))
 
 // -----[ For LiveReload ]-----
 // Used for development purpose: To reload browser on file changes
@@ -26,8 +26,9 @@ if(process.env.NODE_ENV === 'development') {
 }
 
 
-app.use('/', pageRouter)
-app.use('/api/users', userRouter)
+// handle all routes:
+app.use('/', routers)
+
 
 app.use(errorController.errorHandler)
 app.all('*', errorController.pageNotFound)

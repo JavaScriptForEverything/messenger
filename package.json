@@ -6,22 +6,22 @@
 	"scripts": {
 		"tailwind": "yarn tailwindcss --input tailwind.css --output public/css/style.css",
 		"browser": "sleep 2 && browse http://localhost:5000",
-
 		"build": "yarn install",
 		"postbuild": "yarn tailwind",
 		"start": "node .",
-
 		"node-server": "NODE_ENV=development nodemon . --ext js,pug --ignore public",
 		"dev": "concurrently \"yarn tailwind --watch\" \"yarn node-server\" \"yarn browser\""
 	},
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"connect-livereload": "^0.6.1",
 		"dotenv": "^16.4.5",
 		"express": "^4.18.2",
 		"livereload": "^0.9.3",
 		"mongoose": "^8.2.0",
 		"pug": "^3.0.2",
-		"socket.io": "^4.7.3"
+		"socket.io": "^4.7.3",
+		"validator": "^13.11.0"
 	},
 	"devDependencies": {
 		"concurrently": "^8.2.2",

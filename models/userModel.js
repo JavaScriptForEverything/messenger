@@ -46,10 +46,16 @@ const userSchema = new Schema({
 		type: String,
 		default: '/images/users/default.jpg'
 	},
+
 	isActive: {
 		type: Boolean,
 		default: false
 	},
+
+	title: {
+		type: String,
+		default: 'senior developer'
+	}
 
 
 }, {

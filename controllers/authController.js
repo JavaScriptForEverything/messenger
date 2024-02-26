@@ -65,3 +65,22 @@ exports.login =  catchAsync(async(req, res, next) => {
 		data: userDto.filterUser(user._doc) 	
 	})
 })
+
+
+exports.protect = async (req, res, next) => {
+	try {
+		const { accessToken } = req.cookies
+
+		const { error, payload } = await tokenService.verifyAccessToken( accessToken )
+		if( error ) return res.redirect('/login')
+
+		req.userId = payload._id
+		// console.log({ error, payload })
+
+		next()
+
+	} catch (error) {
+		// if( error ) return res.redirect('/login')
+		console.log(error)
+	}
+}

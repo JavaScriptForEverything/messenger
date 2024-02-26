@@ -1,3 +1,6 @@
+const User = require('../models/userModel')
+const userDto = require('../dtos/userDto')
+
 exports.register = (req, res, next) => {
 	const payload = {
 		title: 'Register Page',
@@ -13,12 +16,26 @@ exports.login = (req, res, next) => {
 	res.render('page/login', payload)
 }
 
-exports.home = (req, res, next) => {
-	const payload = {
-		title: 'Home Page',
-	}
+exports.home = async (req, res, next) => {
+	try {
+		const userId = req.userId
+		const logedInUser = await User.findById( userId )
 
-	res.render('page/home', payload)
+		const filteredUser = userDto.filterUser(logedInUser._doc)
+
+		const payload = {
+			title: 'Home Page',
+			userId,
+			logedInUser: filteredUser,
+			logedInUserJs: JSON.stringify( filteredUser )
+		}
+
+		res.render('page/home', payload)
+
+	} catch (error) {
+		console.log(error)
+		res.redirect('/login')
+	}
 }
 
 exports.demo = (req, res, next) => {

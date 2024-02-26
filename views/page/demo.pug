@@ -1,13 +1,27 @@
 extends ../layout
 block script
 	script( async type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
-	script( defer type='module' src='/js/page/demo.js')
+	//- script( defer type='module' src='/js/page/demo.js')
 	style.
 
 block body 
 	
 
-	div
-		video(src='/music/video.mp4' controls )
+	//- div(class='relative')
+		input(type='search' 
+			class='rounded-2xl border border-blue-500 focus:outline-none'
+			class='w-full absolute'
+		)
+		button(
+			class='px-2 py-0.5 bg-red-500 text-red-50'
+			class='absolute right-0 '
+		) Search
+
+	div(class='mt-8 h-20 relative border border-blue-500 rounded-3xl')
+		input(type='search' 
+			class='rounded-2xl border border-red-500 focus:outline-none'
+			class='w-full absolute'
+			)
+
 
 	

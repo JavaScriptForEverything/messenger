@@ -1,5 +1,19 @@
 import { Snackbar } from './components/index.js'
+import { $ } from './utils.js'
+import * as store from './store.js'
 
+const middleTop = $('[name=middle-top]')
+// const middleTopAvatar = middleTop.querySelector('[name=avatar]')
+// const middleTopUsername = middleTop.querySelector('[name=username]')
+// console.log(middleTopAvatar, middleTopUsername)
+
+// const updateAvatar = (parentSelector) => {
+// 	const avatar = parentSelector.querySelector('[name=avatar]')
+// 	avatar.src = logedInUser.avatar
+// }
+// updateAvatar(middleTop)
+
+// console.log(logedInUser)
 
 export const showError = (message, reason) => {
 	console.log(message)
@@ -8,6 +22,7 @@ export const showError = (message, reason) => {
 		message
 	})
 }
+
 
 
 // const getLogedInUser = async () => {

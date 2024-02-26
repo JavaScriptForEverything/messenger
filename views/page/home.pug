@@ -3,8 +3,13 @@ block body
 block script
 	script( defer type='module' src='/js/page/home.js')
 
+	//- To prevent XSS attack on inline script
+	script(nonce=cspNonce).
+		const logedInUser = !{logedInUserJs} 		// pass logedInUser to client-side too
+
 	div(class='h-screen ')
 		div(class='relative p-1 flex gap-1 h-full border border-slate-200 rounded-md')
+
 
 			//- left-side
 			input(type='checkbox' id='left-side-checkbox' checked=true hidden class='peer/left-side-checkbox')
@@ -14,12 +19,19 @@ block script
 				)
 				div(name='left-top' class='h-14')
 					div(name='list-container' class='flex gap-2 h-full px-2 py-1 border border-slate-300 rounded')
-						img(src='/images/users/default.jpg' alt='avatar' 
+						img(src=logedInUser.avatar ||'/images/users/default.jpg' alt='avatar' 
 						class='w-12 h-12 border border-slate-300 rounded-full')
 
 						div(class='label-container' class='flex-1')
-							p(name='username' class='text-blue-600 font-medium max-w-40 truncate') Riajul Islam
-							p(name='title' class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate') Senior Developer 
+							p(
+								name='username' 
+								class='text-blue-600 font-medium max-w-40 truncate capitalize'
+								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+
+							p(
+								name='title' 
+								class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate capitalize'
+								) #{ logedInUser.title  || 'Senior Developer'}
 						
 						div(class='flex items-center justify-end md:hidden')
 							label(for='left-side-checkbox' name='left-arrow' type='button'
@@ -82,11 +94,11 @@ block script
 							<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17h14M5 12h14M5 7h14"/></svg>
 
 						div(class='h-full relative flex-shrink-0 grid place-items-center')
-							img(src='/images/users/default.jpg' alt='avatar' class='w-10 h-10 border border-slate-300 rounded-full')
-							div(class='absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
+							img(name='avatar' src=logedInUser.avatar || '/images/users/default.jpg' alt='avatar' class='w-10 h-10 border border-slate-300 rounded-full')
+							div(name='avatar-badge' class='absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
 
-						div(class='label-container' class='flex-1')
-							p(name='username' class='text-slate-800 max-w-40 truncate') Riajul Islam
+						div(name='label-container' class='flex-1')
+							p(name='username' class='text-slate-800 max-w-40 truncate capitalize') #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
 
 						div(name='search-messages-container' class='-mr-1.5 relative grid place-items-center ')
 							input(type='checkbox' id='search-messages-checkbox' checked=false hidden class='peer/search-messages')
@@ -358,10 +370,12 @@ block script
 				div(name='right-main' class='p-2 flex-1 overflow-x-auto text-slate-700 border border-slate-300 bg-slate-50 rounded')
 
 					div(name='image-container' class='flex flex-col justify-center items-center border border-slate-100 py-2')
-						img(src='/images/users/default.jpg' alt='avatar' class='w-20 h-20 rounded-full border-2 border-slate-50')
+						img(src=logedInUser.avatar || '/images/users/default.jpg' alt='avatar' class='w-20 h-20 rounded-full border-2 border-slate-50')
 						div
-							p(class=' text-center text-slate-700') Riajul Islam
-							p(class='font-light text-sm text-slate-600 text-center -mt-1') Senior Web Developer
+							p( class=' text-center text-slate-700 capitalize'
+								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+							p(class='font-light text-sm text-slate-600 text-center -mt-1 capitalize'
+							) #{logedInUser.title || 'Senior Web Developer'}
 
 					div(name='call-container' class='flex justify-evenly mt-4')
 						div(name='audio-call-container' class='flex flex-col justify-center items-center gap-1')

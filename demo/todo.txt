@@ -1,11 +1,4 @@
 
-- resize image via `sharp`
-- send image as stream
-- active user
-- API features: pagination, sorting, ...
-
-
-
 
 ---
 We can add content in 2 ways:

@@ -1,3 +1,6 @@
+/* Handle Common utility functions here */
+
+
 // const path = require('path')
 // const fs = require('fs');
 // const { appError } = require('../controllers/errorController');
@@ -7,7 +10,7 @@
 		?_page=2
 		&_limit=3
 		&_sort=-createdAt,user
-		&_search= review,review
+		&_search= riajul,email 					// find text 'riajul' in email field
 		&_fields=review,user,createdAt
 
 	const reviews = await apiFeatures(Review, req.query)

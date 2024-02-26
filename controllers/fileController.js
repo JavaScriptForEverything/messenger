@@ -8,9 +8,12 @@ exports.getUserFile = (req, res, next) => {
 		const file = path.join(process.cwd(), req.originalUrl)
 
 		if( !fs.existsSync(file) ) return next(appError('file not exists'))
-		res.sendFile( file )
+		// res.sendFile( file )
+
+		const readStream = fs.createReadStream(file)
+		readStream.pipe(res)
 
 	} catch (error) {
-		appError(`Read uploaded file: ${error.message}`)		
+		next( appError(`Read uploaded file: ${error.message}`)	)
 	}
 }

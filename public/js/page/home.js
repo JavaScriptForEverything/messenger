@@ -2,11 +2,12 @@
 import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { Snackbar } from '../module/components/index.js'
 import { $, readAsDataURL, toggleClass } from '../module/utils.js'
-import * as wss from '../module/wss.js'
+import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 // import * as store from '../module/store.js'
 // import * as webRTCHandler from '../module/webRTCHandler.js'
 // import * as constants from '../module/constants.js'
 import * as elements from '../module/elements.js'
+// import * as ui from '../module/ui.js'
 // import * as recording from '../module/recording.js'
 
 /* only handle eventhandler in this page, don't try to update UI here

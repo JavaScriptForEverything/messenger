@@ -2,6 +2,7 @@ const path = require('path')
 const livereload = require('livereload') 									// for reload browser
 const connectLivereload = require('connect-livereload') 	// for reload browser
 const express = require('express')
+const cookieParser = require('cookie-parser')
 
 const errorController = require('./controllers/errorController')
 const routers = require('./routes')
@@ -12,6 +13,7 @@ const app = express()
 app.set('view engine', 'pug')
 app.use(express.static( publicDirectory ))
 app.use(express.json({ limit: '5mb' }))
+app.use(cookieParser())
 
 // -----[ For LiveReload ]-----
 // Used for development purpose: To reload browser on file changes

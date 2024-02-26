@@ -27,5 +27,17 @@
 		<img src="/images/logo.png" alt="">
 	</div>
 	
+	<!-- <script type="module" src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+	<script type="module">
+		import { axios } from 'https://unpkg.com/axios/dist/axios.min.js'
+
+		const getUsers = async () => {
+			const { data } = await axios.get('/api/users')
+			console.log(data.data)
+
+		}
+		getUsers()
+	</script>
+	
 </body>
 </html>

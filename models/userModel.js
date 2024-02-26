@@ -69,5 +69,9 @@ userSchema.pre('save', async function(next) {
 	next()
 })
 
+userSchema.methods.comparePassword = function(password, hashedPassword) {
+	return bcryptjs.compare(password, hashedPassword)
+}
+
 const User = models.User || model('User', userSchema)
 module.exports = User

@@ -714,6 +714,10 @@ video {
   top: 0.75rem;
 }
 
+.right-0\.5 {
+  right: 0.125rem;
+}
+
 .z-50 {
   z-index: 50;
 }
@@ -904,6 +908,10 @@ video {
   height: 100vh;
 }
 
+.h-1 {
+  height: 0.25rem;
+}
+
 .max-h-80 {
   max-height: 20rem;
 }
@@ -986,6 +994,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-1 {
+  width: 0.25rem;
 }
 
 .max-w-36 {

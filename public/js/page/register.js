@@ -10,7 +10,7 @@ const inputElements = document.querySelectorAll('[name=field-container] input')
 
 
 // clear form on page load
-registerForm.reset()
+// registerForm.reset()
 
 // Reset file input on image click
 avatarContainer.addEventListener('click', (evt) => {
@@ -52,8 +52,30 @@ registerForm.addEventListener('submit', async (evt) => {
 	const fields = Object.fromEntries( formData )
 
 	fields.avatar = avatarImg.src.startsWith('data:image') ? avatarImg.src : ''
-	console.log( fields )
-	redirectTo('/login')
+
+	try {
+		// const { data } = await axios.post('/api/auth/register', fields)
+		// console.log(data.data)
+
+		const res = await fetch('/api/auth/register', {
+			method: 'POST',
+			body: JSON.stringify( fields ),
+			headers: {
+				'content-type': 'application/json'
+			}
+		})
+
+		// throw error
+		if(!res.ok) throw await res.json()
+
+		const { data } = await res.json()
+		console.log(data)
+		// redirectTo('/login')
+
+	} catch (err) {
+		console.log(err)
+	}
+
 })
 
 const validateForm = () => {

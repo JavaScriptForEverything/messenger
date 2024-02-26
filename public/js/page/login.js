@@ -26,8 +26,25 @@ loginForm.addEventListener('submit', async (evt) => {
 	const formData = new FormData(evt.target)
 	const fields = Object.fromEntries( formData )
 
-	console.log( fields )
-	redirectTo('/')
+
+	try {
+		const res = await fetch('/api/auth/login', {
+			method: 'POST',
+			body: JSON.stringify(fields),
+			headers: {
+				'content-type': 'application/json'
+			}
+		})
+
+		if(!res.ok) throw await res.json()
+
+		const { status, data } = await res.json()
+		// console.log(data)
+		if(status === 'success') redirectTo('/')
+
+	} catch (err) {
+		console.log(err)		
+	}
 })
 
 const validateForm = () => {

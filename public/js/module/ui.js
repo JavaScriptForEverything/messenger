@@ -8,3 +8,24 @@ export const showError = (message, reason) => {
 		message
 	})
 }
+
+
+// const getLogedInUser = async () => {
+// 	try {
+// 		const res = await fetch('/api/users', {
+// 			method: 'GET',
+// 			headers: {
+// 				'content-type': 'application/json'
+// 			}
+// 		})
+
+// 		if(!res.ok) throw await res.json()
+
+// 		const { status, data } = await res.json()
+// 		console.log(data)
+
+// 	} catch (err) {
+// 		console.log(err)		
+// 	}
+// }
+// getLogedInUser()

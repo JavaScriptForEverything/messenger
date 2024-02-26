@@ -16,14 +16,14 @@ block script
 						label: 'First Name',
 						name: 'firstName',
 						placeholder: 'First Name',
-						value: firstName || '',
+						value: firstName || 'ayan',
 						required: true,
 					})
 					+TextField({
 						label: 'Last Name',
 						name: 'lastName',
 						placeholder: 'Last Name',
-						value: lastName || '',
+						value: lastName || 'hossain',
 						required: true,
 					})
 
@@ -32,7 +32,7 @@ block script
 					name: 'email',
 					type: 'email',
 					placeholder: 'abc@gmail.com',
-					value: email || '',
+					value: email || 'ayan@gmail.com',
 					helperText: 'email address is invalied',
 					required: true
 				})
@@ -41,7 +41,7 @@ block script
 					name: 'password',
 					type: 'password',
 					placeholder: 'yourPa$$w0rd',
-					value: password || '',
+					value: password || 'asdfasdf',
 					helperText: 'password is too short',
 					required: true
 				})
@@ -51,7 +51,7 @@ block script
 					id: 'confirmPassword',
 					type: 'password',
 					placeholder: 're-type your password again',
-					value: confirmPassword || '',
+					value: confirmPassword || 'asdfasdf',
 					helperText: 'confirmPassword not matched',
 					required: true
 				})

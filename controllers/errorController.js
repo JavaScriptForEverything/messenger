@@ -15,11 +15,12 @@ exports.appError = (message='', statusCode=400, status='error') => {
 
 // Express Global Error handler
 exports.errorHandler = (err, req, res, next) => {
+	const { NODE_ENV = 'development' } = process.env
 
 	res.status(err.statusCode || 404).json({
 		message: err.message,
 		status: err.status || 'failed',
-		stack: err.stack
+		stack: NODE_ENV === 'development' ? err.stack : undefined
 	})
 }
 

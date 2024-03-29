@@ -230,11 +230,12 @@ export const createFirendList = (selector, data) => {
 			containerId = `wrapper-${containerId}` 
 
 	const htmlString = `
-		<div name='list-container' id='${containerId}' class='flex gap-2 px-2 py-1 bg-slate-50 hover:bg-slate-100 rounded 
+		<div name='list-container' id='${containerId}' class='flex gap-2 cursor-pointer px-2 py-1 bg-slate-50 hover:bg-slate-100 rounded 
 			group/firend-list 
-			${ isActive ? 'active' : ''} 
-			${ isMessageSuccess ? 'message-success' : ''} 
-			${ isNotification ? 'message-notification' : ''} 
+			${ isActive ? ' active' : ''} 
+			${ isMessageSuccess ? ' message-success' : ''} 
+			${ isNotification ? ' message-notification' : ''} 
+
 		'>
 
 			<div class='flex-shrink-0 relative'>

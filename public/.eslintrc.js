@@ -1,6 +1,7 @@
 module.exports = {
 	"globals": {
-		axios: true
+		// axios: true,
+		logedInUser: true
 	},
 	"extends": "eslint:recommended",
 	"parserOptions": {

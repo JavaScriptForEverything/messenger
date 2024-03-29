@@ -1,28 +1,40 @@
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
-import WaveSurfer from '../plugins/wavesurfer/index.js'
-import { Snackbar } from '../module/components/index.js'
+// import WaveSurfer from '../plugins/wavesurfer/index.js'
+// import { Snackbar } from '../module/components/index.js'
 import { $, readAsDataURL, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
-import * as store from '../module/store.js'
+// import * as store from '../module/store.js'
 // import * as webRTCHandler from '../module/webRTCHandler.js'
 // import * as constants from '../module/constants.js'
 import * as elements from '../module/elements.js'
 // import * as ui from '../module/ui.js'
 // import * as recording from '../module/recording.js'
 
+/* Global Variables 	
+		. io
+		. logedInUser
+*/
+
+
 /* only handle eventhandler in this page, don't try to update UI here
 		- Because this file run only after every files loaded, that means
 			it override others code if tie, so use ui.js to update UI.
 */
+
+
+
+
+
 
 const socket = io('/')
 wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
 // webRTCHandler.getLocalPreview()
 
 
-// eslint-disable-next-line no-undef
-store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
+// store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
 
+let timer = null
+let controller = null
 
 const leftFriendPanel = $('[name=left-main]') 	
 const messageContainer = $('[name=message-container]') 	
@@ -30,6 +42,8 @@ const audioCallButton = $('[name=audio-call-button]')
 const videoCallButton = $('[name=video-call-button]') 	
 const videoContainer = $('[name=video-container]') 	
 const writeMessageInput = $('[name=write-message-input]') 	
+const chatsContainer = $('#chats-container')
+const cameraIconButtonInput = $('#camera-icon-button')
 
 // videoContainer.classList.add('active')
 
@@ -45,8 +59,6 @@ videoCallButton.addEventListener('click', (evt) => {
 })
 
 
-let timer = null
-let controller = null
 
 writeMessageInput.addEventListener('input', async () => {
 	clearTimeout(timer)
@@ -73,14 +85,16 @@ writeMessageInput.addEventListener('input', async () => {
 
 
 elements.createFirendList(leftFriendPanel, {
+	id: 1,
 	avatar: '/images/users/default.jpg',
-	isActive: false,
+	isActive: true,
 
 	createdAt: Date.now(), 
 	notificationValue:  2,
 })
 
 elements.createFirendList(leftFriendPanel, {
+	id: 2,
 	avatar: '/images/users/default.jpg',
 	name: 'Fiaz Sofeone Rakib',
 	message: 'businessman textile',
@@ -96,6 +110,7 @@ elements.createFirendList(leftFriendPanel, {
 })
 
 elements.createFirendList(leftFriendPanel, {
+	id: 3,
 	avatar: '/images/users/default.jpg',
 	name: 'Fiaz Sofeone Rakib',
 	message: 'businessman textile',
@@ -108,6 +123,12 @@ elements.createFirendList(leftFriendPanel, {
 	isNotification: true,
 	isNoNotification: true,
 	notificationValue:  2,
+})
+
+chatsContainer.addEventListener('click', (evt) => {
+	// const container = $('[name=list-container]')
+	// console.log({ id: container })
+	console.log(evt.target.id)
 })
 
 /*
@@ -202,7 +223,6 @@ elements.createYourMessage(messageContainer, { type: 'text', message: 'hi there 
 
 
 
-const cameraIconButtonInput = $('#camera-icon-button')
 cameraIconButtonInput.addEventListener('change', async (evt) => {
 	try {
 		const dataUrl = await readAsDataURL(evt.target.files[0])

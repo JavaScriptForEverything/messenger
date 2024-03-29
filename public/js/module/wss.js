@@ -1,8 +1,21 @@
 import * as ui from './ui.js'
+import * as store from './store.js'
+import { getFilteredUsers } from './http.js'
+
+/* Global Variables 	
+		. io
+		. logedInUser
+*/
+
 
 let socketIo = null
 // const userId = crypto.randomUUID()
-const userId = 'aaa'
+// const userId = 'aaa'
+const userId = logedInUser._id
+
+
+// console.log(logedInUser)
+
 
 /* 
 . Every listener must be inside this function else 	socket 	must be null
@@ -12,7 +25,6 @@ const userId = 'aaa'
 */
 export const registerSocketEvents = (socket) => {
 
-
 	socket.on('connect', () => {
 		socketIo = socket
 		socket.on('error', ({ message, reason }) => {
@@ -21,9 +33,16 @@ export const registerSocketEvents = (socket) => {
 
 
 		socket.emit('user-join', { socketId: socket.id, userId })
-		socket.on('user-joinded', ({ rooms }) => {
-			const uniqueArray = [ ...new Set(rooms) ]
-			// console.log(uniqueArray)
+		socket.on('user-joinded', async ({ rooms }) => {
+
+			// console.log(rooms)
+
+			const users = []
+			rooms.forEach(({ userId }) => users.push(userId))
+
+			// const data = await getFilteredUsers(users)
+			// console.log(data)
+
 		})
 
 

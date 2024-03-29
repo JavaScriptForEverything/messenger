@@ -20,6 +20,7 @@ exports.home = async (req, res, next) => {
 	try {
 		const userId = req.userId
 		const logedInUser = await User.findById( userId )
+		// Problem: virtual property 'fullName' not populated
 
 		const filteredUser = userDto.filterUser(logedInUser._doc)
 

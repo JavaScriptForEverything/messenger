@@ -1,11 +1,29 @@
 const { catchAsync, appError } = require('./errorController')
-const { filterObjectByArray } = require('../utils')
 const User = require('../models/userModel')
 const fileService = require('../services/fileService')
 const tokenService = require('../services/tokenService')
 const userDto = require('../dtos/userDto')
 
-// /api/auth/register
+
+exports.protect = async (req, res, next) => {
+	try {
+		const { accessToken } = req.cookies
+
+		const { error, payload } = await tokenService.verifyAccessToken( accessToken )
+		if( error ) return res.redirect('/login')
+
+		req.userId = payload._id
+		// console.log({ error, payload })
+
+		next()
+
+	} catch (error) {
+		// if( error ) return res.redirect('/login')
+		console.log(error)
+	}
+}
+
+// POST /api/auth/register
 exports.register = async (req, res, next) => {
 	try {
 		const filteredBody = userDto.filterBody(req.body)
@@ -33,7 +51,7 @@ exports.register = async (req, res, next) => {
 	}
 }
 
-// /api/auth/login
+// POST /api/auth/login
 exports.login =  catchAsync(async(req, res, next) => {
 	const { email, password } = req.body
 	
@@ -41,22 +59,39 @@ exports.login =  catchAsync(async(req, res, next) => {
 	const user = await User.findOne({ email }).select('+password')
 	if(!user) return next(appError('email is not found. please register first'))
 
+	const userId = user._id
+
 	// Step-2: check password
 	const isPasswordVerified = await user.comparePassword( password, user.password )
 	if(!isPasswordVerified) return next(appError('your email or password is wrong', 401))
 
 	// Step-3: Generate tokens and send as cookie
-	const payload = { _id: user._id }
+	const payload = { _id: userId }
 	const { accessToken, refreshToken } = await tokenService.generateTokens(payload)
 
-	// step-4: Store both token into cookie which is HTTPS only : To prevent any XSS attach
+
+	// step-4: store token into database
+	const token = await tokenService.findRefreshToken(userId)
+	if(token) {
+		// if already exists then update exists one
+		tokenService.updateRefreshToken(refreshToken, userId)
+	} else {
+		// if not exists then create one
+		const storedRefreshToken = await tokenService.storeRefreshToken(refreshToken, userId)
+		if(!storedRefreshToken) return next(appError('string refreshToken failed', 401, 'TokenError'))
+	}
+
+
+	// step-5: Store both token into cookie which is HTTPS only : To prevent any XSS attach
 	res.cookie('accessToken', accessToken, {
 		maxAge: 1000 * 60 * 60 * 24 * 7, 					// 7 days : or 2-20 minute for security purpose
-		httpOnly: true
+		httpOnly: true,
+		sameSite: 'strict'
 	})
 	res.cookie('refreshToken', refreshToken, {
 		maxAge: 1000 * 60 * 60 * 24 * 365, 				// 1 year
-		httpOnly: true
+		httpOnly: true,
+		sameSite: 'strict'
 	})
 
 
@@ -67,20 +102,25 @@ exports.login =  catchAsync(async(req, res, next) => {
 })
 
 
-exports.protect = async (req, res, next) => {
-	try {
-		const { accessToken } = req.cookies
 
-		const { error, payload } = await tokenService.verifyAccessToken( accessToken )
-		if( error ) return res.redirect('/login')
+// Get 	/api/auth/logout + protect
+exports.logout = catchAsync(async (req, res, next) => {
+	const userId = req.userId
+	if(!userId) return next(appError('only logedIn user can logout'))
 
-		req.userId = payload._id
-		// console.log({ error, payload })
+	// Step-1: delete user's refreshToken by userId
+	const tokenDoc = await tokenService.deleteRefreshToken(userId)
+	if(!tokenDoc) return next(appError('delete refreshToken failed'))
 
-		next()
+	// Step-2: remove cookies: accessToken, refreshToken
+	res.clearCookie('accessToken')
+	res.clearCookie('refreshToken')
 
-	} catch (error) {
-		// if( error ) return res.redirect('/login')
-		console.log(error)
-	}
-}
+	res.status(201).json({
+		status: 'success', 
+		data: {
+			logout: 'success'
+		}
+	})
+})
+

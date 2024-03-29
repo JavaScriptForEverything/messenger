@@ -4,6 +4,8 @@ let rooms = []
 const testing = (io) => (socket) => {
 	rooms = Array.from( socket.rooms ) 		// method-1: convert set to pure array
 
+	console.log(rooms)
+
 	// rooms.forEach( (roomId) => {
 	// 	const clients = [ ...io.sockets.adapter.rooms.get( roomId ) ] 	// method-2: convert to pure array
 
@@ -20,7 +22,7 @@ module.exports = (io) => (socket) => {
 	// connectedPeers.push(socket.id)
 	// console.log(connectedPeers)
 	// console.log(socket.id)
-	testing(io)(socket)
+	// testing(io)(socket)
 
 	socket.on('user-join', ({ socketId, userId }) => {
 		if(!userId) return sendError(socket, { message: 'userId is missing' })
@@ -28,9 +30,13 @@ module.exports = (io) => (socket) => {
 		connectedPeers.push({ socketId, userId })
 		socket.join(userId)
 
+		// console.log({ userId })
+		// console.log(io.sockets.adapter.rooms)
+		// console.log(socket.rooms)
+
 		io.emit('user-joinded', { 
-			// rooms: connectedPeers
-			rooms
+			rooms: connectedPeers
+			// rooms: Array.from(socket.rooms)
 		})
 
 		usersInRoom(io)('aaa')
@@ -38,10 +44,18 @@ module.exports = (io) => (socket) => {
 
 	})
 
+	// socket.on('disconnecting', (socket) => {
+	// 	console.log(io.sockets.adapter.rooms)
+	// })
 
 	socket.on('disconnect', () => {
 		connectedPeers = connectedPeers.filter(({ socketId }) => socketId !== socket.id )
 		// console.log(connectedPeers)
+
+		io.emit('user-joinded', { 
+			rooms: connectedPeers
+			// rooms: Array.from(socket.rooms)
+		})
 	})
 }
 

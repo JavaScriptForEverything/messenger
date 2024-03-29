@@ -1,4 +1,8 @@
 
+. add token on login
+. logout on image click
+. socket.io multiple login register for testing
+
 
 ---
 We can add content in 2 ways:

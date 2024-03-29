@@ -24,7 +24,13 @@ exports.errorHandler = (err, req, res, next) => {
 	})
 }
 
-// Route not setup
+exports.apiRouteNotFound = (req, res, next) => {
+	const payload = { title: 'Not Found' }
+
+	next(this.appError(`route ${req.originalUrl} not found`, 404, 'NotFound'))
+	// res.render('page/notFound', payload)
+}
+
 exports.pageNotFound = (req, res) => {
 	const payload = { title: 'Not Found' }
 

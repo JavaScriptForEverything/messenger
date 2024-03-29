@@ -1,6 +1,6 @@
 import { Snackbar } from './components/index.js'
 import { $, redirectTo } from './utils.js'
-import * as store from './store.js'
+// import * as store from './store.js'
 import { logout } from './http.js'
 
 const middleTop = $('[name=middle-top]')

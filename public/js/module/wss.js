@@ -40,8 +40,8 @@ export const registerSocketEvents = (socket) => {
 			const users = []
 			rooms.forEach(({ userId }) => users.push(userId))
 
-			// const data = await getFilteredUsers(users)
-			// console.log(data)
+			const data = await getFilteredUsers(users)
+			console.log(data)
 
 		})
 

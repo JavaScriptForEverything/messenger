@@ -1,12 +1,20 @@
 export const getFilteredUsers = async (users) => {
-	
+	try {
+		const res = await fetch(`/api/users/filtered-users`, {
+			method: 'POST',
+			body: JSON.stringify({ users }),
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			}
+		})
+		if( !res.ok ) throw await res.json()
 
-	console.log('http', users)
-	
-	
-	// fetch(`/api/users/filtered-users`)
-	const res = await fetch(`/api/users/`)
-	return await res.json()
+		return await res.json()
+
+	} catch (error) {
+		return error
+	}
 
 }
 

@@ -1,7 +1,12 @@
+Problems:
+	. virtual property not get from 'pageRouter', but works on 'api: userRouter' 
+			userSchema.virtual('fullName').get(...) 
 
-. add token on login
-. logout on image click
-. socket.io multiple login register for testing
+
+
+get current active users via socket.io and show those users in UI
+	. fetch only filtered users
+	. show in left panel in UI in client-side
 
 
 ---

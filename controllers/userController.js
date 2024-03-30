@@ -1,6 +1,6 @@
 const User = require('../models/userModel')
 const { apiFeatures } = require('../utils')
-const { catchAsync } = require('./errorController')
+const { catchAsync, appError } = require('./errorController')
 
 // GET /api/users
 exports.getAllUsers = catchAsync( async (req, res, next) => {
@@ -17,10 +17,12 @@ exports.getAllUsers = catchAsync( async (req, res, next) => {
 
 // POST /api/users/filtered-users
 exports.getFilteredUsers = catchAsync( async (req, res, next) => {
-	const userIds = req.body.users
+	const { userIds = [] } = req.body
 
 	const filter = { _id: { $in: userIds } }
 	const users = await apiFeatures(User, req.query, filter)
+
+	// if(true) return next(appError('error'))
 
 	res.status(200).json({
 		status: 'success',

@@ -40,8 +40,17 @@ export const registerSocketEvents = (socket) => {
 			const users = []
 			rooms.forEach(({ userId }) => users.push(userId))
 
-			const data = await getFilteredUsers(users)
-			console.log(data)
+			const { data: friends, message } = await getFilteredUsers(users)
+			if(message) {
+				ui.doShowNotFoundFriends()	
+				ui.showError(message)
+				return
+			}
+
+			// update UI
+			ui.doShowNotFoundFriends(false)	
+			ui.showFriendLists(friends)
+			console.log(friends)
 
 		})
 

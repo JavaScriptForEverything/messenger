@@ -84,6 +84,8 @@ writeMessageInput.addEventListener('input', async () => {
 })
 
 
+
+/*
 elements.createFirendList(leftFriendPanel, {
 	id: 1,
 	avatar: '/images/users/default.jpg',
@@ -97,12 +99,12 @@ elements.createFirendList(leftFriendPanel, {
 	id: 2,
 	avatar: '/images/users/default.jpg',
 	name: 'Fiaz Sofeone Rakib',
+	isActive: true,
+
 	message: 'businessman textile',
 	type: 'audio',
-
 	createdAt: Date.now(), 
 
-	isActive: true,
 	isMessageSuccess: true,
 	isNotification: false,
 	isNoNotification: false,
@@ -124,6 +126,11 @@ elements.createFirendList(leftFriendPanel, {
 	isNoNotification: true,
 	notificationValue:  2,
 })
+
+*/
+
+
+
 
 chatsContainer.addEventListener('click', (evt) => {
 	// const container = $('[name=list-container]')

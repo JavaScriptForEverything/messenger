@@ -52,6 +52,8 @@ block script
 
 
 				div(name='left-main' id='chats-container' class='h-full divide-y border border-slate-300 overflow-x-auto  bg-slate-50 rounded')
+					div(name='friends-not-found' class='h-full grid place-items-center') 
+						p(class='text-slate-500 lowercase') friend list is empty
 					//- Container will be populated by client-side
 						//- if list-container has
 							.active 								= add active indicator

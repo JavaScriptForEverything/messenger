@@ -217,7 +217,7 @@ export const createFirendList = (selector, data) => {
 		name = 'Riajul Islam',
 		message = 'Senior Developer',
 		createdAt=Date.now(), 
-		type='text',
+		type='text', 									// text | image | audio | video
 
 		isActive=false,
 		isMessageSuccess=false,

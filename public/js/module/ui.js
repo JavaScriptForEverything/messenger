@@ -1,5 +1,6 @@
 import { Snackbar } from './components/index.js'
 import { $, redirectTo } from './utils.js'
+import * as elements from '../module/elements.js'
 // import * as store from './store.js'
 import { logout } from './http.js'
 
@@ -7,6 +8,9 @@ const middleTop = $('[name=middle-top]')
 // const middleTopAvatar = middleTop.querySelector('[name=avatar]')
 // const middleTopUsername = middleTop.querySelector('[name=username]')
 // console.log(middleTopAvatar, middleTopUsername)
+const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
+const friendsNotFound = $('[name=friends-not-found]') 	
+const leftFriendPanel = $('[name=left-main]') 	
 
 // const updateAvatar = (parentSelector) => {
 // 	const avatar = parentSelector.querySelector('[name=avatar]')
@@ -64,7 +68,6 @@ const getChatById = async (chatId) => {
 // }
 // getLogedInUser()
 
-const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
 leftPanelAvatar.style.cursor = 'pointer'
 leftPanelAvatar.addEventListener('click', async (evt) => {
 	// const img = evt.target
@@ -87,4 +90,29 @@ leftPanelAvatar.addEventListener('click', async (evt) => {
 	
 })
 
+export const doShowNotFoundFriends = (isShown=true) => {
+	if(!isShown) friendsNotFound.classList.toggle('hidden')
+}
 
+export const showFriendLists = (friends=[]) => {
+	friends.forEach((friend) => {
+		elements.createFirendList(leftFriendPanel, {
+			// --- user details
+			id: friend.id,
+			avatar: friend.avatar,
+			name: friend.fullName,
+			isActive: true,
+
+			// --- latestMessage 	details
+			type: 'image',
+			message: 'hi there whats going nothing happends', 				 // only required on type='text'
+			createdAt: Date.now(friend.createdAt), 
+
+			// --- Notification details
+			// isNoNotification: true, 			// hide both new notification + success notification
+			notificationValue:  2,
+			isNotification: true, 				// for New notification: to work 'isNoNotification' must be false
+			isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
+		})
+	})
+}

@@ -5,6 +5,10 @@ const chatController = require('../controllers/chatController')
 const router = Router()
 
 	router
+		.get('/', chatController.getAllChats)
+		.post('/', chatController.createChat)
+
+	router
 		.get('/:id', chatController.getChatById)
 
 module.exports = router

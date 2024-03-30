@@ -1,5 +1,9 @@
 const { Schema, models, model } = require('mongoose');
 
+/* 	- In UI when user select any user (in user list) it create a chat 
+		- Else allow user to create a chat isGroup=true
+				- every message must bellong to a chat (single or group)
+*/
 const chatSchema = new Schema({
 	name: {
 		type: String,
@@ -9,13 +13,13 @@ const chatSchema = new Schema({
 		maxlength: 20,
 		default: 'new chat'
 	},
-	users: [{ 
+	users: [{  												// users who participants for chats between, at least 2 users
 		type: Schema.Types.ObjectId, 
-		ref: 'User' ,
-		required: true
-	}],
+		ref: 'User',
+		required: true, 
+	}], 	
 
-	isGroup: { 
+	isGroup: {  											// private | groupChat
 		type: Boolean, 
 		default: false 
 	},

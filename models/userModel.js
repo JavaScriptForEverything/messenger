@@ -55,6 +55,11 @@ const userSchema = new Schema({
 	title: {
 		type: String,
 		default: 'senior developer'
+	},
+
+	latestMessage: {
+		type: Schema.Types.ObjectId,
+		ref: 'Message'
 	}
 
 
@@ -63,6 +68,7 @@ const userSchema = new Schema({
 	toJSON: { virtuals: true }
 })
 
+// virtual properties work from api end point but dosen't working on pageRouter, but why ?
 userSchema.virtual('fullName').get(function() {
 	return `${this.firstName} ${this.lastName}`
 })

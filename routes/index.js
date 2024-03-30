@@ -4,6 +4,7 @@ const fileRouter = require('./fileRoutes')
 const authRouter = require('./authRoutes')
 const userRouter = require('./userRoutes')
 const chatRouter = require('./chatRoutes')
+const messageRouter = require('./messageRoutes')
 const errorController = require('../controllers/errorController')
 
 const router = Router()
@@ -13,6 +14,7 @@ router.use('/upload/*', fileRouter)
 router.use('/api/auth', authRouter)
 router.use('/api/users', userRouter)
 router.use('/api/chats', chatRouter)
+router.use('/api/messages', messageRouter)
 router.all('/api/*', errorController.apiRouteNotFound)
 
 

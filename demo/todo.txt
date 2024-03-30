@@ -4,9 +4,9 @@ Problems:
 
 
 
-get current active users via socket.io and show those users in UI
-	. fetch only filtered users
-	. show in left panel in UI in client-side
+Create message and show in UI based on users
+	. show friends list
+	. every friend list have latest message + notification 
 
 
 ---

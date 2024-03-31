@@ -2,7 +2,7 @@ import { Snackbar } from './components/index.js'
 import { $, redirectTo } from './utils.js'
 import * as elements from '../module/elements.js'
 // import * as store from './store.js'
-import { logout } from './http.js'
+import * as http from './http.js'
 
 const middleTop = $('[name=middle-top]')
 // const middleTopAvatar = middleTop.querySelector('[name=avatar]')
@@ -10,7 +10,8 @@ const middleTop = $('[name=middle-top]')
 // console.log(middleTopAvatar, middleTopUsername)
 const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
 const friendsNotFound = $('[name=friends-not-found]') 	
-const leftFriendPanel = $('[name=left-main]') 	
+const friendsListContainer = $('[name=friends-list-container]') 	
+
 
 // const updateAvatar = (parentSelector) => {
 // 	const avatar = parentSelector.querySelector('[name=avatar]')
@@ -73,7 +74,7 @@ leftPanelAvatar.addEventListener('click', async (evt) => {
 	// const img = evt.target
 	// console.log(img)
 
-	const { status, message } = await logout()
+	const { status, message } = await http.logout()
 	if(status === 'success') return redirectTo('/login')
 	
 	Snackbar({
@@ -94,14 +95,15 @@ export const doShowNotFoundFriends = (isShown=true) => {
 	if(!isShown) friendsNotFound.classList.toggle('hidden')
 }
 
+// wss.js => const registerSocketEvents = () => {...}
 export const showFriendLists = (friends=[]) => {
 	friends.forEach((friend) => {
-		elements.createFirendList(leftFriendPanel, {
+		elements.createFirendList(friendsListContainer, {
 			// --- user details
 			id: friend.id,
 			avatar: friend.avatar,
 			name: friend.fullName,
-			isActive: true,
+			// isActive: true,
 
 			// --- latestMessage 	details
 			type: 'image',
@@ -115,4 +117,26 @@ export const showFriendLists = (friends=[]) => {
 			isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 		})
 	})
+	handleListSelection()
 }
+
+
+const handleListSelection = () => {
+	const friendsListItems = Array.from(friendsListContainer.querySelectorAll('[name=list-container'))
+
+	friendsListContainer.addEventListener('click', async (evt) => {
+		const selectedUserId = evt.target.id
+
+		const { data: selectedUser, message } = await http.getSelectedUser(selectedUserId)
+		if(message) showError(message)
+
+		console.log(selectedUser)
+
+		friendsListItems.forEach( el => {
+			el.classList.toggle('selected', el.id === selectedUserId) 
+		})
+
+	})
+
+}
+

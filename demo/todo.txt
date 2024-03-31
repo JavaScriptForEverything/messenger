@@ -8,6 +8,7 @@ Create message and show in UI based on users
 	. show friends list
 	. every friend list have latest message + notification 
 
+- Only return required fileds from database by .select({...})
 
 ---
 We can add content in 2 ways:

@@ -33,7 +33,6 @@ const chatSchema = new Schema({
 	}, 	
 
 
-
 }, {
 	timestamps: true,
 	toJSON: { virtuals: true }

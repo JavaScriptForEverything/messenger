@@ -226,24 +226,20 @@ export const createFirendList = (selector, data) => {
 		notificationValue= 2,
 	} = data
 
-	let containerId = id || crypto.randomUUID()
-			containerId = `wrapper-${containerId}` 
-
 	const htmlString = `
-		<div name='list-container' id='${containerId}' class='flex gap-2 cursor-pointer px-2 py-1 bg-slate-50 hover:bg-slate-100 rounded 
-			group/firend-list 
+		<div name='list-container' id='${id}' class='flex gap-2 cursor-pointer px-2 py-1 bg-slate-50 hover:bg-slate-100 rounded 
+			group/firend-list [&.selected]:bg-slate-200
 			${ isActive ? ' active' : ''} 
 			${ isMessageSuccess ? ' message-success' : ''} 
 			${ isNotification ? ' message-notification' : ''} 
 
 		'>
-
-			<div class='flex-shrink-0 relative'>
+			<div class='flex-shrink-0 relative pointer-events-none'>
 				<img src='${avatar}' alt='avatar' class='h-10 border border-slate-300 rounded-full' />
 				<div class='group-[.active]/firend-list:block hidden absolute bottom-2 -right-0.5 w-2 h-2 rounded-full bg-green-500'></div>
 			</div>
 
-			<div name='label-container' class='flex-1 '>
+			<div name='label-container' class='flex-1 pointer-events-none'>
 				<div name='name-container' class='flex items-center justify-between'>
 					<p name='username' class='text-blue-600 font-medium max-w-36 capitalize truncate'>  ${name}
 					<p name='title' class='text-slate-600 font-light text-sm '>

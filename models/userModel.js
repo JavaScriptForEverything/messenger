@@ -57,11 +57,19 @@ const userSchema = new Schema({
 		default: 'senior developer'
 	},
 
-	latestMessage: {
+	followers: [{ 													// all the users following this user
 		type: Schema.Types.ObjectId,
-		ref: 'Message'
-	}
+		ref: 'User',
+	}],
+	following: [{ 													// this user are following other users
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+	}],
 
+	latestMessage: { 
+		type: Schema.Types.ObjectId, 
+		ref: 'Message' 
+	}, 	
 
 }, {
 	timestamps: true,

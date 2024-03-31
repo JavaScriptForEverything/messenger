@@ -6,9 +6,9 @@ exports.filterBody = (body) => {
 	const allowedFields = [
 		'message',
 		'type',
-		'chat', 					// chatId
+		// 'chat', 				// chatId
 		'sender', 				// userId
-		// 'users',
+		'receiver', 			// userId
 	]
 
 	return filterObjectByArray(body, allowedFields)
@@ -18,8 +18,9 @@ exports.filterMessage = (message) => {
 	const allowedFields = [
 		'message',
 		'type',
-		'chat', 					// chatId
+		// 'chat', 					// chatId
 		'sender', 				// userId
+		'receiver', 			// userId
 		
 		'_id',
 		'id',

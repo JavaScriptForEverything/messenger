@@ -1,8 +1,12 @@
 const { Schema, model, models } = require('mongoose')
 
-/* 	- In UI when user select any user (in user list) it create a chat 
-		- Else allow user to create a chat isGroup=true
-				- every message must bellong to a chat (single or group)
+/* 	
+	if access meassess via user list, then user must have 2 IDs:
+		1. senderId 		: To identify who created the message
+		2. receiver 		: To which user the message sened to. 
+
+	If access messages via chat list, then every measses must have chatId to point to that chat
+		. chat id required for Group chat
 */
 
 const messageSchema = new Schema({
@@ -16,12 +20,17 @@ const messageSchema = new Schema({
 		enum: ['text', 'image', 'audio'],
 		default: 'text', 
 	}, 
-	chat: { 													// message must will bellong to a particualar chat
-		type: Schema.Types.ObjectId, 
-		ref: 'Chat',
-		required: true, 
-	}, 		
+	// chat: { 													// message must will bellong to a particualar chat for Group
+	// 	type: Schema.Types.ObjectId, 
+	// 	ref: 'Chat',
+	// 	required: true, 
+	// }, 		
 	sender: {  												// this message bellong to which user
+		type: Schema.Types.ObjectId, 
+		ref: 'User',
+		required: true, 
+	},
+	receiver: {  												// message will be sent to which user
 		type: Schema.Types.ObjectId, 
 		ref: 'User',
 		required: true, 
@@ -34,10 +43,10 @@ const messageSchema = new Schema({
 
 }, { timestamps: true })
 
-// messageSchema.pre(/^find/, function(next) {
-// 	this.populate('chat sender')
-// 	next()
-// })
+messageSchema.pre(/^find/, function(next) {
+	this.populate('sender receiver')
+	next()
+})
 
 const Message = models.Message || model('Message', messageSchema)
 module.exports = Message

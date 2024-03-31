@@ -7,6 +7,11 @@ const { apiFeatures } = require('../utils')
 exports.getAllChats = catchAsync( async (req, res, next) => {
 	const filter = {}
 	const chats = await apiFeatures(Chat, req.query, filter)
+		// .populate('users')
+		.populate({
+			path: 'users',
+			select: 'avatar fullName isActive',
+		})
 
 	res.status(200).json({
 		status: 'success',

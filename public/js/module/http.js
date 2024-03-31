@@ -7,14 +7,17 @@ const tempUserIds = [
 export const getFilteredUsers = async (userIds) => {
 	userIds = tempUserIds
 	try {
-		const res = await fetch(`/api/users/filtered-users`, {
-			method: 'POST',
-			body: JSON.stringify({ userIds }),
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-			}
-		})
+		// const res = await fetch(`/api/users/filtered-users`, {
+		// 	method: 'POST',
+		// 	body: JSON.stringify({ userIds }),
+		// 	headers: {
+		// 		'Content-Type': 'application/json',
+		// 		'Accept': 'application/json',
+		// 	}
+		// })
+
+		// const res = await fetch(`/api/users`)
+		const res = await fetch(`/api/users/friends`)
 		if( !res.ok ) throw await res.json()
 
 		return await res.json()
@@ -28,6 +31,19 @@ export const getFilteredUsers = async (userIds) => {
 export const logout = async () => {
 	try {
 		const res = await fetch(`/api/auth/logout`)
+		if( !res.ok ) throw await res.json()
+
+		return await res.json()
+
+	} catch (error) {
+		return error
+	}
+}
+
+
+export const getSelectedUser = async (userId) => {
+	try {
+		const res = await fetch(`/api/users/${userId}`)
 		if( !res.ok ) throw await res.json()
 
 		return await res.json()

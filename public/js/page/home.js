@@ -130,13 +130,22 @@ elements.createFirendList(leftFriendPanel, {
 */
 
 
+// const friendsListContainer = $('[name=friends-list-container]') 	
+// friendsListContainer.style.border = '1px solid red'
+
+// /* It will not work directly, use 'Event Delegation' technique
+// 	const friendsListElements = document.querySelectorAll('[name=friends-list-container] > [name=list-container]') 	
+// 	console.log(friendsListElements)
+// */
+// friendsListContainer.addEventListener('click', (evt) => {
+// 	const container = evt.target
+// 	container.classList.add('selected')
+
+// 	console.log(container)
+// })
 
 
-chatsContainer.addEventListener('click', (evt) => {
-	// const container = $('[name=list-container]')
-	// console.log({ id: container })
-	console.log(evt.target.id)
-})
+
 
 /*
 const theirWavesurfer = WaveSurfer.create({

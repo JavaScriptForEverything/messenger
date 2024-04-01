@@ -6,11 +6,18 @@ import { encodeHTML, stringToElement } from './utils.js'
 
 
 // elements.createTheirMessage(messageContainer, 'hi')
-export const createTheirMessage = (selector, { type='text', message='' }) => {
+export const createTheirMessage = (selector, payload) => {
+	const { 
+		message='',
+		type='text', 
+		avatar='',
+
+	} = payload
+
 	const encodedMessage = encodeHTML(message)
 	const htmlString = `
 		<div name='their-message-container' class='flex items-start gap-2 mb-2'> 
-			<img src='/images/logo.png' alt='their avatar' class='w-6 h-6 rounded-full' />
+			<img src=${avatar || ''} alt='their avatar' class='w-6 h-6 rounded-full border border-slate-300' />
 				${
 					type === 'image'
 					? `

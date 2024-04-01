@@ -11,6 +11,11 @@ const middleTop = $('[name=middle-top]')
 const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
 const friendsNotFound = $('[name=friends-not-found]') 	
 const friendsListContainer = $('[name=friends-list-container]') 	
+// const messageContainer = $('[name=message-container]') 	
+const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
+
+const sendMessageForm = $('form[name=middle-bottom]')
+const writeMessageInput = $('[name=write-message-input]') 	
 
 
 // const updateAvatar = (parentSelector) => {
@@ -117,12 +122,15 @@ export const showFriendLists = (friends=[]) => {
 			isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 		})
 	})
-	handleListSelection()
+	handleListSelection(friends)
 }
 
 
-const handleListSelection = () => {
+const handleListSelection = (friends) => {
 	const friendsListItems = Array.from(friendsListContainer.querySelectorAll('[name=list-container'))
+
+	// initial user is first friends
+	selectedUserHandler(friends[0])
 
 	friendsListContainer.addEventListener('click', async (evt) => {
 		const selectedUserId = evt.target.id
@@ -130,7 +138,7 @@ const handleListSelection = () => {
 		const { data: selectedUser, message } = await http.getSelectedUser(selectedUserId)
 		if(message) showError(message)
 
-		console.log(selectedUser)
+		selectedUserHandler(selectedUser)
 
 		friendsListItems.forEach( el => {
 			el.classList.toggle('selected', el.id === selectedUserId) 
@@ -140,3 +148,81 @@ const handleListSelection = () => {
 
 }
 
+
+const selectedUserHandler = (user) => {
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const avatarImg = selectedUserListContainer.querySelector('[name=avatar]')
+	const avatarBadge = selectedUserListContainer.querySelector('[name=avatar-badge]')
+	const nameP = selectedUserListContainer.querySelector('[name=username]')
+	
+	selectedUserListContainer.id = user.id
+	avatarImg.src = user.avatar
+	avatarBadge.classList.toggle('active', true) 	// if user active then make true
+	nameP.textContent = user.fullName
+
+	// console.log(selectedUserListContainer.id)
+	showAllMessagesInUI(user.id)
+}
+
+const showAllMessagesInUI = async (receiver) => {
+	textMessagesContainer.innerHTML = ''
+
+
+	const payload = {
+		sender: logedInUser._id,
+		receiver
+	}
+	
+	const { data:messages, message } = await http.getAllChatMessages(payload)
+	if(message) return showError(message)
+
+	messages.forEach(messageDoc => {
+		console.log(messageDoc)
+		if(messageDoc.sender.id === logedInUser._id) {
+			elements.createYourMessage(textMessagesContainer, { 
+				type: 'text', 
+				message: messageDoc.message 
+			})
+
+		} else {
+			elements.createTheirMessage(textMessagesContainer, { 
+				type: 'text', 
+				message: messageDoc.message,
+				avatar: messageDoc.sender.avatar
+			})
+
+		}
+	})
+}
+
+
+
+writeMessageInput.addEventListener('input', () => {
+	let timer = 0
+	// handle socket typeing indication
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const titleP = selectedUserListContainer.querySelector('[name=title]')
+
+
+	clearTimeout(timer)
+	timer = setTimeout(() => {
+		titleP.classList.add('hidden') 		// hide typing... indicator from top
+	}, [1000])
+})
+sendMessageForm.addEventListener('submit', async (evt) => {
+	evt.preventDefault()
+
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+
+	const payload = {
+		sender: logedInUser._id,
+		receiver: selectedUserListContainer.id,
+		message: writeMessageInput.value,
+		type: 'text',
+	}
+
+	const { data:doc, message } = await http.createMessage(payload)
+	if(message) return showError(message)
+
+	elements.createYourMessage(textMessagesContainer, { type: doc.type, message: doc.message})
+})

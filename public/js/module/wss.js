@@ -50,8 +50,7 @@ export const registerSocketEvents = (socket) => {
 			// update UI
 			ui.doShowNotFoundFriends(false)	
 			ui.showFriendLists(friends)
-			// ui.handleListSelection(friends)
-			console.log(friends)
+			// console.log(friends)
 
 		})
 

@@ -7,8 +7,8 @@ import * as wss from '../module/wss.js' 		// ui imported in wss so UI is availab
 // import * as webRTCHandler from '../module/webRTCHandler.js'
 // import * as constants from '../module/constants.js'
 import * as elements from '../module/elements.js'
-// import * as ui from '../module/ui.js'
-// import * as recording from '../module/recording.js'
+import * as http from '../module/http.js'
+import * as ui from '../module/ui.js'
 
 /* Global Variables 	
 		. io
@@ -41,7 +41,6 @@ const messageContainer = $('[name=message-container]')
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
 const videoContainer = $('[name=video-container]') 	
-const writeMessageInput = $('[name=write-message-input]') 	
 const chatsContainer = $('#chats-container')
 const cameraIconButtonInput = $('#camera-icon-button')
 
@@ -60,28 +59,6 @@ videoCallButton.addEventListener('click', (evt) => {
 
 
 
-writeMessageInput.addEventListener('input', async () => {
-	clearTimeout(timer)
-
-	timer = setTimeout(async() => {
-		if(controller) controller.abort('abort message')
-
-		controller = new AbortController()
-		const { signal } = controller
-
-		try {
-			const res = await fetch('/api/users', { signal })
-			const data = await res.json()
-			console.log(data)
-
-		} catch (err) {
-			if( err.name === 'AbortError') return
-
-			console.log(err)	
-			console.log(signal.reason, signal.aborted)
-		}
-	}, 1000);
-})
 
 
 
@@ -130,19 +107,6 @@ elements.createFirendList(leftFriendPanel, {
 */
 
 
-// const friendsListContainer = $('[name=friends-list-container]') 	
-// friendsListContainer.style.border = '1px solid red'
-
-// /* It will not work directly, use 'Event Delegation' technique
-// 	const friendsListElements = document.querySelectorAll('[name=friends-list-container] > [name=list-container]') 	
-// 	console.log(friendsListElements)
-// */
-// friendsListContainer.addEventListener('click', (evt) => {
-// 	const container = evt.target
-// 	container.classList.add('selected')
-
-// 	console.log(container)
-// })
 
 
 
@@ -177,8 +141,10 @@ playPauseButton.addEventListener('click', () => {
 })
 */
 
-elements.createTheirMessage(messageContainer, { type: 'text', message: 'hi'})
-elements.createYourMessage(messageContainer, { type: 'text', message: 'hi there whats up ?'})
+  // "",
+  // "6606b8c47844a6763050de3c",
+	// "6606f381e629d675c08c85b8",
+	// "6606f3a6e629d675c08c85ba"
 
 // elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 // elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })

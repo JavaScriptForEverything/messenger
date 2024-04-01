@@ -19,17 +19,16 @@ block script
 				)
 				div(name='left-top' class='h-14')
 					div(name='list-container' class='flex gap-2 h-full px-2 py-1 border border-slate-300 rounded')
-						img(src=logedInUser.avatar ||'/images/users/default.jpg' alt='avatar' 
-						class=' w-12 h-12 border border-slate-300 rounded-full')
+						div(class='h-full relative flex-shrink-0 grid place-items-center')
+							img(name='avatar' src=logedInUser.avatar || '' alt='avatar' class='w-12 h-12 border border-slate-300 rounded-full')
+							div(name='avatar-badge' class='active hidden [&.active]:block absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
 
 						div(class='label-container' class='flex-1')
-							p(
-								name='username' 
+							p(name='username' 
 								class='text-blue-600 font-medium max-w-40 truncate capitalize'
 								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
 
-							p(
-								name='title' 
+							p(name='title' 
 								class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate capitalize'
 								) #{ logedInUser.title  || 'Senior Developer'}
 						
@@ -94,16 +93,24 @@ block script
 			//- middle-section
 			div(name='middle-section' class='bg-slate-50 flex-1 flex flex-col')
 				div(name='middle-top' class='h-14 ')
-					div(name='list-container' class='flex items-center gap-2 h-full px-2 py-1 border border-slate-300 rounded')
+					div(name='selected-user-list-container' class='flex items-center gap-2 h-full px-2 py-1 border border-slate-300 rounded')
 						label(for='left-side-checkbox' class='md:hidden cursor-pointer text-slate-700 ')
 							<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17h14M5 12h14M5 7h14"/></svg>
 
 						div(class='h-full relative flex-shrink-0 grid place-items-center')
-							img(name='avatar' src=logedInUser.avatar || '/images/users/default.jpg' alt='avatar' class='w-10 h-10 border border-slate-300 rounded-full')
-							div(name='avatar-badge' class='absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
+							img(name='avatar' src=logedInUser.avatar || '' alt='avatar' class='w-10 h-10 border border-slate-300 rounded-full')
+							div(name='avatar-badge' class='hidden [&.active]:block absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
 
-						div(name='label-container' class='flex-1')
-							p(name='username' class='text-slate-800 max-w-40 truncate capitalize') #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+						div(class='label-container' class='flex-1')
+							p(name='username' class='text-blue-600 font-medium max-w-40 truncate capitalize'
+								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+
+							p(name='title' 
+								class='hidden text-slate-600 font-light text-xs -mt-1 max-w-40 truncate lowercase'
+								) typing...
+						
+
+
 
 						div(name='search-messages-container' class='-mr-1.5 relative grid place-items-center ')
 							input(type='checkbox' id='search-messages-checkbox' checked=false hidden class='peer/search-messages')
@@ -169,7 +176,8 @@ block script
 				hr(class='my-1 border-spacing-x-0.5 border-slate-100')
 				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 border border-slate-300 rounded')
 					div(name='message-container' class='px-3 py-1.5 text-slate-700')
-						//- message container : fill via client-side
+						div(name='text-message-container')
+							//- message container : fill via client-side
 
 						div(name='video-container' class='mb-2 hidden [&.active]:block')
 							div(name='their-video-container' class=' border border-slate-200 max-h-80 aspect-video mx-auto relative')
@@ -308,7 +316,7 @@ block script
 
 						
 
-				div(name='middle-bottom' class='mt-1 ' class='relative flex justify-center items-center')
+				form(name='middle-bottom' class='mt-1 ' class='relative flex justify-center items-center')
 					input(name='write-message-input' type='search' placeholder='Write Your Message' 
 						class='w-full pl-8 pr-32 py-2 rounded-md text-slate-800'
 						class='border border-slate-300'
@@ -350,7 +358,7 @@ block script
 							)
 							<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 1 1 0 16a8 8 0 0 1 0-16m0 1a7 7 0 1 0 0 14a7 7 0 0 0 0-14m-2.845 9.427a4.011 4.011 0 0 0 5.512.17l.178-.17a.5.5 0 0 1 .767.636l-.057.07l-.023.022a5.011 5.011 0 0 1-7.087-.023a.5.5 0 0 1 .71-.705M12.5 7.5a1 1 0 1 1 0 2a1 1 0 0 1 0-2m-5 0a1 1 0 1 1 0 2a1 1 0 0 1 0-2"/></svg>
 
-						button(for='send-icon-button' type='button'
+						button(for='send-icon-button' type='submit'
 							class='text-slate-50 rounded-full bg-blue-500 p-2'
 							class='hover:bg-blue-600/90 hover:text-white active:bg-blue-600'
 							)

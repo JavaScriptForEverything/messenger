@@ -274,29 +274,38 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 		showError(err.message)
 	}
 })
-	// const payload = {
-	// 	sender: logedInUser._id,
-	// 	receiver
-	// }
-	
-	// const { data:messages, message } = await http.getAllChatMessages(payload)
-	// if(message) return showError(message)
 
-	// messages.forEach(messageDoc => {
-	// 	// console.log(messageDoc)
-	// 	// show error alert for not populated senerio
-	// 	if(messageDoc.sender.id === logedInUser._id) {
-	// 		elements.createYourMessage(textMessagesContainer, { 
-	// 			type: 'text', 
-	// 			message: messageDoc.message 
-	// 		})
 
-	// 	} else {
-	// 		elements.createTheirMessage(textMessagesContainer, { 
-	// 			type: 'text', 
-	// 			message: messageDoc.message,
-	// 			avatar: messageDoc.sender.avatar
-	// 		})
+// ----------[ file upload: via webRTC ]----------
+const attachmentButtonInput = $('#attachment-icon-button')
+attachmentButtonInput.addEventListener('change', async (evt) => {
+	try {
+		const selectedUserListContainer = $('[name=selected-user-list-container]')
+		const dataUrl = await readAsDataURL(evt.target.files[0], { type: 'file' })
 
-	// 	}
-	// })
+		const payload = {
+			sender: logedInUser._id,
+			receiver: selectedUserListContainer.id,
+			message: dataUrl,
+			type: 'file'
+		}
+		// Don't store file in backend, just transfer via webRTC client <==> client
+
+		console.log(payload)
+
+		elements.createYourMessage(textMessagesContainer, { 
+			type: 'text', 
+			message: dataUrl
+		})
+
+		// send this element via wss + webRTC
+			// elements.createTheirMessage(textMessagesContainer, { 
+			// 	type: 'image', 
+			// 	// message: messageDoc.message,
+			// 	// avatar: messageDoc.sender.avatar
+			// })
+
+	} catch (err) {
+		showError(err.message)
+	}
+})

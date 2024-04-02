@@ -10,6 +10,7 @@ task:
 	
 
 - Only return required fileds from database by .select({...})
+- handle population failed senerio on messages
 
 ---
 We can add content in 2 ways:

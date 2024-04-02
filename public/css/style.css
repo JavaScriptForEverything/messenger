@@ -662,6 +662,10 @@ video {
   bottom: 0.25rem;
 }
 
+.bottom-10 {
+  bottom: 2.5rem;
+}
+
 .bottom-2 {
   bottom: 0.5rem;
 }
@@ -1795,6 +1799,11 @@ video {
   outline-offset: 2px;
 }
 
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -1837,6 +1846,10 @@ video {
 
 .duration-500 {
   transition-duration: 500ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .placeholder\:text-sm::-moz-placeholder {
@@ -2318,6 +2331,10 @@ video {
 
 .peer\/left-side-checkbox:checked ~ .peer-checked\/left-side-checkbox\:ml-0 {
   margin-left: 0px;
+}
+
+.peer\/emoji-icon-button:checked ~ .peer-checked\/emoji-icon-button\:block {
+  display: block;
 }
 
 .peer\/search-messages:checked ~ .peer-checked\/search-messages\:scale-x-0 {

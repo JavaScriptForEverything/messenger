@@ -3,10 +3,11 @@ Problems:
 			userSchema.virtual('fullName').get(...) 
 
 
-
-Create message and show in UI based on users
-	. show friends list
-	. every friend list have latest message + notification 
+task:
+	. on click user list, add ?userId=user.id, and then select that user on page refresh in UI
+		instead of friends[0] 
+	. handle text + image and File only via WebRTC
+	
 
 - Only return required fileds from database by .select({...})
 

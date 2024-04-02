@@ -86,6 +86,15 @@ export const getAllChatMessages = async ({ sender, receiver } = {}) => {
 		return error
 	}
 }
+
+/*
+const payload = {
+	sender: logedInUser._id,
+	receiver: selectedUser.id,
+	message: input.value, 			: 'your message' | 'data:image/jpge;base64,...'
+	type: 'text', 							: text | image | file | audio
+}
+*/
 export const createMessage = async (payload) => {
 	try {
 		const res = await fetch('/api/messages', {

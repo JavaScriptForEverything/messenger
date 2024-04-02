@@ -1,25 +1,22 @@
+// import { createPicker } from 'https://unpkg.com/picmo@latest/dist/index.js';
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 // import WaveSurfer from '../plugins/wavesurfer/index.js'
-// import { Snackbar } from '../module/components/index.js'
-import { $, readAsDataURL, toggleClass } from '../module/utils.js'
+import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
-// import * as store from '../module/store.js'
-// import * as webRTCHandler from '../module/webRTCHandler.js'
-// import * as constants from '../module/constants.js'
-import * as elements from '../module/elements.js'
-import * as http from '../module/http.js'
-import * as ui from '../module/ui.js'
+// import * as elements from '../module/elements.js'
 
-/* Global Variables 	
-		. io
-		. logedInUser
+
+/*----------[ Note ]----------
+	Only handle initial scripts in this file, and all the modification
+	in ui.js and
+	every service in it's own file.
+
+----------[ Global Variables ]----------
+	. io
+	. logedInUser
 */
 
 
-/* only handle eventhandler in this page, don't try to update UI here
-		- Because this file run only after every files loaded, that means
-			it override others code if tie, so use ui.js to update UI.
-*/
 
 
 
@@ -42,7 +39,9 @@ const audioCallButton = $('[name=audio-call-button]')
 const videoCallButton = $('[name=video-call-button]') 	
 const videoContainer = $('[name=video-container]') 	
 const chatsContainer = $('#chats-container')
-const cameraIconButtonInput = $('#camera-icon-button')
+const pickerContainer = $('[name=picker-container]')
+const writeMessageInput = $('[name=write-message-input]') 	
+const emojiInput = $('#emoji-icon-button') 	
 
 // videoContainer.classList.add('active')
 
@@ -205,16 +204,14 @@ playPauseButton.addEventListener('click', () => {
 
 
 
-cameraIconButtonInput.addEventListener('change', async (evt) => {
-	try {
-		const dataUrl = await readAsDataURL(evt.target.files[0])
-		elements.createYourMessage(messageContainer, { type: 'image', message: dataUrl })
-		elements.createTheirMessage(messageContainer, { type: 'image', message: dataUrl })
 
-	} catch (err) {
-		console.log(err.message)
-	}
-})
+// ----------[ Emoji Picker ]----------
+// const picker = createPicker({
+// 	rootElement: pickerContainer
+// })
 
-
+// picker.addEventListener('emoji:select', (evt) => {
+// 	emojiInput.checked = false
+// 	writeMessageInput.value += evt.emoji
+// })
 

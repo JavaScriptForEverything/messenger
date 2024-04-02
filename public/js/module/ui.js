@@ -1,7 +1,6 @@
 import { Snackbar } from './components/index.js'
-import { $, redirectTo } from './utils.js'
+import { $, redirectTo, readAsDataURL } from './utils.js'
 import * as elements from '../module/elements.js'
-// import * as store from './store.js'
 import * as http from './http.js'
 
 const middleTop = $('[name=middle-top]')
@@ -16,6 +15,7 @@ const textMessagesContainer = $('[name=text-message-container]') 			// only over
 
 const sendMessageForm = $('form[name=middle-bottom]')
 const writeMessageInput = $('[name=write-message-input]') 	
+const cameraIconButtonInput = $('#camera-icon-button')
 
 
 // const updateAvatar = (parentSelector) => {
@@ -160,12 +160,17 @@ const selectedUserHandler = (user) => {
 	avatarBadge.classList.toggle('active', true) 	// if user active then make true
 	nameP.textContent = user.fullName
 
-	// console.log(selectedUserListContainer.id)
+	// // show userId without page refresh: problem require #userId=undefined on page load
+	// const url = new URL(location.href)
+	// url.hash = `userId=${user.id}`
+	// location.href = url
+	// console.log(url.hash)
+
 	showAllMessagesInUI(user.id)
 }
 
 const showAllMessagesInUI = async (receiver) => {
-	textMessagesContainer.innerHTML = ''
+	textMessagesContainer.innerHTML = '' 		// empty container before add new items
 
 
 	const payload = {
@@ -177,16 +182,17 @@ const showAllMessagesInUI = async (receiver) => {
 	if(message) return showError(message)
 
 	messages.forEach(messageDoc => {
-		console.log(messageDoc)
+		// console.log(messageDoc)
+		// show error alert for not populated senerio
 		if(messageDoc.sender.id === logedInUser._id) {
 			elements.createYourMessage(textMessagesContainer, { 
-				type: 'text', 
+				type: messageDoc.type,
 				message: messageDoc.message 
 			})
 
 		} else {
 			elements.createTheirMessage(textMessagesContainer, { 
-				type: 'text', 
+				type: messageDoc.type,
 				message: messageDoc.message,
 				avatar: messageDoc.sender.avatar
 			})
@@ -197,6 +203,7 @@ const showAllMessagesInUI = async (receiver) => {
 
 
 
+// ----------[ send message ]----------
 writeMessageInput.addEventListener('input', () => {
 	let timer = 0
 	// handle socket typeing indication
@@ -221,8 +228,75 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 		type: 'text',
 	}
 
-	const { data:doc, message } = await http.createMessage(payload)
+	const { data:messageDoc, message } = await http.createMessage(payload)
 	if(message) return showError(message)
 
-	elements.createYourMessage(textMessagesContainer, { type: doc.type, message: doc.message})
+	elements.createYourMessage(textMessagesContainer, { 
+		type: messageDoc.type, 
+		message: messageDoc.message
+	})
+	writeMessageInput.value = '' 	// reset
+
+	// send the messageDoc via wss to other end to handle
 })
+
+
+// ----------[ image upload ]----------
+cameraIconButtonInput.addEventListener('change', async (evt) => {
+	try {
+		const selectedUserListContainer = $('[name=selected-user-list-container]')
+		const dataUrl = await readAsDataURL(evt.target.files[0])
+
+		const payload = {
+			sender: logedInUser._id,
+			receiver: selectedUserListContainer.id,
+			message: dataUrl,
+			type: 'image'
+		}
+		const { data:messageDoc, message } = await http.createMessage(payload)
+		if(message) return showError(message)
+
+		console.log(messageDoc)
+
+		elements.createYourMessage(textMessagesContainer, { 
+			type: 'image', 
+			message: messageDoc.message,
+		})
+
+		// send this element via wss
+			// elements.createTheirMessage(textMessagesContainer, { 
+			// 	type: 'image', 
+			// 	// message: messageDoc.message,
+			// 	// avatar: messageDoc.sender.avatar
+			// })
+
+	} catch (err) {
+		showError(err.message)
+	}
+})
+	// const payload = {
+	// 	sender: logedInUser._id,
+	// 	receiver
+	// }
+	
+	// const { data:messages, message } = await http.getAllChatMessages(payload)
+	// if(message) return showError(message)
+
+	// messages.forEach(messageDoc => {
+	// 	// console.log(messageDoc)
+	// 	// show error alert for not populated senerio
+	// 	if(messageDoc.sender.id === logedInUser._id) {
+	// 		elements.createYourMessage(textMessagesContainer, { 
+	// 			type: 'text', 
+	// 			message: messageDoc.message 
+	// 		})
+
+	// 	} else {
+	// 		elements.createTheirMessage(textMessagesContainer, { 
+	// 			type: 'text', 
+	// 			message: messageDoc.message,
+	// 			avatar: messageDoc.sender.avatar
+	// 		})
+
+	// 	}
+	// })

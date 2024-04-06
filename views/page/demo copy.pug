@@ -1,0 +1,84 @@
+extends ../layout
+block script
+	script( async type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
+	//- script( defer type='module' src='/js/page/demo.js')
+	style.
+
+block body 
+	div(class='border border-red-500')
+		audio(name='audio')
+	div
+		button(name='record' class='border border-slate-300 px-3 py-1') Recorde
+		button(name='stop' class='border border-slate-300 px-3 py-1') Stop
+		button(name='download' class='border border-slate-300 px-3 py-1') Download
+
+	script.
+		const $ = (selector) => document.querySelector(selector)
+		const audio = $('[name=audio]')
+		const recordButton = $('[name=record]')
+		const stopButton = $('[name=stop]')
+		const downloadButton = $('[name=download]')
+
+		let audioExt = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus') ? 'ogg' : 'webm'
+
+		const handleMediaRecording = async () => {
+			const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+
+			const recorderOptions = {
+				mimetype: `audio/${audioExt};codecs=opus`
+			}
+			const recorder = new MediaRecorder(stream, recorderOptions)
+			let chunks = []
+
+			recorder.addEventListener('dataavailable', (evt) => {
+				chunks.push( evt.data )
+
+				if( recorder.state === 'inactive' ) {
+					const blob = new Blob(chunks, { type: `audio/${audioExt}`, bitsPerSecond: 128000 })
+					chunks = []
+					showAudio(blob)
+				}
+			})
+
+			recordButton.addEventListener('click', () => {
+				console.log('recording starts')
+				recorder.start(1000) // start record with 1sec chunk
+
+				// show counter immediately
+				audio.srcObject = stream
+				audio.controls = true
+				audio.autoplay = true
+			})
+			stopButton.addEventListener('click', () => {
+				console.log('recording stopped')
+				recorder.stop() 	// stop MediaRecorder
+				
+				/* .stop() close media completely, so to re-start, need to fetch 
+						navigator.mediaDevice.getUserMedia(...) again
+
+						so we have 2 solution:
+							1. instead of stop just mute/unmete any track: track.enabled = false/true
+							2. create ...getUserMedia(...) into seperate startFunction, so that can call again
+				*/
+				stream.getAudioTracks()[0].stop() 	// Stop microphone
+			})
+		}
+		handleMediaRecording()
+	
+		const showAudio = (blob) => {
+			const dataUrl = URL.createObjectURL(blob)
+			audio.src = dataUrl
+			audio.controls = true
+			//- URL.revokeObjectURL(dataUrl) 	// Don't remove url, else audio will be no more
+		}
+
+		downloadButton.addEventListener('click', () => {
+			if( !audio.src ) return console.log('recorde video first')
+
+			const a = document.createElement('a')
+			a.href = audio.src
+			a.download = Date.now() + '.' + audioExt
+			a.click()
+			a.style = "display: none;"
+			document.body.appendChild(a)
+		})

@@ -1,6 +1,7 @@
 // import { createPicker } from 'https://unpkg.com/picmo@latest/dist/index.js';
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
-// import WaveSurfer from '../plugins/wavesurfer/index.js'
+import { createPicker } from '../plugins/picmo/index.js';
+import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 // import * as elements from '../module/elements.js'
@@ -206,12 +207,12 @@ playPauseButton.addEventListener('click', () => {
 
 
 // ----------[ Emoji Picker ]----------
-// const picker = createPicker({
-// 	rootElement: pickerContainer
-// })
+const picker = createPicker({
+	rootElement: pickerContainer
+})
 
-// picker.addEventListener('emoji:select', (evt) => {
-// 	emojiInput.checked = false
-// 	writeMessageInput.value += evt.emoji
-// })
+picker.addEventListener('emoji:select', (evt) => {
+	emojiInput.checked = false
+	writeMessageInput.value += evt.emoji
+})
 

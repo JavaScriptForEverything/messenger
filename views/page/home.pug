@@ -1,5 +1,21 @@
 extends ../layout
 block body
+	style.
+		@keyframes blink {
+			0% {
+				color: red;
+				opacity: 100;
+			}
+			30% {
+				opacity: 0;
+			}
+		}
+		.blink {
+			color: red;
+			animation-name: blink; 
+			animation-duration: 800ms;
+			animation-iteration-count: infinite;
+		}
 block script
 	script( defer type='module' src='/js/page/home.js')
 
@@ -153,7 +169,6 @@ block script
 							class='[&.active]:bg-blue-500/90 [&.active]:border-blue-500/80 [&.active]:text-slate-50 '
 							class='[&>*:last-child]:[&.active]:block [&>*:first-child]:[&.active]:hidden'
 							class='[&>*:first-child]:block'
-							class=''
 							)
 							<svg name='inactive-audio' class='hidden w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path fill="currentColor" d="M17.536 4.384C19.597 4.1 21.33 5.361 22.15 7l2.017 4.033c1.119 2.238.476 4.864-1.22 6.516c-1.002.975-2.009 2.089-2.593 3.072a.332.332 0 0 0-.034.23c.54 2.926 2.523 5.817 4.292 7.89a.677.677 0 0 0 .724.187l3.975-1.242a5.25 5.25 0 0 1 5.892 2.036l2.877 4.185c.78 1.135 1.175 2.675.577 4.156c-.534 1.323-1.567 3.231-3.446 4.5c-1.95 1.316-4.621 1.816-8.116.618c-3.905-1.34-7.594-4.7-10.653-8.997c-3.077-4.324-5.61-9.725-7.146-15.357C7.844 13.51 8.72 9.93 10.782 7.625c1.989-2.224 4.839-2.979 6.754-3.242m2.377 3.735c-.457-.913-1.272-1.364-2.037-1.259c-1.701.234-3.831.867-5.23 2.432c-1.326 1.483-2.244 4.095-.94 8.878c1.465 5.368 3.877 10.498 6.772 14.565c2.913 4.093 6.223 6.983 9.427 8.082c2.855.979 4.69.495 5.906-.325c1.286-.869 2.077-2.25 2.527-3.364c.206-.51.117-1.17-.319-1.804l-2.877-4.184a2.75 2.75 0 0 0-3.086-1.067l-3.975 1.242c-1.188.371-2.526.04-3.371-.95c-1.841-2.157-4.187-5.465-4.85-9.06a2.829 2.829 0 0 1 .344-1.961c.758-1.274 1.958-2.573 2.997-3.585c1.015-.988 1.303-2.458.729-3.607z"/></svg>
 							<svg name='active-audio' class='hidden w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path fill="currentColor" d="M22.095 6.894c-.78-1.559-2.41-2.82-4.412-2.597c-1.791.199-4.45.865-6.263 3.049c-1.861 2.243-2.555 5.741-1.126 10.982c1.526 5.591 3.792 11.103 6.609 15.55c2.796 4.415 6.24 7.949 10.191 9.304c3.494 1.198 6.166.698 8.115-.618c1.88-1.269 2.912-3.178 3.446-4.5c.598-1.48.204-3.021-.576-4.157l-2.877-4.184a5.25 5.25 0 0 0-5.892-2.037l-3.976 1.243a.678.678 0 0 1-.723-.187c-1.77-2.073-3.753-4.964-4.292-7.89a.332.332 0 0 1 .033-.23c.585-.983 1.592-2.097 2.593-3.072c1.697-1.652 2.34-4.278 1.22-6.516z"/></svg>
@@ -166,7 +181,6 @@ block script
 							class='[&.active]:bg-blue-500/90 [&.active]:border-blue-500/80 [&.active]:text-slate-50 '
 							class='[&>*:last-child]:[&.active]:block [&>*:first-child]:[&.active]:hidden'
 							class='[&>*:first-child]:block'
-							class=''
 							)
 							<svg name='inactive-video' class='hidden w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M5.5 6.5h6a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2m8 3l2.4-1.8a1 1 0 0 1 1.6.8v4a1 1 0 0 1-1.6.8l-2.4-1.8z"/></svg>
 							<svg name='active-video' class='hidden w-5 h-5 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="m15 9.649l5.646-2.137A1 1 0 0 1 22 8.448v7.109a1 1 0 0 1-1.351.936L15 14.375V16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2z"/></svg>
@@ -323,11 +337,9 @@ block script
 						class='focus:outline-none focus:border-blue-500'
 						)
 
-					input(type='checkbox' hidden id='microphone-icon-button' class='peer/microphone-icon-button')
+					//- input(type='checkbox' hidden id='microphone-icon-button' class='peer/microphone-icon-button')
 					label(for='microphone-icon-button' type='button'
-						class='text-slate-500/80 rounded-full'
-						class='hover:bg-slate-50 hover:text-slate-500'
-						class='cursor-pointer peer-checked/microphone-icon-button:text-slate-600'
+						class='text-slate-500/80 rounded-full cursor-pointer '
 						class='absolute left-1'
 						)
 						<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><path fill="currentColor" d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48M96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6"/></svg>

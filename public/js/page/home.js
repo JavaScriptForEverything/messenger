@@ -4,8 +4,7 @@ import { createPicker } from '../plugins/picmo/index.js';
 import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
-// import * as elements from '../module/elements.js'
-
+import * as elements from '../module/elements.js'
 
 /*----------[ Note ]----------
 	Only handle initial scripts in this file, and all the modification
@@ -17,17 +16,9 @@ import * as wss from '../module/wss.js' 		// ui imported in wss so UI is availab
 	. logedInUser
 */
 
-
-
-
-
-
-
-
 const socket = io('/')
 wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
 // webRTCHandler.getLocalPreview()
-
 
 // store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
 
@@ -40,19 +31,20 @@ const audioCallButton = $('[name=audio-call-button]')
 const videoCallButton = $('[name=video-call-button]') 	
 const videoContainer = $('[name=video-container]') 	
 const chatsContainer = $('#chats-container')
-const pickerContainer = $('[name=picker-container]')
+const microphoneInsideInput = $('form[name=middle-bottom] [for=microphone-icon-button]')
 const writeMessageInput = $('[name=write-message-input]') 	
+const pickerContainer = $('[name=picker-container]')
 const emojiInput = $('#emoji-icon-button') 	
 
 // videoContainer.classList.add('active')
 
+// hide left-panel: for testing
+$('#left-side-checkbox').checked = false
+
 
 audioCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')
-
 })
-
-
 videoCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')
 })
@@ -60,7 +52,23 @@ videoCallButton.addEventListener('click', (evt) => {
 
 
 
+microphoneInsideInput.addEventListener('click', (evt) => {
+	const isHasBlinkClass = evt.target.classList.contains('blink')
+	writeMessageInput.placeholder = ''
+	writeMessageInput.value = '01'
+	writeMessageInput.readOnly = !isHasBlinkClass  // make input un-editable
+	writeMessageInput.style.border = '1px solid #cbd5e1'
 
+	if(isHasBlinkClass) {
+		writeMessageInput.removeAttribute('style')
+		writeMessageInput.value = ''
+		writeMessageInput.placeholder = 'Write Your Message'
+	}
+
+	toggleClass(evt.target, 'blink') // evt.target.classList.toggle('blink', !evt.target.classList.contains('blink') )
+})
+
+elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 
 /*
 elements.createFirendList(leftFriendPanel, {
@@ -88,22 +96,6 @@ elements.createFirendList(leftFriendPanel, {
 	notificationValue:  2,
 })
 
-elements.createFirendList(leftFriendPanel, {
-	id: 3,
-	avatar: '/images/users/default.jpg',
-	name: 'Fiaz Sofeone Rakib',
-	message: 'businessman textile',
-	type: 'image',
-
-	createdAt: Date.now(), 
-
-	isActive: true,
-	isMessageSuccess: true,
-	isNotification: true,
-	isNoNotification: true,
-	notificationValue:  2,
-})
-
 */
 
 
@@ -111,34 +103,34 @@ elements.createFirendList(leftFriendPanel, {
 
 
 
+// const theirWavesurfer = WaveSurfer.create({
+// 	container: '[name=their-audio] #waveform',
+// 	waveColor: '#7ca4d0aa',
+// 	progressColor: '#3b82f6',
+// 	url: '/music/ignite.mp3', 			
+
+// 	height: 32,
+// 	response: true,
+// 	barWidth: 2,
+// 	barRadius: 2,
+// })
+// const yourWavesurfer = WaveSurfer.create({
+// 	container: '[name=your-audio] #waveform',
+// 	waveColor: '#7ca4d0aa',
+// 	progressColor: '#3b82f6',
+// 	url: '/music/ignite.mp3', 			
+
+// 	height: 32,
+// 	response: true,
+// 	barWidth: 2,
+// 	barRadius: 2,
+// })
+
+// playPauseButton.addEventListener('click', () => {
+// 	theirWavesurfer.playPause() 	
+// 	yourWavesurfer.playPause() 	
+// })
 /*
-const theirWavesurfer = WaveSurfer.create({
-	container: '[name=their-audio] #waveform',
-	waveColor: '#7ca4d0aa',
-	progressColor: '#3b82f6',
-	url: '/music/ignite.mp3', 			
-
-	height: 32,
-	response: true,
-	barWidth: 2,
-	barRadius: 2,
-})
-const yourWavesurfer = WaveSurfer.create({
-	container: '[name=your-audio] #waveform',
-	waveColor: '#7ca4d0aa',
-	progressColor: '#3b82f6',
-	url: '/music/ignite.mp3', 			
-
-	height: 32,
-	response: true,
-	barWidth: 2,
-	barRadius: 2,
-})
-
-playPauseButton.addEventListener('click', () => {
-	theirWavesurfer.playPause() 	
-	yourWavesurfer.playPause() 	
-})
 */
 
   // "",

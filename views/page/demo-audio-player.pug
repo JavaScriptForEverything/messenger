@@ -1,0 +1,135 @@
+extends ../layout
+block script
+	script( async type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
+	//- script( defer type='module' src='/js/page/demo.js')
+	style.
+
+block body 
+	div(class='border border-red-500')
+		
+	div(name='song-slide' class='w-full relative')
+		//- remove default style: appearance: none;
+		input(
+			name='seek-bar'
+			type='range' 
+			value='0'
+			class='appearance-none cursor-pointer w-full h-3 rounded-md bg-slate-300'
+			class=''
+		)
+
+		//- Creating Custom Slider
+			html:
+				div(name=song-slide)
+					input(name=seek-bar type='range')
+					span(name=current-time) 00:00
+					span(name=song-duration) 00:00 			// send to right side
+
+			css:
+				div[name=song-slide] {
+					position: relative;
+					width: 100%;
+			(2)	overflow: hidden; 																	: allow only on slide not outside
+				}
+				input[name=seek-bar]::-webkit-slider-thumb { 					: Style slider Thumb
+					-webkit-appearance: none; 													: Remove default style
+					width: 1px;
+					height: 20px;
+					background-color: slate;
+			(1)	box-shadow: -400px 0 0 400px #d5eebb; 							: Add left-side color: to represent played distance 
+				}
+
+				span[name=song-duration] { 														: move to right side
+					position: absolute;
+					right: 0;
+				}
+			
+			audio(name='audio')
+
+			--------
+			const $ = (selector) => document.querySelector(selector)
+			let currentMusic = 0
+
+			const audio = $('[name=audio]')
+			const playButton = $('[name=play-button]')
+			const seekBarInput = $('[name=seek-bar]')
+			const songNameP = $('[name=song-name]')
+			const songArtishNameP = $('[name=artist-name]')
+			const diskImageDiv = $('[name=disk-image]')
+			const currentTimeSpan = $('[name=current-time]')
+			const songDuration = $('[name=song-duration]')
+			const forwordButton = $('[name=forword-button]')
+			const backwordButton = $('[name=backword-button]')
+
+			playButton.addEventListener('click', (evt) => {
+				evt.target.classList.toggle('active') 						// toggle play/pause
+				diskImageDiv.classList.toggle('active') 					// toggle rotate/unroate
+
+				if( evt.target.classList.includes('pause') ) {
+					audio.play()
+				} else {
+					audio.pause()
+				}
+			})
+
+			const setMusic = (index) => {
+				seekBarInput.value = 0 				// (1) input(type='range')
+
+				const song = songs[index] 		// const songs = [{ name, url, artist, cover }, ...]
+
+				currentMusic = index
+				audio.src = song.url
+
+				songName.textContent = song.name
+				songArtistName.textContent = song.artist
+				diskImageDiv.backgroundImage = `url(${song.cover})`
+
+				currentTime.textContent = '00:00'
+				setTimeout(() => {
+					seekBarInput.max = song.duration 		// (2) input(type='range')
+					songDuration.textContent = formatTime(song.duration)
+				}, 300)
+
+			}
+			setMusic( musics[0] ) 	// musics comes form musicData.js 
+
+
+			const formatTime = (time) => {
+				// return new Date( time ).toLocaleTimeString('en', { ... })
+
+				let minutes = Math.floor( time / 60 )
+				if( minutes < 10 ) minutes = `0${minutes}`
+
+				let seconds = Math.floor( minutes % 60 )
+				if( seconds < 10 ) seconds = `0${seconds}`
+
+				return `${minutes}:${seconds}`
+			}
+
+			// handle seek-bar
+			setInterval( () => {
+				seekBarInput.value = music.currentTime
+				currentTimeSpan.textContent = formateTime(music.currentTime)
+
+				// auto play next song
+				if( Math.floor( music.currentTime ) == Math.floor( seekBarInput.max) ) {
+					forwordButton.click()
+				}
+			}, [500])
+
+			seekBarInput.addEventListener('change', () => {
+				currentTimeSpan.textContent = music.currentTime
+			})
+			
+			// forwork button
+			forwordButton.addEventListener('click', () => {
+				currentMusic = currentMusic >= songs.length - 1 ? 0 : currentMusic++
+				setMusic( currentMusic )
+				audio.click()
+			})
+
+			// backwork button
+			backwordButton.addEventListener('click', () => {
+				currentMusic = currentMusic <= 0 ? music.length - 1 : currentMusic--
+				setMusic( currentMusic )
+				audio.click()
+			})

@@ -12,6 +12,19 @@ task:
 - Only return required fileds from database by .select({...})
 - handle population failed senerio on messages
 
+
+musicData = [
+	{
+		name: 'song-name',
+		url: 'songurl.mp3',
+		artist: 'artist name',
+		cover: 'song cover photo: shows as rotating disk'
+	}
+]
+
+
+
+
 ---
 We can add content in 2 ways:
 	1. From Server-Side at first + Client-Side newly added (without page reload)

@@ -9,6 +9,33 @@ let recorder = new MediaRecorder(stream)
 let audioExt = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus') ? 'ogg' : 'webm'
 let chunks = []
 
+let timer = 0
+
+const startRecording = (evt) => {
+	console.log('start recording')
+
+	let count = 0
+
+	clearInterval(timer)
+	timer = setInterval(() => {
+		console.log(count)
+		count ++
+	}, 1000)
+
+	recordButton.removeEventListener('click', startRecording)
+}
+const stopRecording = (evt) => {
+	console.log('stop recording')
+	clearInterval(timer)
+	stopButton.removeEventListener('click', stopRecording)
+}
+
+recordButton.addEventListener('click', startRecording)
+stopButton.addEventListener('click', stopRecording)
+
+
+/*
+
 const startRecording = async () => {
 	console.log('recording started')
 
@@ -66,15 +93,9 @@ const stopRecording = () => {
 		recorder.stop() 	// stop MediaRecorder
 		stream.getAudioTracks()[0].stop() 	// Stop microphone: Stop device entirely
 	}
-	/* stream.getAudioTracks()[0].stop() close media completely, so to re-start, need to fetch 
-			navigator.mediaDevice.getUserMedia(...) again
-
-			so we have 2 solution:
-				1. instead of stop just mute/unmete any track: track.enabled = false/true
-				2. create ...getUserMedia(...) into seperate startFunction, so that can call again
-	*/
 }
 
 recordButton.addEventListener('click', startRecording)
 stopButton.addEventListener('click', stopRecording)
 downloadButton.addEventListener('click', downloadAudioRecording)
+*/

@@ -1,3 +1,77 @@
+import { $, calculateAudioCurrentTimeValue } from './utils.js'
+import * as ui from './ui.js'
+
+const writeMessageInput = $('[name=write-message-input]') 	
+
+let timer = 0
+let stream = new MediaStream()
+let recorder = new MediaRecorder(stream)
+let audioExt = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus') ? 'ogg' : 'webm'
+let chunks = []
+let currentTime = 0;
+let audioDuration = 0;
+
+
+export const startRecording = async (audio) => {
+	stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+	audio.srcObject = stream
+	audio.controls = true
+	audio.autoplay = true
+
+	// elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
+
+	const recorderOptions = {
+		mimetype: `audio/${audioExt};codecs=opus` 
+	}
+	recorder = new MediaRecorder(stream, recorderOptions)
+	recorder.start()
+
+	recorder.addEventListener('dataavailable', (evt) => {
+		chunks.push( evt.data )
+
+		// trigger after `recorder.stop()` invoked
+		if( recorder.state === 'inactive' ) {
+			const blob = new Blob(chunks, { type: `audio/${audioExt}`, bitsPerSecond: 128000 })
+			chunks = []
+			ui.showAudio(blob, audio, audioDuration)
+		}
+	})
+
+
+	clearInterval(timer)
+	timer = setInterval(() => {
+		currentTime = calculateAudioCurrentTimeValue( audio.currentTime )
+		writeMessageInput.value = currentTime
+	}, 1000)
+
+}
+
+export const stopRecording = (audio) => {
+	audioDuration = audio.currentTime 	// set audio duration before recording.stop() and clearTimer
+
+	clearInterval(timer)
+
+	audio.srcObject = null
+	audio.controls = false
+	audio.autoplay = false
+
+	URL.revokeObjectURL(audio.src) 	// audio.src = dataUrl
+	recorder.stop()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 import * as store from './store.js'
 
 let mediaRecorder = null
@@ -54,3 +128,4 @@ const downloadRecording = () => {
 	URL.revokeObjectURL(dataUrl)
 	recordedChunks = []
 }
+*/

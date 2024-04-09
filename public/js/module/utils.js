@@ -69,3 +69,25 @@ export const readAsDataURL = (file, { type='image' } = {}) => {
 		})
 	})
 }
+
+
+
+export const calculateAudioCurrentTimeValue = (currentTime) => {
+  var current_hour = parseInt(currentTime / (60*60)) % 24,
+    current_minute = parseInt(currentTime / 60) % 60,
+    current_seconds_long = currentTime % 60,
+    current_seconds = current_seconds_long.toFixed(),
+    current_time = (current_minute < 10 ? "0" + current_minute : current_minute) + ":" + (current_seconds < 10 ? "0" + current_seconds : current_seconds);
+
+  return current_time;
+}
+
+export const calculateAudioTotalTimeValue = (length) => {
+  var minutes = Math.floor(length / 60),
+    seconds_int = length - minutes * 60,
+    seconds_str = seconds_int.toString(),
+    seconds = seconds_str.substr(0, 2),
+    time = minutes + ':' + seconds
+
+  return time;
+}

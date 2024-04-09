@@ -5,6 +5,8 @@ import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 import * as elements from '../module/elements.js'
+import * as ui from '../module/ui.js'
+import * as recording from '../module/recording.js'
 
 /*----------[ Note ]----------
 	Only handle initial scripts in this file, and all the modification
@@ -51,24 +53,42 @@ videoCallButton.addEventListener('click', (evt) => {
 
 
 
-
-microphoneInsideInput.addEventListener('click', (evt) => {
+const audio = $('[name=microphone-audio')
+microphoneInsideInput.addEventListener('click', async (evt) => {
 	const isHasBlinkClass = evt.target.classList.contains('blink')
-	writeMessageInput.placeholder = ''
-	writeMessageInput.value = '01'
-	writeMessageInput.readOnly = !isHasBlinkClass  // make input un-editable
-	writeMessageInput.style.border = '1px solid #cbd5e1'
 
-	if(isHasBlinkClass) {
+	if(!isHasBlinkClass) {
+		try {
+			await recording.startRecording(audio)
+			
+			evt.target.classList.add('blink')
+			writeMessageInput.placeholder = ''
+			writeMessageInput.value = '00:00'
+			writeMessageInput.readOnly = !isHasBlinkClass  // make input un-editable
+			writeMessageInput.style.border = '1px solid #cbd5e1'
+
+		} catch (err) {
+			const message = `Microphone Permission: ${err.message}`
+			ui.showError(message)
+		}
+
+
+	} else if(isHasBlinkClass) {
 		writeMessageInput.removeAttribute('style')
 		writeMessageInput.value = ''
 		writeMessageInput.placeholder = 'Write Your Message'
+		evt.target.classList.remove('blink')
+		writeMessageInput.readOnly = false
+
+		recording.stopRecording(audio)
 	}
 
-	toggleClass(evt.target, 'blink') // evt.target.classList.toggle('blink', !evt.target.classList.contains('blink') )
+	// toggleClass(evt.target, 'blink') // evt.target.classList.toggle('blink', !evt.target.classList.contains('blink') )
 })
 
-elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
+
+
+// elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 
 /*
 elements.createFirendList(leftFriendPanel, {

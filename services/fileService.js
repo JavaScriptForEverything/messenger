@@ -24,22 +24,26 @@ module.exports.handleBase64File = async (dataUrl, subDir='/users', fileType='ima
 		const mimetype = metadata.split(':').pop()
 		const [ type, ext] = mimetype.split('/')
 
-		// Step-2: allow file: image(default), pdf, ...
-		if(type !== fileType) return { error: `file type: ${fileType} not valid file type` }
+		// // Step-2: allow file: image(default), pdf, ...
+		// if(type !== fileType) return { error: `file type: ${fileType} not valid file type` }
 
 		const destination = path.join(process.cwd(), baseDir, subDir)
 		await fsPromises.mkdir(destination, { recursive: true })
 
 		// Step-3: Generate unique filename for file
-		// const filename = crypto.randomUUID() + '.' + ext
-		const filename = crypto.randomUUID() + '.png' 					// Jimp only support: jpej|png|gim|bmp|tiff
+		const filename = crypto.randomUUID() + '.' + ext
+		// const filename = crypto.randomUUID() + '.png' 					// Jimp only support: jpej|png|gim|bmp|tiff
 		const filePath = path.join(destination, filename)
 		const buffer = Buffer.from(base64, 'base64')
-		// await fsPromises.writeFile(filePath, buffer) 				// Without resize
-		
+
 		// Step-4: Resize image before save
-		const image = await Jimp.read(buffer)
-		image.resize(150, 150).quality(80).write(filePath)
+		if(fileType === 'image') {
+			const image = await Jimp.read(buffer)
+			image.resize(150, 150).quality(80).write(filePath)
+
+		} else {
+			await fsPromises.writeFile(filePath, buffer) 				// Without resize
+		}
 
 		return {
 			error: '',

@@ -2560,10 +2560,6 @@ video {
   display: none;
 }
 
-.peer\/play-pause:checked ~ .peer-checked\/play-pause\:\[\&\.active\]\:\[\&\>\*\:first-child\]\:hidden>*:first-child.active {
-  display: none;
-}
-
 .\[\&\>\*\:last-child\]\:hidden>*:last-child {
   display: none;
 }
@@ -2601,10 +2597,6 @@ video {
 }
 
 .peer\/recording:checked ~ .peer-checked\/recording\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
-  display: block;
-}
-
-.peer\/play-pause:checked ~ .peer-checked\/play-pause\:\[\&\.active\]\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2).active {
   display: block;
 }
 

@@ -77,7 +77,13 @@ export const createYourMessage = (selector, { type='text', message='', }) => {
 }
 
 // elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
-export const createTheirAudio = (selector, { id=null, audioUrl= '' }) => {
+export const createTheirAudio = (selector, { 
+	id=null, 
+	avatar='',
+	audioUrl='',
+	audioDuration='00:00',
+	createdAt=Date.now(),
+}) => {
 	if(!audioUrl) return console.log('audioUrl missing')
 
 	let containerId = id || crypto.randomUUID()
@@ -87,7 +93,7 @@ export const createTheirAudio = (selector, { id=null, audioUrl= '' }) => {
 	const htmlString = `
 		<div name='their-audio' id=${containerId} class='mb-2 max-w-[80%] p-1 flex gap-1 items-center bg-slate-100  border border-slate-200 rounded-md'>
 			<div class='relative'>
-				<img src='/images/users/default.jpg' alt='sender' class='w-10 h-10 rounded-full p-0.1 bg-white' />
+				<img src=${avatar || '/images/users/default.jpg'} alt='sender' class='w-10 h-10 rounded-full p-0.1 bg-white' />
 				<button type='button' class='p-[1px] rounded-full bg-slate-50 text-blue-500 absolute bottom-0.5 -right-0.5'>
 					<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3m7 9c0 3.53-2.61 6.44-6 6.93V21h-2v-3.07c-3.39-.49-6-3.4-6-6.93h2a5 5 0 0 0 5 5a5 5 0 0 0 5-5z"/></svg>
 				</button>
@@ -106,8 +112,11 @@ export const createTheirAudio = (selector, { id=null, audioUrl= '' }) => {
 				<div class='flex-1'>
 					<div id="waveform" class='flex-1'> </div>
 					<div class='mb-0.5 flex justify-between items-center px-4 font-light text-xs text-slate-800'>
-						<span>0.30</span>
-						<span>3.45 pm</span>
+						<span> ${calculateAudioCurrentTimeValue(audioDuration)} </span>
+						<span> ${new Date( createdAt ).toLocaleTimeString('en', {
+							hour: '2-digit',
+							minute: 'numeric'
+						})} </span>
 					</div>
 				</div>
 			</div>

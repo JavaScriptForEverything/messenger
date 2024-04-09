@@ -166,7 +166,7 @@ const selectedUserHandler = (user) => {
 	// location.href = url
 	// console.log(url.hash)
 
-	// showAllMessagesInUI(user.id) 				// hide Messages for now
+	showAllMessagesInUI(user.id) 				// hide Messages for now
 }
 
 const showAllMessagesInUI = async (receiver) => {
@@ -178,24 +178,46 @@ const showAllMessagesInUI = async (receiver) => {
 		receiver
 	}
 	
-	const { data:messages, message } = await http.getAllChatMessages(payload)
-	if(message) return showError(message)
+	const { data:messages, message:errorMessage } = await http.getAllChatMessages(payload)
+	if(errorMessage) return showError(errorMessage)
 
 	messages.forEach(messageDoc => {
 		// console.log(messageDoc)
 		// show error alert for not populated senerio
 		if(messageDoc.sender.id === logedInUser._id) {
-			elements.createYourMessage(textMessagesContainer, { 
-				type: messageDoc.type,
-				message: messageDoc.message 
-			})
+
+			if(messageDoc.type === 'audio') {
+				elements.createYourAudio(textMessagesContainer, { 
+					avatar: logedInUser.avatar,
+					audioUrl: messageDoc.message,
+					audioDuration: messageDoc.duration,
+					createdAt: messageDoc.createdAt
+				})
+
+			} else {
+				elements.createYourMessage(textMessagesContainer, { 
+					type: messageDoc.type,
+					message: messageDoc.message 
+				})
+			}
+
 
 		} else {
-			elements.createTheirMessage(textMessagesContainer, { 
-				type: messageDoc.type,
-				message: messageDoc.message,
-				avatar: messageDoc.sender.avatar
-			})
+			if(messageDoc.type === 'audio') {
+				elements.createTheirAudio(textMessagesContainer, { 
+					avatar: logedInUser.avatar,
+					audioUrl: messageDoc.message,
+					audioDuration: messageDoc.duration,
+					createdAt: messageDoc.createdAt
+				})
+
+			} else {
+				elements.createTheirMessage(textMessagesContainer, { 
+					type: messageDoc.type,
+					message: messageDoc.message,
+					avatar: messageDoc.sender.avatar
+				})
+			}
 
 		}
 	})
@@ -276,43 +298,46 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 
 // ----------[ audio upload ]----------
 export const showAudio = async (blob, audio, audioDuration) => {
-	// Step-1: Show Audio in UI
-	audio.srcObject = null 	// remove old audio.srcObject added in record starting time
+	try {
+		// Step-1: Show Audio in UI
+		audio.srcObject = null 	// remove old audio.srcObject added in record starting time
 
-	const dataUrl = URL.createObjectURL(blob)
-	audio.src = dataUrl
-	audio.controls = true
-	audio.autoplay = false
-	//- URL.revokeObjectURL(dataUrl) 	// Don't remove url, else audio will be no more
+		const dataUrl = await readAsDataURL(blob, { type: 'audio' })
+		// const dataUrl = URL.createObjectURL(blob)
+		audio.src = dataUrl
+		audio.controls = true
+		audio.autoplay = false
+		//- URL.revokeObjectURL(dataUrl) 	// Don't remove url, else audio will be no more
+
+		// Step-2: Send audio to backend
+		const selectedUserListContainer = $('[name=selected-user-list-container]')
+		const payload = {
+			sender: logedInUser._id,
+			receiver: selectedUserListContainer.id,
+			message: dataUrl,
+			type: 'audio',
+			duration: audioDuration,
+		}
+		const { data:messageDoc, message } = await http.createMessage(payload)
+		if(message) return showError(message)
+
+		// console.log(messageDoc)
+
+		// Step-3: Send MessageDoc to other-user: WebSocket + and show in UI
+		// io.on('')
 
 
-	// // convert blob to base64 dataUrl instead or memory reference
-	// // Step-2: Send audio to backend
-	// 	try {
-	// 		const selectedUserListContainer = $('[name=selected-user-list-container]')
-	// 		const payload = {
-	// 			sender: logedInUser._id,
-	// 			receiver: selectedUserListContainer.id,
-	// 			message: dataUrl,
-	// 			type: 'audio'
-	// 		}
+		// Step-4: Show Audio in sender: user himself
+		elements.createYourAudio(textMessagesContainer, { 
+			avatar: logedInUser.avatar,
+			audioUrl: dataUrl,
+			audioDuration,
+			createdAt: messageDoc.createdAt
+		})
 
-	// 		const { data:messageDoc, message } = await http.createMessage(payload)
-	// 		if(message) return showError(message)
-
-	// 	} catch (err) {
-	// 		showError(err.message)
-	// 	}
-
-	// Step-3: Send MessageDoc to other-user: WebSocket + and show in UI
-
-	// Step-4: Show Audio in sender: user himself
-	elements.createYourAudio(textMessagesContainer, { 
-		avatar: logedInUser.avatar,
-		audioUrl: dataUrl,
-		audioDuration,
-		createdAt: Date.now(),
-	})
+	} catch (err) {
+		showError(err.message)
+	}
 }
 
 // ----------[ file upload: via webRTC ]----------

@@ -55,7 +55,7 @@ export const stopRecording = (audio) => {
 	audio.controls = false
 	audio.autoplay = false
 
-	URL.revokeObjectURL(audio.src) 	// audio.src = dataUrl
+	// URL.revokeObjectURL(audio.src) 	// audio.src = dataUrl
 	recorder.stop()
 }
 

@@ -64,12 +64,25 @@ export const readAsDataURL = (file, { type='image' } = {}) => {
 
 		const reader = new FileReader()
 		reader.readAsDataURL(file)
-		reader.addEventListener('loadend', () => {
-			resolve(reader.result)
+		reader.addEventListener('load', () => {
+			if(reader.readyState === 2) {
+				resolve(reader.result)
+			}
 		})
+		reader.addEventListener('error', reject)
 	})
 }
 
+// export const blobToBase64 = (blob) => new Promise((resolve, reject) => {
+// 	const reader = new FileReader()
+// 	reader.readAsDataURL(blob)
+// 	reader.addEventListener('load', () => {
+// 		if(reader.readyState === 2) {
+// 			resolve(reader.result)
+// 		}
+// 	})
+// 	reader.addEventListener('error', reject)
+// })
 
 
 export const calculateAudioCurrentTimeValue = (currentTime) => {

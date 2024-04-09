@@ -20,6 +20,10 @@ const messageSchema = new Schema({
 		enum: ['text', 'image', 'audio'],
 		default: 'text', 
 	}, 
+	duration: { 											// => if type === 'audio' 	then audio.duration
+		type: Number, 
+		default: 30, 
+	}, 
 	// chat: { 													// message must will bellong to a particualar chat for Group
 	// 	type: Schema.Types.ObjectId, 
 	// 	ref: 'Chat',

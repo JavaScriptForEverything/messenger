@@ -9,6 +9,7 @@ exports.filterBody = (body) => {
 		// 'chat', 				// chatId
 		'sender', 				// userId
 		'receiver', 			// userId
+		'duration', 			// audio.duration
 	]
 
 	return filterObjectByArray(body, allowedFields)
@@ -18,7 +19,8 @@ exports.filterMessage = (message) => {
 	const allowedFields = [
 		'message',
 		'type',
-		// 'chat', 					// chatId
+		'duration', 			// if type = 'audio' then duration required
+		// 'chat', 				// chatId
 		'sender', 				// userId
 		'receiver', 			// userId
 		

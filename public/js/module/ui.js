@@ -3,19 +3,22 @@ import { $, redirectTo, readAsDataURL } from './utils.js'
 import * as elements from '../module/elements.js'
 import * as http from './http.js'
 
-const middleTop = $('[name=middle-top]')
+// const middleTop = $('[name=middle-top]')
 // const middleTopAvatar = middleTop.querySelector('[name=avatar]')
 // const middleTopUsername = middleTop.querySelector('[name=username]')
 // console.log(middleTopAvatar, middleTopUsername)
 const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
+const leftPannelSlideButtonInputCheckbox = $('#left-side-checkbox')
 const friendsNotFound = $('[name=friends-not-found]') 	
 const friendsListContainer = $('[name=friends-list-container]') 	
 // const messageContainer = $('[name=message-container]') 	
 const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
 
+const attachmentButtonInput = $('#attachment-icon-button')
 const sendMessageForm = $('form[name=middle-bottom]')
 const writeMessageInput = $('[name=write-message-input]') 	
 const cameraIconButtonInput = $('#camera-icon-button')
+
 
 
 // const updateAvatar = (parentSelector) => {
@@ -167,6 +170,7 @@ const selectedUserHandler = (user) => {
 	// console.log(url.hash)
 
 	showAllMessagesInUI(user.id) 				// hide Messages for now
+	leftPannelSlideButtonInputCheckbox.checked = false
 }
 
 const showAllMessagesInUI = async (receiver) => {
@@ -341,26 +345,28 @@ export const showAudio = async (blob, audio, audioDuration) => {
 }
 
 // ----------[ file upload: via webRTC ]----------
-const attachmentButtonInput = $('#attachment-icon-button')
 attachmentButtonInput.addEventListener('change', async (evt) => {
+		console.log('only share large file via WebRTC')
+
 	try {
 		const selectedUserListContainer = $('[name=selected-user-list-container]')
 		const dataUrl = await readAsDataURL(evt.target.files[0], { type: 'file' })
 
-		const payload = {
-			sender: logedInUser._id,
-			receiver: selectedUserListContainer.id,
-			message: dataUrl,
-			type: 'file'
-		}
+
+		// const payload = {
+		// 	sender: logedInUser._id,
+		// 	receiver: selectedUserListContainer.id,
+		// 	message: dataUrl,
+		// 	type: 'file'
+		// }
 		// Don't store file in backend, just transfer via webRTC client <==> client
 
-		console.log(payload)
 
-		elements.createYourMessage(textMessagesContainer, { 
-			type: 'text', 
-			message: dataUrl
-		})
+		// elements.createYourMessage(textMessagesContainer, { 
+		// 	type: 'image', 
+		// 	message: dataUrl
+		// })
+
 
 		// send this element via wss + webRTC
 			// elements.createTheirMessage(textMessagesContainer, { 

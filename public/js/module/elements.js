@@ -250,11 +250,13 @@ elements.createFirendList(leftFriendPanel, {
 export const createFirendList = (selector, data) => {
 	const {
 		id=null,
-		avatar='/images/users/default.jpg',
-		name = 'Riajul Islam',
-		message = 'Senior Developer',
-		createdAt=Date.now(), 
+		// avatar='/images/users/default.jpg',
+		avatar='',
+		name = '',
+		message = '', 		
+		createdAt='', 
 		type='text', 									// text | image | audio | video
+		isTitle=true, 								// if true then color bold
 
 		isActive=false,
 		isMessageSuccess=false,
@@ -271,21 +273,28 @@ export const createFirendList = (selector, data) => {
 			${ isNotification ? ' message-notification' : ''} 
 
 		'>
+		${ avatar ? `
 			<div class='flex-shrink-0 relative pointer-events-none'>
 				<img src='${avatar}' alt='avatar' class='h-10 border border-slate-300 rounded-full' />
 				<div class='group-[.active]/firend-list:block hidden absolute bottom-2 -right-0.5 w-2 h-2 rounded-full bg-green-500'></div>
 			</div>
+		` : ''}
 
-			<div name='label-container' class='flex-1 pointer-events-none'>
+			<div name='label-container' class='flex-1 flex flex-col justify-center pointer-events-none'>
+				${name ? `
 				<div name='name-container' class='flex items-center justify-between'>
-					<p name='username' class='text-blue-600 font-medium max-w-36 capitalize truncate'>  ${name}
+					<p name='username' class='${isTitle ? 'text-blue-500 font-medium ' : 'text-slate-600'} max-w-36 capitalize truncate'>  ${name}
+					${ createdAt ? `
 					<p name='title' class='text-slate-600 font-light text-sm '>
 						${new Date( createdAt ).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
 					</p>
+					`: ''}
 				</div>
+				` : ''}
 
-				<div name='name-container' class=' relative flex items-center justify-between'>
+				<div name='message-container' class=' relative flex items-center justify-between'>
 					<p for='title' class='text-slate-600 font-light text-sm max-w-40 capitalize truncate'> 
+
 						${
 							type === 'text' ? message 
 						: type === 'image' ? 

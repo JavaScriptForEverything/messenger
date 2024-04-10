@@ -114,26 +114,24 @@ export const createMessage = async (payload) => {
 	}
 }
 
-	// clearTimeout(timer)
-	// timer = setTimeout(async() => {
-	// 	if(controller) controller.abort('abort message')
 
-	// 	controller = new AbortController()
-	// 	const { signal } = controller
 
-	// 	try {
-	// 		// const res = await fetch('/api/users', { signal })
-	// 		const res = await fetch('/api/messages', {
-	// 			method: 'POST',
-	// 			body: JSON.stringify(payload)
-	// 		})
-	// 		const data = await res.json()
-	// 		console.log(data)
+// export const getSearchUser = async (payload, signal) => {
+// 	try {
+// 		const res = await fetch('/api/users/friends', {
+// 			method: 'GET',
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 				'Accept': 'application/json',
+// 			},
+// 			signal
+// 		})
+// 		if( !res.ok ) throw await res.json()
 
-	// 	} catch (err) {
-	// 		if( err.name === 'AbortError') return
+// 		return await res.json()
 
-	// 		console.log(err)	
-	// 		console.log(signal.reason, signal.aborted)
-	// 	}
-	// }, 10)
+// 	} catch (err) {
+// 		if( err.name === 'AbortError') return
+// 		return err
+// 	}
+// }

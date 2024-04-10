@@ -1,12 +1,12 @@
 // import { createPicker } from 'https://unpkg.com/picmo@latest/dist/index.js';
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 import { createPicker } from '../plugins/picmo/index.js';
-import WaveSurfer from '../plugins/wavesurfer/index.js'
+// import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
-import * as elements from '../module/elements.js'
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
+import * as elements from '../module/elements.js'
 
 /*----------[ Note ]----------
 	Only handle initial scripts in this file, and all the modification
@@ -25,35 +25,29 @@ wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js fil
 // store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
 
 let timer = null
-let controller = null
+// let controller = null
 
-const leftFriendPanel = $('[name=left-main]') 	
-const messageContainer = $('[name=message-container]') 	
+// const leftFriendPanel = $('[name=left-main]') 	
+// const messageContainer = $('[name=message-container]') 	
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
-const videoContainer = $('[name=video-container]') 	
-const chatsContainer = $('#chats-container')
+// const videoContainer = $('[name=video-container]') 	
+// const chatsContainer = $('#chats-container')
 const microphoneInsideInput = $('form[name=middle-bottom] [for=microphone-icon-button]')
 const writeMessageInput = $('[name=write-message-input]') 	
 const pickerContainer = $('[name=picker-container]')
 const emojiInput = $('#emoji-icon-button') 	
+const audio = $('[name=microphone-audio') // required for microphone audio capture
 
 // videoContainer.classList.add('active')
 
 // hide left-panel: for testing
-$('#left-side-checkbox').checked = false
-
-
-audioCallButton.addEventListener('click', (evt) => {
-	toggleClass(evt.target, 'active')
-})
-videoCallButton.addEventListener('click', (evt) => {
-	toggleClass(evt.target, 'active')
-})
+	// $('#left-side-checkbox').checked = false
 
 
 
-const audio = $('[name=microphone-audio')
+
+//----------[ message audio ]----------
 microphoneInsideInput.addEventListener('click', async (evt) => {
 	const isHasBlinkClass = evt.target.classList.contains('blink')
 
@@ -85,6 +79,16 @@ microphoneInsideInput.addEventListener('click', async (evt) => {
 
 	// toggleClass(evt.target, 'blink') // evt.target.classList.toggle('blink', !evt.target.classList.contains('blink') )
 })
+// -----
+
+audioCallButton.addEventListener('click', (evt) => {
+	toggleClass(evt.target, 'active')
+})
+videoCallButton.addEventListener('click', (evt) => {
+	toggleClass(evt.target, 'active')
+})
+
+
 
 
 

@@ -10,7 +10,7 @@
 		?_page=2
 		&_limit=3
 		&_sort=-createdAt,user
-		&_search= riajul,email 					// find text 'riajul' in email field
+		&_search= riajul,email,name 					// find text 'riajul' in email, or name or ... any of  field
 		&_fields=review,user,createdAt
 
 	const reviews = await apiFeatures(Review, req.query)

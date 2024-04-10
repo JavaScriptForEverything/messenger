@@ -25,11 +25,16 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 	const users = await apiFeatures(User, req.query, filter)
 	// filter users fields and instead of populate user populate frields virtual property of followers + followings
 
+	setTimeout(() => {
+	// if(true)return next(appError('no friends found'))
+
 	res.status(200).json({
 		status: 'success',
 		count: users.length,
 		data: users 	
 	})
+
+	}, 500)
 })
 
 

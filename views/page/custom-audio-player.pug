@@ -1,0 +1,224 @@
+extends ../layout
+block script
+	//- script( defer type='module' src='/js/page/demo.js')
+	style.
+		.spin {
+			animation-name: spin;
+			animation-iteration-count: infinite;
+			animation-duration: 4s;
+			animation-timing-function: linear;
+			animation-play-state: paused;
+		}
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+block body 
+	div(class='h-screen flex justify-center items-center')
+		audio(name='audio')
+
+		div(
+			class='p-4 w-80 min-h-96 border border-slate-200 shadow text-slate-500'
+			class='flex flex-col items-center gap-2'
+		)
+			p(name='song-name' class='text-2xl text-slate-700') Song Name
+			p(name='artist-name' class='') Artist Name
+
+			div(
+				name='cover-photo' 
+				class='my-2 w-40 h-40 rounded-full shrink-0 bg-red-500'
+				class='bg-[url(/images/logo.png)] bg-cover'
+				class='spin'
+				class='relative flex items-center justify-center'
+				class='before:absolute before:content-[""] before:w-8 before:h-8 before:rounded-full'
+				class='before:bg-slate-50'
+			)
+
+			div(name='slide-container' class='my-2 w-full flex flex-col')
+				input(
+					name='slider-input-range'
+					type='range' 
+					class='w-full appearance-none bg-transparent '
+					class=''
+					class='[&::-webkit-slider-runnable-track]:rounded-full'
+					class='[&::-webkit-slider-runnable-track]:bg-slate-300/80'
+					class=''
+					class='[&::-webkit-slider-thumb]:appearance-none'
+					class='[&::-webkit-slider-thumb]:w-0 '
+					class='[&::-webkit-slider-thumb]:h-2 '
+					class='[&::-webkit-slider-thumb]:bg-red-500'
+					class=''
+					class='[&::-webkit-slider-thumb]:[box-shadow:-400px_0_0_400px_#347adf]'
+					class='[&::-webkit-slider-runnable-track]:overflow-hidden'
+				)
+				div(class='flex justify-between ')
+					span(name='current-time') 00:00
+					span(name='song-duration') 00:00
+
+			div(name='button-container' class='w-full flex gap-1 justify-center ')
+				button(name='prev-button' class='p-2 active:bg-slate-200 rounded-full border border-slate-400') 
+					<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M31 36L19 24l12-12"/></svg>
+
+				//- .active class play/pause icon
+				button(name='play-pause-button' 
+					class='p-2 active:bg-slate-200 rounded-full border border-slate-400'
+					class='[&.active>*:first-child]:hidden '
+					class='[&.active>*:last-child]:block '
+					) 
+					<svg class='w-6 h-6 pointer-events-none' name='play-icon' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="M240 128a15.74 15.74 0 0 1-7.6 13.51L88.32 229.65a16 16 0 0 1-16.2.3A15.86 15.86 0 0 1 64 216.13V39.87a15.86 15.86 0 0 1 8.12-13.82a16 16 0 0 1 16.2.3l144.08 88.14A15.74 15.74 0 0 1 240 128"/></svg>
+					<svg class='hidden w-6 h-6 pointer-events-none' name='pause-icon' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
+
+				button(name='next-button' class='p-2 active:bg-slate-200 rounded-full border border-slate-400') 
+					<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m19 12l12 12l-12 12"/></svg>
+
+
+
+		//- audio(name='audio')
+
+	script.
+		const $ = (selector) => document.querySelector(selector)
+		const audio = $('[name=audio]')
+		const songNameP = $('[name=song-name]')
+		const artistNameP = $('[name=artist-name]')
+		const coverPhotoDiv = $('[name=cover-photo]')
+		const sliderInputRange = $('[name=slider-input-range]')
+		const currentTimeSpan = $('[name=current-time]')
+		const songDurationSpan = $('[name=song-duration]')
+		const prevButton = $('[name=prev-button]')
+		const playPauseButton = $('[name=play-pause-button]')
+		const nextButton = $('[name=next-button]')
+
+		let timer = 0
+		let currentSongIndex = null
+
+		const songs = [
+			{
+				name: 'Song 1',
+				artist: 'Artist 1',
+				url: '/music/ignite.mp3',
+				coverPhoto: '/images/logo.png',
+			},
+			{
+				name: 'Song 2',
+				artist: 'Artist 2',
+				url: '/music/anjaneyam.mp3',
+				coverPhoto: '/images/logo.png',
+			},
+			{
+				name: 'Song 3',
+				artist: 'Artist 3',
+				url: '/music/anjaneyam.mp3',
+				coverPhoto: '/images/logo.png',
+			},
+			{
+				name: 'Song 4',
+				artist: 'Artist 4',
+				url: '/music/anjaneyam.mp3',
+				coverPhoto: '/images/logo.png',
+			},
+		]
+
+		playPauseButton.addEventListener('click', (evt) => {
+			playSong()
+
+			if( playPauseButton.classList.contains('active') ) {
+
+				timer = setInterval(() => {
+					sliderInputRange.value = audio.currentTime
+					sliderInputRange.max = audio.duration 	// set slider range === audio duration
+
+					currentTimeSpan.textContent = audio.currentTime
+					//- currentTimeSpan.textContent = formatTime(audio.currentTime)
+					songDurationSpan.textContent = formatTime(audio.duration)
+
+					// if audio ends
+					if(audio.currentTime == audio.duration) {
+						stopSong()
+						//- coverPhotoDiv.removeAttribute('style')
+						//- audio.pause() 	// stop song
+						//- clearInterval( timer )
+						//- playPauseButton.classList.remove('active')
+					}
+				}, 500)
+
+			} else {
+				stopSong()
+				//- //- coverPhotoDiv.style = 'animation-play-state: paused;'
+				//- coverPhotoDiv.removeAttribute('style')
+				//- audio.pause()
+				//- clearInterval( timer )
+			}
+		})
+
+		sliderInputRange.addEventListener('input', (evt) => {
+			audio.currentTime = evt.target.value 		// already set sliderInputRange.max = song.duration
+		})
+
+		const formatTime = (time) => {
+			let minutes = Math.floor( time / 60 )
+			if( minutes < 10 ) minutes = `0${minutes}`
+
+			let seconds = Math.floor( minutes % 60 )
+			if( seconds < 10 ) seconds = `0${seconds}`
+
+			return `${minutes}:${seconds}`
+		}
+
+		const setSong = (index) => {
+			sliderInputRange.value = 0 	// set song start position on song changes 
+
+			const song = songs[index]
+			currentSongIndex = index
+
+			audio.src = song.url
+			songNameP.textContent = song.name
+			artistNameP.textContent = song.artist
+			coverPhotoDiv.style = `background-image: url(${song.coverPhoto})`
+			//- coverPhotoDiv.style.backgroundImage = `url(${song.coverPhoto})`
+
+		}
+		setSong(0)
+
+		const playSong = () => {
+			audio.play()
+			coverPhotoDiv.style = 'animation-play-state: running;'
+			//- playPauseButton.classList.add('active')
+			playPauseButton.classList.toggle('active')
+		}
+		const stopSong = () => {
+			clearInterval( timer )
+			coverPhotoDiv.removeAttribute('style') 												// method-1
+			//- coverPhotoDiv.style = 'animation-play-state: paused;' 		// method-2
+			audio.pause()
+			//- playPauseButton.classList.remove('active')
+		}
+
+
+		nextButton.addEventListener('click', () => {
+			if(currentSongIndex >= songs.length - 1) {
+				currentSongIndex = 0
+			} else {
+				currentSongIndex++
+			}
+			setSong(currentSongIndex)
+			playSong()
+			playPauseButton.classList.add('active')
+
+		})
+		prevButton.addEventListener('click', () => {
+			if(currentSongIndex <= 0) {
+				currentSongIndex = songs.length - 1
+			} else {
+				currentSongIndex--
+			}
+			setSong(currentSongIndex)
+			playSong()
+			playPauseButton.classList.add('active')
+		})
+
+	

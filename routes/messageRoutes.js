@@ -9,6 +9,6 @@ const router = Router()
 		.post(messageContainer.createMessage)
 
 	router.route('/chats')
-		.post(messageContainer.getAllChatMessages)
+		.get(messageContainer.getAllChatMessages)
 
 module.exports = router

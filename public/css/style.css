@@ -832,6 +832,10 @@ video {
   margin-top: 0.5rem;
 }
 
+.mt-20 {
+  margin-top: 5rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
 }
@@ -2520,6 +2524,11 @@ video {
 .\[\&\.selected\]\:bg-slate-200.selected {
   --tw-bg-opacity: 1;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+}
+
+.\[\&\:\:-webkit-search-cancel-button\]\:appearance-none::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+          appearance: none;
 }
 
 .\[\&\:\:-webkit-slider-runnable-track\]\:overflow-hidden::-webkit-slider-runnable-track {

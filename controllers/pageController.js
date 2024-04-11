@@ -39,6 +39,13 @@ exports.home = async (req, res, next) => {
 	}
 }
 
+exports.customAudioPlayer = (req, res, next) => {
+	const payload = {
+		title: 'Custom Audio Player Page',
+	}
+
+	res.render('page/custom-audio-player', payload)
+}
 exports.demo = (req, res, next) => {
 	const payload = {
 		title: 'Demo Page',

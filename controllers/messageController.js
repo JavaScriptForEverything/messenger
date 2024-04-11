@@ -16,17 +16,10 @@ exports.getAllMessages = catchAsync( async (req, res, next) => {
 	})
 })
 
-// POST /api/messages/chats
+// GET /api/messages/chats
 exports.getAllChatMessages = catchAsync( async (req, res, next) => {
-	const { sender='', receiver='' } = req.body
+	const { sender='', receiver='' } = req.query
 	if(!sender || !receiver) return next(appError('sender ID and receiver ID required'))
-
-	// const messages = await Message.find({
-	// 	$or : [
-	// 		{ sender, receiver },
-	// 		{ sender: receiver, receiver: sender },
-	// 	]
-	// })
 
 	const filter = {
 		$or : [
@@ -36,12 +29,15 @@ exports.getAllChatMessages = catchAsync( async (req, res, next) => {
 	}
 	const messages = await apiFeatures(Message, req.query, filter)
 
-
+	setTimeout(() => {
+		
 	res.status(200).json({
 		status: 'success',
 		count: messages.length,
 		data: messages.map( message => messageDto.filterMessage(message._doc)) 
 	})
+
+	}, 1000);
 })
 
 

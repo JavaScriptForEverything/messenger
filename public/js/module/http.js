@@ -66,18 +66,14 @@ export const getAllMessages = async () => {
 	}
 }
 
-export const getAllChatMessages = async ({ sender, receiver } = {}) => {
+export const getAllChatMessages = async (payload = {}) => {
 	try {
-		if(!sender || !receiver) throw new Error('psease provide senderId and receiverId')
+		if(!payload.sender || !payload.receiver) throw new Error('psease provide senderId and receiverId')
 
-		const res = await fetch('/api/messages/chats', {
-			method: 'POST',
-			body: JSON.stringify({ sender, receiver }),
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-			}
-		})
+		const searchParams = new URLSearchParams(payload)
+		const query = searchParams.toString()
+
+		const res = await fetch(`/api/messages/chats?${query}`)
 		if( !res.ok ) throw await res.json()
 
 		return await res.json()

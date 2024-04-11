@@ -18,6 +18,10 @@ const attachmentButtonInput = $('#attachment-icon-button')
 const sendMessageForm = $('form[name=middle-bottom]')
 const writeMessageInput = $('[name=write-message-input]') 	
 const cameraIconButtonInput = $('#camera-icon-button')
+const searchFriendsInput = $('#search-friends')
+const searchFriendsModel = $('[name=search-friends-modal]')
+const searchMessageInput = $('#search-messages')
+
 
 
 let controller = null
@@ -174,6 +178,49 @@ const selectedUserHandler = (user) => {
 	leftPannelSlideButtonInputCheckbox.checked = false 	// hide left-panel
 }
 
+
+// add all type of message here
+const addMessage = (messageDoc) => {
+	if(!messageDoc) return showError('message document is required')
+
+	if(messageDoc.sender.id === logedInUser._id) {
+
+		if(messageDoc.type === 'audio') {
+			elements.createYourAudio(textMessagesContainer, { 
+				avatar: logedInUser.avatar,
+				audioUrl: messageDoc.message,
+				audioDuration: messageDoc.duration,
+				createdAt: messageDoc.createdAt
+			})
+
+		} else {
+			elements.createYourMessage(textMessagesContainer, { 
+				type: messageDoc.type,
+				message: messageDoc.message 
+			})
+		}
+
+
+	} else {
+		if(messageDoc.type === 'audio') {
+			elements.createTheirAudio(textMessagesContainer, { 
+				avatar: logedInUser.avatar,
+				audioUrl: messageDoc.message,
+				audioDuration: messageDoc.duration,
+				createdAt: messageDoc.createdAt
+			})
+
+		} else {
+			elements.createTheirMessage(textMessagesContainer, { 
+				type: messageDoc.type,
+				message: messageDoc.message,
+				avatar: messageDoc.sender.avatar
+			})
+		}
+
+	}
+}
+
 const showAllMessagesInUI = async (receiver) => {
 	textMessagesContainer.innerHTML = '' 		// empty container before add new items
 
@@ -189,42 +236,7 @@ const showAllMessagesInUI = async (receiver) => {
 	messages.forEach(messageDoc => {
 		// console.log(messageDoc)
 		// show error alert for not populated senerio
-		if(messageDoc.sender.id === logedInUser._id) {
-
-			if(messageDoc.type === 'audio') {
-				elements.createYourAudio(textMessagesContainer, { 
-					avatar: logedInUser.avatar,
-					audioUrl: messageDoc.message,
-					audioDuration: messageDoc.duration,
-					createdAt: messageDoc.createdAt
-				})
-
-			} else {
-				elements.createYourMessage(textMessagesContainer, { 
-					type: messageDoc.type,
-					message: messageDoc.message 
-				})
-			}
-
-
-		} else {
-			if(messageDoc.type === 'audio') {
-				elements.createTheirAudio(textMessagesContainer, { 
-					avatar: logedInUser.avatar,
-					audioUrl: messageDoc.message,
-					audioDuration: messageDoc.duration,
-					createdAt: messageDoc.createdAt
-				})
-
-			} else {
-				elements.createTheirMessage(textMessagesContainer, { 
-					type: messageDoc.type,
-					message: messageDoc.message,
-					avatar: messageDoc.sender.avatar
-				})
-			}
-
-		}
+		addMessage(messageDoc)
 	})
 }
 
@@ -385,9 +397,6 @@ attachmentButtonInput.addEventListener('change', async (evt) => {
 
 
 //----------[ Search Friends ]----------
-const searchFriendsInput = $('#search-friends')
-const searchFriendsModel = $('[name=search-friends-modal]')
-
 // Step-1: show modal on input click
 searchFriendsInput.addEventListener('click', () => {
 	if(searchFriendsModel.classList.contains('hidden') ) {
@@ -460,4 +469,46 @@ searchFriendsInput.addEventListener('input', async (evt) => {
 
 
 
+//----------[ Search messages ]----------
+searchMessageInput.addEventListener('input', async (evt) => {
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const receiver = selectedUserListContainer.id
 
+	const search = evt.target.value
+
+	// if no search value then get users chats as it was before search
+	if(!search) return showAllMessagesInUI(receiver)
+	
+
+	if(controller) controller.abort() 
+	controller = new AbortController()
+	const { signal } = controller
+
+	const payload = {
+		sender: logedInUser._id,
+		receiver,
+		_search: `${search},message`
+	}
+	const searchParams = new URLSearchParams(payload)
+	const query = searchParams.toString()
+
+	try {
+		const res = await fetch(`/api/messages?${query}`, { signal })
+		if(!res.ok) throw await res.json()
+
+		const { data: messages } = await res.json()
+
+		textMessagesContainer.innerHTML = '' 		// empty container before add new items
+
+		messages.forEach(messageDoc => {
+			// console.log(messageDoc)
+			// show error alert for not populated senerio
+			addMessage(messageDoc)
+		})
+	} catch (err) {
+		if(err.name === 'AbortError') return 
+
+		showError(err.message)
+	}
+
+})

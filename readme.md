@@ -39,3 +39,4 @@
 		- show audio recording in UI, 
 		- Send audio to backend as message and shows those messages in UI
 		- Show audio in `Wavefrom` format instead of simple audio 
+		- Show latest message in friendList message : text | image | audio 

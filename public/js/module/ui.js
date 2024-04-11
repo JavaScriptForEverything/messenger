@@ -361,7 +361,9 @@ export const showAudio = async (blob, audio, audioDuration) => {
 
 // ----------[ file upload: via webRTC ]----------
 attachmentButtonInput.addEventListener('change', async (evt) => {
-		console.log('only share large file via WebRTC')
+	const message = 'only share large file via WebRTC'
+	console.log(message)
+	showError(message)
 
 	try {
 		const selectedUserListContainer = $('[name=selected-user-list-container]')

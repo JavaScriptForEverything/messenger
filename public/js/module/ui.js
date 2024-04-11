@@ -119,15 +119,15 @@ export const showFriendLists = (friends=[]) => {
 			// isActive: true,
 
 			// --- latestMessage 	details
-			type: 'image',
-			message: 'hi there whats going nothing happends', 				 // only required on type='text'
-			createdAt: Date.now(friend.createdAt), 
+			type: friend.latestMessage?.type,
+			message: friend.latestMessage?.message,			
+			createdAt: friend.latestMessage?.createdAt, 
 
 			// --- Notification details
 			// isNoNotification: true, 			// hide both new notification + success notification
+			isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
 			notificationValue:  2,
-			isNotification: true, 				// for New notification: to work 'isNoNotification' must be false
-			isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
+			// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 		})
 	})
 	handleListSelection(friends)
@@ -276,7 +276,9 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	})
 	writeMessageInput.value = '' 	// reset
 
-	// send the messageDoc via wss to other end to handle
+	// send the messageDoc via wss to other end to handle and update activeFriendList 
+	// friend.latestMessage = message
+
 })
 
 // ----------[ image upload ]----------

@@ -1,7 +1,8 @@
 const { isValidObjectId } = require('mongoose')
-const User = require('../models/userModel')
 const { apiFeatures } = require('../utils')
 const { catchAsync, appError } = require('./errorController')
+const User = require('../models/userModel')
+const userDto = require('../dtos/userDto')
 
 // GET /api/users
 exports.getAllUsers = catchAsync( async (req, res, next) => {
@@ -12,7 +13,8 @@ exports.getAllUsers = catchAsync( async (req, res, next) => {
 	res.status(200).json({
 		status: 'success',
 		count: users.length,
-		data: users 	
+		data: users
+		// data: users.map( user => userDto.filterUser(user._doc))
 	})
 })
 
@@ -22,8 +24,10 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 
 	// friends = followers + followings
 	const filter = {}
-	const users = await apiFeatures(User, req.query, filter)
+	const users = await apiFeatures(User, req.query, filter).populate('latestMessage')
+
 	// filter users fields and instead of populate user populate frields virtual property of followers + followings
+
 
 	setTimeout(() => {
 	// if(true)return next(appError('no friends found'))
@@ -31,7 +35,8 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 	res.status(200).json({
 		status: 'success',
 		count: users.length,
-		data: users 	
+		data: users
+		// data: users.map( user => userDto.filterUser(user._doc))
 	})
 
 	}, 500)

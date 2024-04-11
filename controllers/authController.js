@@ -46,7 +46,11 @@ exports.register = async (req, res, next) => {
 		})
 
 	} catch (err) {
-		fileService.removeFile(req.body.avatar)
+		// jimp (image cropper) take some time to crop, so delay a for 1s
+		setTimeout(() => {
+			fileService.removeFile(req.body.avatar)
+		}, 1000)
+
 		next(appError(err.message))		
 	}
 }

@@ -6,7 +6,7 @@ const router = Router()
 
 	router.route('/')
 		.get(messageContainer.getAllMessages)
-		.post(messageContainer.createMessage)
+		.post(messageContainer.createMessage) 
 
 	router.route('/chats')
 		.get(messageContainer.getAllChatMessages)

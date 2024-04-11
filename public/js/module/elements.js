@@ -246,18 +246,41 @@ elements.createFirendList(leftFriendPanel, {
 	isNotification=false, 							// override isMessageSuccess
 	isNoNotification=false, 						// override both isMessageSuccess and IsNotification
 	notificationValue:  2,
-}) */
+}) 
+
+elements.createFirendList(friendsListContainer, {
+	// --- user details
+	id: friend.id,
+	avatar: friend.avatar,
+	name: friend.fullName,
+	// isActive: true,
+
+	// --- latestMessage 	details
+	type: friend.latestMessage?.type,
+	message: friend.latestMessage?.message,			
+	createdAt: friend.latestMessage?.createdAt, 
+
+	// --- Notification details
+	// isNoNotification: true, 			// hide both new notification + success notification
+	isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
+	notificationValue:  2,
+	isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
+})
+*/
 export const createFirendList = (selector, data) => {
 	const {
+	// --- user details
 		id=null,
-		// avatar='/images/users/default.jpg',
 		avatar='',
 		name = '',
+
+	// --- user.latestMessage 	details
+		type='text', 									// text | image | audio | video
 		message = '', 		
 		createdAt='', 
-		type='text', 									// text | image | audio | video
 		isTitle=true, 								// if true then color bold
 
+		// --- Notification details
 		isActive=false,
 		isMessageSuccess=false,
 		isNotification=false, 				// override isMessageSuccess

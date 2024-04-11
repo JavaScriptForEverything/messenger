@@ -51,3 +51,9 @@ Problem-1: Layout not 100 fit in small mobile
 	- Target always keep 4px space in all side:
 	- solution: 
 			1. try add margin to parrent instead of padden self
+
+
+
+
+
+

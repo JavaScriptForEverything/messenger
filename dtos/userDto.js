@@ -50,6 +50,7 @@ exports.filterUser = (user) => {
 		'email',
 		// 'password',
 		// 'confirmPassword',
+		'latestMessage',
 		'avatar',
 		'isActive',
 		'createdAt',

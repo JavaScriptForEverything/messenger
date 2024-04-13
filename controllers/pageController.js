@@ -39,6 +39,38 @@ exports.home = async (req, res, next) => {
 	}
 }
 
+
+
+// GET /user 				: self-profile 
+// GET /user/:id   	: Other users profile
+exports.profile = async (req, res, next) => {
+	try {
+		const userId = req.params.id || req.userId 	// comes from authController.protect middleware
+		const filter = { _id: userId }
+		const logedInUser = await User.findOne( filter )
+
+		const filteredUser = userDto.filterUser(logedInUser._doc)
+		const payload = {
+			title: `Profile | ${logedInUser.firstName} ${logedInUser.lastName}`,
+			logedInUser: filteredUser,
+			logedInUserJs: JSON.stringify( filteredUser )
+			// profileUser,
+			// profileUserJs: JSON.stringify(profileUser),
+			// timeSince
+		}
+
+		res.render('./page/profile', payload)
+		
+	} catch (err) {
+		console.log(err)
+		res.render('./page/notFound')	
+	}
+}
+
+
+
+
+// Demo page: for testing to show audio-player
 exports.customAudioPlayer = (req, res, next) => {
 	const payload = {
 		title: 'Custom Audio Player Page',

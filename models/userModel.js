@@ -1,6 +1,7 @@
 const { Schema, models, model } = require('mongoose');
 const validator = require('validator')
 const bcryptjs = require('bcryptjs')
+const slug = require('slug')
 
 const userSchema = new Schema({
 	firstName: {
@@ -18,6 +19,20 @@ const userSchema = new Schema({
 		lowercase: true,
 		minlength: 3,
 		maxlength: 20,
+	},
+	// slug: { 											
+	// 	type: String,
+	// 	trim: true,
+	// 	unique: true,
+	// 	lowercase: true,
+	// 	get: function(value) { return slug(`${this.firstName} ${this.lastName} ${this.id}`, '-') }
+	// },
+	username: { 											// set username: default is fullName + unique
+		type: String,
+		trim: true,
+		unique: true,
+		lowercase: true,
+		maxlength: 40,
 	},
 	email: {
 		type: String,
@@ -45,6 +60,10 @@ const userSchema = new Schema({
 	avatar: {
 		type: String,
 		default: '/images/users/default.jpg'
+	},
+	coverPhoto: {
+		type: String,
+		default: '/images/users/coverPhoto.png'
 	},
 
 	isActive: {

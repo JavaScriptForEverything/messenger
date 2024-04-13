@@ -33,6 +33,7 @@ exports.filterBody = (body) => {
 		'firstName',
 		'lastName',
 		'email',
+		'username',
 		'password',
 		'confirmPassword',
 		'avatar',
@@ -43,16 +44,20 @@ exports.filterBody = (body) => {
 
 exports.filterUser = (user) => {
 	const allowedFields = [
-		'_id',
 		'firstName',
 		'lastName',
 		'fullName',
 		'email',
+		'username',
 		// 'password',
 		// 'confirmPassword',
 		'latestMessage',
 		'avatar',
+		'coverPhoto',
 		'isActive',
+
+		'id',
+		'_id',
 		'createdAt',
 	]
 	return filterObjectByArray(user, allowedFields)

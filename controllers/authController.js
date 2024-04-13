@@ -3,6 +3,7 @@ const User = require('../models/userModel')
 const fileService = require('../services/fileService')
 const tokenService = require('../services/tokenService')
 const userDto = require('../dtos/userDto')
+const slug = require('slug')
 
 
 exports.protect = async (req, res, next) => {
@@ -27,6 +28,15 @@ exports.protect = async (req, res, next) => {
 exports.register = async (req, res, next) => {
 	try {
 		const filteredBody = userDto.filterBody(req.body)
+		const { username, firstName, lastName, email } = filteredBody
+
+		if(username) {
+			const isUsernameExists = await User.findOne({ username })
+			if(isUsernameExists) return next(appError('this username already taken by someone'))
+
+		} else {
+			filteredBody.username = slug(`${firstName} ${lastName} ${email}`, '-')
+		}
 
 		if(filteredBody.avatar) {
 			const { error, url } = await fileService.handleBase64File(filteredBody.avatar)

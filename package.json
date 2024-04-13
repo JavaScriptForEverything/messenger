@@ -23,6 +23,7 @@
 		"livereload": "^0.9.3",
 		"mongoose": "^8.2.0",
 		"pug": "^3.0.2",
+		"slug": "^9.0.0",
 		"socket.io": "^4.7.3",
 		"validator": "^13.11.0"
 	},

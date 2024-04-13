@@ -286,10 +286,12 @@ export const createFirendList = (selector, data) => {
 		isNotification=false, 				// override isMessageSuccess
 		isNoNotification=false, 			// override both isMessageSuccess and IsNotification
 		notificationValue= 2,
+
+		buttonText='', 								// buttonText === 'follow' ? 'follow' : 'unfollow'
 	} = data
 
 	const htmlString = `
-		<div name='list-container' id='${id}' class='flex gap-2 cursor-pointer px-2 py-1 bg-slate-50 hover:bg-slate-100 rounded 
+		<div name='list-container' id='${id}' class='flex items-center gap-2 cursor-pointer px-2 py-1 bg-slate-50 hover:bg-slate-100 rounded 
 			group/firend-list [&.selected]:bg-slate-200
 			${ isActive ? ' active' : ''} 
 			${ isMessageSuccess ? ' message-success' : ''} 
@@ -344,6 +346,12 @@ export const createFirendList = (selector, data) => {
 					</p>
 				</div>
 			</div>
+
+			${isNoNotification && !!buttonText ? `
+				<button class='border border-blue-500 px-3 py-0.5 rounded text-blue-500 [&.active]:bg-blue-500 [&.active]:text-slate-50'>
+					${buttonText === 'follow' ? 'follow' : 'unfollow'}
+				</button>
+			`: ''}
 
 		</div>
 	`

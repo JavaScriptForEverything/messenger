@@ -20,6 +20,8 @@ const writeMessageInput = $('[name=write-message-input]')
 const cameraIconButtonInput = $('#camera-icon-button')
 const searchFriendsInput = $('#search-friends')
 const searchFriendsModel = $('[name=search-friends-modal]')
+const searchPeopleInput = $('#search-people')
+const searchPeopleModal = $('[name=search-people-modal]')
 const searchMessageInput = $('#search-messages')
 
 
@@ -400,17 +402,13 @@ attachmentButtonInput.addEventListener('change', async (evt) => {
 
 
 
-//----------[ Search Friends ]----------
-// Step-1: show modal on input click
-searchFriendsInput.addEventListener('click', () => {
-	if(searchFriendsModel.classList.contains('hidden') ) {
-		searchFriendsModel.classList.remove('hidden')
+const showSearchModal = (modalSelector) => () => {
+	if(modalSelector.classList.contains('hidden') ) {
+		modalSelector.classList.remove('hidden')
 	}
-})
-
-// Step-2: Hide modal when click outside of modal
-document.addEventListener('click', (evt) => {
-	const { left, right, top, bottom } = searchFriendsModel.getBoundingClientRect()
+}
+const hideSearchModal = (modalSelector) => (evt) => {
+	const { left, right, top, bottom } = modalSelector.getBoundingClientRect()
 
 	const leftSide = evt.clientX < left
 	const rightSide = evt.clientX > right
@@ -418,13 +416,11 @@ document.addEventListener('click', (evt) => {
 	const bottomSide = evt.clientY > bottom
 
 	if(leftSide || rightSide || topSide || bottomSide) {
-		searchFriendsModel.classList.add('hidden')
+		modalSelector.classList.add('hidden')
 	}
-})
+}
 
-
-// Step-3: Add searched friends and show them in that modal
-searchFriendsInput.addEventListener('input', async (evt) => {
+const handleModalSearch = (modalSelector) => async (evt) => {
 	if(controller) controller.abort()
 	controller = new AbortController()
 	const { signal } = controller
@@ -436,13 +432,13 @@ searchFriendsInput.addEventListener('input', async (evt) => {
 		if(!res.ok) throw await res.json()
 		const { data: friends } = await res.json()
 
-		searchFriendsModel.innerHTML = '' 	// empty old modal friends before add new friends
+		modalSelector.innerHTML = '' 	// empty old modal friends before add new friends
 		evt.target.value = '' 							// empty input value after search success
 
 		// console.log(friends)
 
 		friends.forEach( friend => {
-			elements.createFirendList(searchFriendsModel, {
+			elements.createFirendList(modalSelector, {
 				id: friend.id,
 				avatar: friend.avatar,
 				message: friend.fullName,
@@ -452,13 +448,104 @@ searchFriendsInput.addEventListener('input', async (evt) => {
 		})
 
 		// Show searched selected user in the UI as we did with friend list item clicked (selection)
-		searchFriendsModel.addEventListener('click', (evt) => {
+		modalSelector.addEventListener('click', (evt) => {
 			const selectedUserId = evt.target.id
 			const selectedUser = friends.find( user => user.id === selectedUserId )
 			selectedUserHandler(selectedUser)
 
-			searchFriendsModel.classList.add('hidden') 	// hide searched friends modal after select one
-			searchFriendsModel.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
+			modalSelector.classList.add('hidden') 	// hide searched friends modal after select one
+			modalSelector.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
+		})
+
+
+
+	} catch (err) {
+		if(err.name === 'AbortError') return 
+
+		showError(err.message)
+		evt.target.value = ''
+	}
+}
+
+//----------[ Search Friends: left-panel ]----------
+// Step-1: show modal on input click
+searchFriendsInput.addEventListener('click', showSearchModal(searchFriendsModel))
+// Step-2: Hide modal when click outside of modal
+document.addEventListener('click', hideSearchModal(searchFriendsModel))
+// Step-3: Add searched friends and show them in that modal
+searchFriendsInput.addEventListener('input', handleModalSearch(searchFriendsModel))
+
+
+
+
+
+//----------[ Search People: right-panel ]----------
+// Step-1: show modal on input click
+searchPeopleInput.addEventListener('click', showSearchModal(searchPeopleModal))
+// Step-2: Hide modal when click outside of modal
+document.addEventListener('click', hideSearchModal(searchPeopleModal))
+
+
+// Step-3: Add searched friends and show them in that modal
+searchPeopleInput.addEventListener('input', async (evt) => {
+	if(controller) controller.abort()
+	controller = new AbortController()
+	const { signal } = controller
+
+	const search = evt.target.value
+
+	try {
+		// const res = await fetch(`/api/users/?_search=${search},email,firstName,lastName`, { signal })
+		const res = await fetch(`/api/users/`, { signal })
+		if(!res.ok) throw await res.json()
+		const { data: friends } = await res.json()
+
+		searchPeopleModal.innerHTML = '' 	// empty old modal friends before add new friends
+		evt.target.value = '' 							// empty input value after search success
+
+		// console.log(friends)
+
+		friends.forEach( friend => {
+			elements.createFirendList(searchPeopleModal, {
+				id: friend.id,
+				avatar: friend.avatar,
+				message: friend.fullName,
+				isActive: true,
+				isTitle: false,
+
+				isNoNotification: true,
+				buttonText: 'follow'
+			})
+		})
+
+		// Show searched selected user in the UI as we did with friend list item clicked (selection)
+		searchPeopleModal.addEventListener('click', (evt) => {
+			const selectedUserId = evt.target.id
+			// const selectedUser = friends.find( user => user.id === selectedUserId )
+			// selectedUserHandler(selectedUser)
+
+			// searchPeopleModal.classList.add('hidden') 	// hide searched friends modal after select one
+			// searchPeopleModal.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
+
+
+			if(evt.target.tagName === 'BUTTON') {
+				const isActive = evt.target.classList.contains('active')
+				const buttonText = isActive ? 'follow' : 'following' 		// handle outside of isActive check 
+
+				console.log('handle follow api request hare')
+
+				if(isActive) {
+					evt.target.classList.remove('active')
+					evt.target.textContent = buttonText
+
+				} else {
+					evt.target.classList.add('active')
+					evt.target.textContent = buttonText
+				}
+
+			} else {
+				redirectTo(`/profile/${evt.target.id}`)
+			}
 		})
 
 
@@ -470,6 +557,66 @@ searchFriendsInput.addEventListener('input', async (evt) => {
 		evt.target.value = ''
 	}
 })
+
+// elements.createFirendList(searchPeopleModal, {
+// 	id: 'asldfa',
+// 	avatar: '/images/users/default.jpg',
+// 	message: 'teste message',
+// 	isActive: true,
+// 	isTitle: false,
+
+// 	isNotification: true,
+// 	notificationValue: 2,
+// 	isNoNotification: true,
+// 	buttonText: 'follow'
+// })
+
+// searchFriendsInput.addEventListener('input', async (evt) => {
+// 	if(controller) controller.abort()
+// 	controller = new AbortController()
+// 	const { signal } = controller
+
+// 	const search = evt.target.value
+
+// 	try {
+// 		const res = await fetch(`/api/users/friends?_search=${search},email,firstName,lastName`, { signal })
+// 		if(!res.ok) throw await res.json()
+// 		const { data: friends } = await res.json()
+
+// 		searchFriendsModel.innerHTML = '' 	// empty old modal friends before add new friends
+// 		evt.target.value = '' 							// empty input value after search success
+
+// 		// console.log(friends)
+
+// 		friends.forEach( friend => {
+// 			elements.createFirendList(searchFriendsModel, {
+// 				id: friend.id,
+// 				avatar: friend.avatar,
+// 				message: friend.fullName,
+// 				isActive: true,
+// 				isTitle: false,
+// 			})
+// 		})
+
+// 		// Show searched selected user in the UI as we did with friend list item clicked (selection)
+// 		searchFriendsModel.addEventListener('click', (evt) => {
+// 			const selectedUserId = evt.target.id
+// 			const selectedUser = friends.find( user => user.id === selectedUserId )
+// 			selectedUserHandler(selectedUser)
+
+// 			searchFriendsModel.classList.add('hidden') 	// hide searched friends modal after select one
+// 			searchFriendsModel.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
+// 		})
+
+
+
+// 	} catch (err) {
+// 		if(err.name === 'AbortError') return 
+
+// 		showError(err.message)
+// 		evt.target.value = ''
+// 	}
+// })
 
 
 

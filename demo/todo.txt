@@ -1,21 +1,10 @@
-Problems: Virtual Property not found
-	. virtual property not get from 'pageRouter', but works on 'api: userRouter' 
-			userSchema.virtual('fullName').get(...) 
 
-Solution:
-	- virtual property of `mongoose` created after parse to json. so
-		we have to parse _doc to JSON string, but this way doc will be string, so we have to
-		parse again back to object from json.
-		
-	change
-				const user = await User.findOne({ _id: userId }) 					: => no virtual property in .pug file
-	to
-				let user = await User.findOne({ _id: userId })  					: => no virtual properties
-				    user = JSON.stringify( user ) 												: => Shows virtual properties
-				    user = JSON.parser( user ) 														: convert back to object
+
 
 
 task:
+	. disable every button on click for api request and enable back of response: success or failed
+
 	. on click user list, add ?userId=user.id, and then select that user on page refresh in UI
 		instead of friends[0] 
 	. handle text + image and File only via WebRTC

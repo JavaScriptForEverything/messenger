@@ -148,7 +148,7 @@ export const Snackbar = (props={}) => {
 	if( !element ) return console.error('element is null')
 	const closeButton = element.querySelector('button')
 
-	document.body.insertAdjacentElement('beforebegin', element)
+	document.body.insertAdjacentElement('beforeend', element)
 
 	const closeHandler = () => element.remove()
 	if( autoClose ) setTimeout(closeHandler, closeTime);

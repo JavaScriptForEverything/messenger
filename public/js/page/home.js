@@ -6,6 +6,7 @@ import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
+import * as http from '../module/http.js'
 import * as elements from '../module/elements.js'
 
 /*----------[ Note ]----------
@@ -29,16 +30,28 @@ let timer = null
 
 // const leftFriendPanel = $('[name=left-main]') 	
 // const messageContainer = $('[name=message-container]') 	
-const audioCallButton = $('[name=audio-call-button]') 	
-const videoCallButton = $('[name=video-call-button]') 	
-// const videoContainer = $('[name=video-container]') 	
-// const chatsContainer = $('#chats-container')
 const microphoneInsideInput = $('form[name=middle-bottom] [for=microphone-icon-button]')
 const writeMessageInput = $('[name=write-message-input]') 	
 const pickerContainer = $('[name=picker-container]')
 const emojiInput = $('#emoji-icon-button') 	
 const audio = $('[name=microphone-audio') // required for microphone audio capture
 
+const audioCallButton = $('[name=audio-call-button]') 	
+const videoCallButton = $('[name=video-call-button]') 	
+const rightSideAudioCallButton = $('[name=right-side] [name=audio-call-button]') 	
+const rightSideAvideoCallButton = $('[name=right-side] [name=video-call-button]') 	
+
+// attachments buttons
+const attachmentsFilterImageButton = $('[name=attachments-container] [name=filter-image]') 	
+const attachmentsFilterAudioButton = $('[name=attachments-container] [name=filter-audio]') 	
+const attachmentsFilterVideoButton = $('[name=attachments-container] [name=filter-video]') 	
+const attachmentsFilterFileButton = $('[name=attachments-container] [name=filter-file]') 	
+const attachmentsViewAllButton = $('[name=attachments-container] [name=view-all]') 	
+
+
+
+// const videoContainer = $('[name=video-container]') 	
+// const chatsContainer = $('#chats-container')
 // videoContainer.classList.add('active')
 
 // hide left-panel: for testing
@@ -46,6 +59,12 @@ const audio = $('[name=microphone-audio') // required for microphone audio captu
 
 
 
+// ----------[ Emoji Picker ]----------
+const picker = createPicker({ rootElement: pickerContainer })
+picker.addEventListener('emoji:select', (evt) => {
+	emojiInput.checked = false
+	writeMessageInput.value += evt.emoji
+})
 
 //----------[ message audio ]----------
 microphoneInsideInput.addEventListener('click', async (evt) => {
@@ -81,89 +100,32 @@ microphoneInsideInput.addEventListener('click', async (evt) => {
 })
 // -----
 
+
+const audioCallHandler = () => {
+	ui.showError('audio call handler')	
+
+}
+const videoCallHandler = () => {
+	ui.showError('video call handler')	
+}
+
+
 audioCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')
+	audioCallHandler()
+
 })
 videoCallButton.addEventListener('click', (evt) => {
 	toggleClass(evt.target, 'active')
+	videoCallHandler()
 })
 
-
-
-
-
-// elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
-
-/*
-elements.createFirendList(leftFriendPanel, {
-	id: 1,
-	avatar: '/images/users/default.jpg',
-	isActive: true,
-
-	createdAt: Date.now(), 
-	notificationValue:  2,
+rightSideAudioCallButton.addEventListener('click', () => {
+	audioCallHandler()
 })
-
-elements.createFirendList(leftFriendPanel, {
-	id: 2,
-	avatar: '/images/users/default.jpg',
-	name: 'Fiaz Sofeone Rakib',
-	isActive: true,
-
-	message: 'businessman textile',
-	type: 'audio',
-	createdAt: Date.now(), 
-
-	isMessageSuccess: true,
-	isNotification: false,
-	isNoNotification: false,
-	notificationValue:  2,
+rightSideAvideoCallButton.addEventListener('click', () => {
+	videoCallHandler()
 })
-
-*/
-
-
-
-
-
-
-// const theirWavesurfer = WaveSurfer.create({
-// 	container: '[name=their-audio] #waveform',
-// 	waveColor: '#7ca4d0aa',
-// 	progressColor: '#3b82f6',
-// 	url: '/music/ignite.mp3', 			
-
-// 	height: 32,
-// 	response: true,
-// 	barWidth: 2,
-// 	barRadius: 2,
-// })
-// const yourWavesurfer = WaveSurfer.create({
-// 	container: '[name=your-audio] #waveform',
-// 	waveColor: '#7ca4d0aa',
-// 	progressColor: '#3b82f6',
-// 	url: '/music/ignite.mp3', 			
-
-// 	height: 32,
-// 	response: true,
-// 	barWidth: 2,
-// 	barRadius: 2,
-// })
-
-// playPauseButton.addEventListener('click', () => {
-// 	theirWavesurfer.playPause() 	
-// 	yourWavesurfer.playPause() 	
-// })
-/*
-*/
-
-  // "",
-  // "6606b8c47844a6763050de3c",
-	// "6606f381e629d675c08c85b8",
-	// "6606f3a6e629d675c08c85ba"
-
-// elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
-// elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
 
 
 // elements.callingDialog({
@@ -215,20 +177,21 @@ elements.createFirendList(leftFriendPanel, {
 // 	}
 // })
 
-
-
-
-
-
-
-
-// ----------[ Emoji Picker ]----------
-const picker = createPicker({
-	rootElement: pickerContainer
+const handleAttachment = (type='text') => () => {
+	ui.filterMessageByAttachmentType(type)
+}
+attachmentsFilterImageButton.addEventListener('click', handleAttachment('image'))
+attachmentsFilterAudioButton.addEventListener('click', handleAttachment('audio'))
+attachmentsFilterVideoButton.addEventListener('click', handleAttachment('video'))
+attachmentsFilterFileButton.addEventListener('click', handleAttachment('file'))
+attachmentsViewAllButton.addEventListener('click', (evt) => {
+	ui.showError('handle view all ')
+	console.log('view all')
 })
 
-picker.addEventListener('emoji:select', (evt) => {
-	emojiInput.checked = false
-	writeMessageInput.value += evt.emoji
-})
+
+
+
+
+
 

@@ -153,3 +153,17 @@ export const toggleFollow = async (selectedUserId) => {
 // 		return err
 // 	}
 // }
+
+
+export const filterAttachments = async (search) => {
+	try {
+		const query = `_search=${search},message,type`
+		const res = await fetch(`/api/messages?${query}`)
+		if( !res.ok ) throw await res.json()
+
+		return await res.json()
+
+	} catch (err) {
+		return err
+	}
+}

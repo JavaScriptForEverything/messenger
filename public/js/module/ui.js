@@ -306,6 +306,37 @@ export const showAudio = async (blob, audio, audioDuration) => {
 }
 
 
+export const filterMessageByAttachmentType = async (type='text') => {
+	try {
+		const { error, data:messages } = await http.filterAttachments(type)
+		if(error) return showError( error )
+
+		textMessagesContainer.innerHTML = '' 		// empty container before add new items
+
+		if(!messages.length) return showError(`no more messages of ${type}`)
+
+		messages.forEach(messageDoc => {
+			// console.log(messageDoc)
+			// show error alert for not populated senerio
+			addMessage(messageDoc)
+		})
+
+	} catch (error) {
+		const message = error.message || error
+		showError(message)
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 // const getLogedInUser = async () => {
 // 	try {
 // 		const res = await fetch('/api/users', {
@@ -574,7 +605,7 @@ searchMessageInput.addEventListener('input', async (evt) => {
 	const payload = {
 		sender: logedInUser._id,
 		receiver,
-		_search: `${search},message`
+		_search: `${search},message,type`
 	}
 	const searchParams = new URLSearchParams(payload)
 	const query = searchParams.toString()

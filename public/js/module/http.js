@@ -22,9 +22,7 @@ export const getFilteredUsers = async (userIds) => {
 		if( !res.ok ) throw await res.json()
 
 		let output = await res.json()
-		output.data = output.data
-		.filter( doc => doc.id !== "6606b8c47844a6763050de3c")
-		.map( doc => userIds.includes( doc.id ) ? { ...doc, isOnline: true } : doc)
+		output.data = output.data.map( doc => userIds.includes( doc.id ) ? { ...doc, isOnline: true } : doc)
 
 		return output
 		// return await res.json()

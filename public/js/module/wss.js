@@ -35,10 +35,10 @@ export const registerSocketEvents = (socket) => {
 		socket.emit('user-join', { socketId: socket.id, userId })
 		socket.on('user-joinded', async ({ rooms }) => {
 
-			// console.log(rooms)
-
 			const users = []
-			rooms.forEach(({ userId }) => users.push(userId))
+			rooms
+				.filter((room ) => room.userId !== userId)
+				.forEach(({ userId }) => users.push(userId))
 
 			const { data: friends, message } = await getFilteredUsers(users)
 			if(message) {

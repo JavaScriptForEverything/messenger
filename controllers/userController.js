@@ -45,11 +45,14 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 
 
 
-// POST /api/users/filtered-users
+// POST /api/users/filtered-users + protect
 exports.getFilteredUsers = catchAsync( async (req, res, next) => {
 	const { userIds = [] } = req.body
 
-	const filter = { _id: { $in: userIds } }
+	// filter self user to show in friendList
+	const filteredUserIds = userIds.filter( userId => userId !== req.userId )
+
+	const filter = { _id: { $in: filteredUserIds } }
 	const users = await apiFeatures(User, req.query, filter)
 
 	// if(true) return next(appError('error'))

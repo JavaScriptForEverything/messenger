@@ -6,6 +6,8 @@ const tempUserIds = [
 ]
 export const getFilteredUsers = async (userIds) => {
 	userIds = tempUserIds
+
+
 	try {
 		// const res = await fetch(`/api/users/filtered-users`, {
 		// 	method: 'POST',
@@ -16,11 +18,16 @@ export const getFilteredUsers = async (userIds) => {
 		// 	}
 		// })
 
-		// const res = await fetch(`/api/users`)
 		const res = await fetch(`/api/users/friends`)
 		if( !res.ok ) throw await res.json()
 
-		return await res.json()
+		let output = await res.json()
+		output.data = output.data
+		.filter( doc => doc.id !== "6606b8c47844a6763050de3c")
+		.map( doc => userIds.includes( doc.id ) ? { ...doc, isOnline: true } : doc)
+
+		return output
+		// return await res.json()
 
 	} catch (error) {
 		return error

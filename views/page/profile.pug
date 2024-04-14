@@ -32,13 +32,23 @@ block script
 								a(href='#') followers
 
 				div(class='flex gap-2 pr-2 pt-2')
-					button(class='text-blue-500 border border-blue-500 px-3 rounded-full') 
+					//- if has .active class then toggle style
+					button( name='goto-message'
+						class='text-blue-500'
+						class='border border-blue-500 px-3 rounded-full'
+						class='hover:text-blue-600 hover:border-blue-600 active:bg-blue-100'
+						class='[&.active]:bg-blue-500 [&.active]:text-slate-50'
+						class='[&.active]:hover:bg-blue-500/95 [&.active]:active:bg-blue-500/80'
+						) 
 						<svg class=' w-8 h-8 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor"><rect width="16" height="12" x="4" y="6" rx="2"/><path d="m4 9l7.106 3.553a2 2 0 0 0 1.788 0L20 9"/></g></svg>
 
-					button(
+					//- if has .active class then toggle style
+					button( name='follow-unfollow'
 						class='text-blue-500'
 						class='border border-blue-500 px-5 py-1 rounded-full'
+						class='hover:text-blue-600 hover:border-blue-600 active:bg-blue-100'
 						class='[&.active]:bg-blue-500 [&.active]:text-slate-50'
+						class='[&.active]:hover:bg-blue-500/95 [&.active]:active:bg-blue-500/80'
 						) follow
 
 

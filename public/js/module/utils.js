@@ -104,3 +104,23 @@ export const calculateAudioTotalTimeValue = (length) => {
 
   return time;
 }
+
+
+
+
+// followUnfollowButton.addEventListener('click', followFollowingHandler)
+export const followFollowingHandler = (evt) => {
+	const isActive = evt.target.classList.contains('active')
+	const buttonText = isActive ? 'follow' : 'following' 		// handle outside of isActive check 
+
+	console.log('handle follow api request hare')
+
+	if(isActive) {
+		evt.target.classList.remove('active')
+		evt.target.textContent = buttonText
+
+	} else {
+		evt.target.classList.add('active')
+		evt.target.textContent = buttonText
+	}
+}

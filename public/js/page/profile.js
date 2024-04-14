@@ -1,14 +1,38 @@
 // import { Snackbar, getTweetHTML } from '/js/module/components/index.js'
 // import $, { axios } from '/js/module/utils.js'
 
+import { $, followFollowingHandler, redirectTo } from '../module/utils.js'
+
 /* Global Variables
 		. logedInUser
 		. profileUser
 		. Cropper 		from cropper CDN
 */
 
-console.log('profile page')
-console.log(logedInUser)
+// console.log('profile page')
+// console.log(logedInUser)
+
+
+
+const followUnfollowButton = $('[name=follow-unfollow]')
+followUnfollowButton.addEventListener('click', followFollowingHandler)
+
+const goToMessageButton = $('[name=goto-message]')
+goToMessageButton.addEventListener('click', (evt) => {
+	const url = new URL(location.href)
+	const userId = url.pathname.split('/').pop()
+
+	redirectTo(`/#userId=${userId}`)
+})
+
+
+
+
+
+
+
+
+
 
 /*
 const tabContainer = $('[name=tab-container]')

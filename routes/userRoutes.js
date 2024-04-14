@@ -6,7 +6,7 @@ const authController = require('../controllers/authController')
 const router = Router()
 
 	router.route('/friends')
-		.get(userController.getAllFriends)
+		.get(authController.protect, userController.getAllFriends)
 
 	router.route('/filtered-users')
 		.post( authController.protect, userController.getFilteredUsers)

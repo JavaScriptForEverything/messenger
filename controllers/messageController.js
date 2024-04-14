@@ -30,7 +30,7 @@ exports.getAllChatMessages = catchAsync( async (req, res, next) => {
 	}
 	const messages = await apiFeatures(Message, req.query, filter)
 
-	setTimeout(() => {
+	// setTimeout(() => {
 		
 	res.status(200).json({
 		status: 'success',
@@ -38,7 +38,7 @@ exports.getAllChatMessages = catchAsync( async (req, res, next) => {
 		data: messages.map( message => messageDto.filterMessage(message._doc)) 
 	})
 
-	}, 1000);
+	// }, 1000);
 })
 
 

@@ -19,17 +19,18 @@ exports.getAllUsers = catchAsync( async (req, res, next) => {
 })
 
 
-// GET /api/users/friends
+// GET /api/users/friends + protect
 exports.getAllFriends = catchAsync( async (req, res, next) => {
+	const logedInUserId = req.userId
 
 	// friends = followers + followings
-	const filter = {}
+	const filter = { _id: { $ne: logedInUserId }}
 	const users = await apiFeatures(User, req.query, filter).populate('latestMessage')
 
 	// filter users fields and instead of populate user populate frields virtual property of followers + followings
 
 
-	setTimeout(() => {
+	// setTimeout(() => {
 	// if(true)return next(appError('no friends found'))
 
 	res.status(200).json({
@@ -39,7 +40,7 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 		// data: users.map( user => userDto.filterUser(user._doc))
 	})
 
-	}, 500)
+	// }, 500)
 })
 
 

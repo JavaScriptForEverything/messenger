@@ -113,8 +113,6 @@ export const followFollowingHandler = (evt) => {
 	const isActive = evt.target.classList.contains('active')
 	const buttonText = isActive ? 'follow' : 'following' 		// handle outside of isActive check 
 
-	console.log('handle follow api request hare')
-
 	if(isActive) {
 		evt.target.classList.remove('active')
 		evt.target.textContent = buttonText

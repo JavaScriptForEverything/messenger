@@ -493,47 +493,57 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 	const search = evt.target.value
 
 	try {
-		// const res = await fetch(`/api/users/?_search=${search},email,firstName,lastName`, { signal })
-		const res = await fetch(`/api/users/`, { signal })
+		const res = await fetch(`/api/users/?_search=${search},email,firstName,lastName`, { signal })
+		// const res = await fetch(`/api/users/`, { signal })
 		if(!res.ok) throw await res.json()
-		const { data: friends } = await res.json()
+		const { data: people } = await res.json()
+
 
 		searchPeopleModal.innerHTML = '' 	// empty old modal friends before add new friends
-		evt.target.value = '' 							// empty input value after search success
+		// evt.target.value = '' 							// empty input value after search success
 
-		// console.log(friends)
 
-		friends.forEach( friend => {
-			elements.createFirendList(searchPeopleModal, {
-				id: friend.id,
-				avatar: friend.avatar,
-				message: friend.fullName,
-				isActive: true,
-				isTitle: false,
 
-				isNoNotification: true,
-				buttonText: 'follow'
-			})
+
+
+		people 		// people means profileUsers or non-logedInUsers
+			.filter(user => user._id != logedInUser._id ) 	// logedInUser globally available
+			.forEach( user => {
+				elements.createFirendList(searchPeopleModal, {
+					id: user.id,
+					avatar: user.avatar,
+					message: user.fullName,
+					isActive: user.isOnline,
+					isTitle: false,
+
+					isNoNotification: true,
+					showFollowButton: true,
+					isFollowing: user.followers.includes( logedInUser._id )
+				})
 		})
 
 		// Show searched selected user in the UI as we did with friend list item clicked (selection)
-		searchPeopleModal.addEventListener('click', (evt) => {
+		searchPeopleModal.addEventListener('click', async (evt) => {
 			// const selectedUser = friends.find( user => user.id === selectedUserId )
 			// selectedUserHandler(selectedUser)
 
 			// searchPeopleModal.classList.add('hidden') 	// hide searched friends modal after select one
 			// searchPeopleModal.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
 
-
 			if(evt.target.tagName === 'BUTTON') {
-				console.log('handle follow api request hare')
+				const container = evt.target.closest('[name=list-container]')
+
+				const { error, data } = await http.toggleFollow(container.id)
+				if(error) return showError(error)
+
+				// make current users active style
 				followFollowingHandler(evt)
+
 
 			} else {
 				redirectTo(`/profile/${evt.target.id}`)
 			}
 		})
-
 
 
 	} catch (err) {
@@ -617,7 +627,3 @@ document.addEventListener('DOMContentLoaded', async () => {
 })
 
 
-setTimeout(() => {
-	
-console.log(logedInUser._id)
-}, 3000);

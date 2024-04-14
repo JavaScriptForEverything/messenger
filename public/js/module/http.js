@@ -116,6 +116,23 @@ export const createMessage = async (payload) => {
 }
 
 
+export const toggleFollow = async (selectedUserId) => {
+	try {
+		const res = await fetch(`/api/users/${selectedUserId}/follow-unfollow`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			},
+		})
+		if( !res.ok ) throw await res.json()
+
+		return await res.json()
+
+	} catch (err) {
+		return err
+	}
+}
 
 // export const getSearchUser = async (payload, signal) => {
 // 	try {

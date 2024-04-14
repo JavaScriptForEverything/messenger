@@ -80,3 +80,32 @@ exports.getUserById = catchAsync( async (req, res, next) => {
 		data: user 	
 	})
 })
+
+
+// PATCH /api/users/:id/follow-unfollow + protect
+exports.toggleFollow = catchAsync( async (req, res, next) => {
+	const logedInUserId = req.userId
+	const activeUserId = req.params.id
+
+	const activeUser = await User.findById(activeUserId)
+	if(!activeUser) return next(appError('activeUser not found'))
+
+	const isFollowing  = activeUser.followers?.includes(logedInUserId)
+	const operator = isFollowing ? '$pull' : '$addToSet'
+
+	const updatedActiveUser = await User.findByIdAndUpdate( activeUserId, {
+		[operator]: { followers: logedInUserId }
+	}, { new: true })
+	if(!updatedActiveUser) return next(appError('activeUser update followers is failed'))
+
+	const updatedLogedInUser = await User.findByIdAndUpdate( logedInUserId, {
+		[operator]: { followings: activeUserId }
+	}, { new: true })
+	if(!updatedLogedInUser) return next(appError('logedInUser update followings is failed'))
+
+
+	res.status(200).json({
+		status: 'success',
+		data: updatedActiveUser 	
+	})
+})

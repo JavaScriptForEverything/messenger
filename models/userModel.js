@@ -80,7 +80,7 @@ const userSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User',
 	}],
-	following: [{ 													// this user are following other users
+	followings: [{ 													// this user are following other users
 		type: Schema.Types.ObjectId,
 		ref: 'User',
 	}],

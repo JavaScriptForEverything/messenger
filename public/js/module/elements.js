@@ -287,7 +287,8 @@ export const createFirendList = (selector, data) => {
 		isNoNotification=false, 			// override both isMessageSuccess and IsNotification
 		notificationValue= 2,
 
-		buttonText='', 								// buttonText === 'follow' ? 'follow' : 'unfollow'
+		showFollowButton=false, 			// 
+		isFollowing=false, 						// buttonText === 'follow' ? 'follow' : 'unfollow'
 	} = data
 
 	const htmlString = `
@@ -347,9 +348,9 @@ export const createFirendList = (selector, data) => {
 				</div>
 			</div>
 
-			${isNoNotification && !!buttonText ? `
-				<button class='border border-blue-500 px-3 py-0.5 rounded text-blue-500 [&.active]:bg-blue-500 [&.active]:text-slate-50'>
-					${buttonText === 'follow' ? 'follow' : 'unfollow'}
+			${isNoNotification && showFollowButton ? `
+				<button class='${isFollowing ? 'active' : '' } border border-blue-500 px-3 py-0.5 rounded text-blue-500 [&.active]:bg-blue-500 [&.active]:text-slate-50'>
+					${isFollowing ? 'following' : 'follow'}
 				</button>
 			`: ''}
 

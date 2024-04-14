@@ -11,6 +11,8 @@ exports.protect = async (req, res, next) => {
 		const { accessToken } = req.cookies
 
 		const { error, payload } = await tokenService.verifyAccessToken( accessToken )
+
+		if( error && req.originalUrl.startsWith('/api') ) return next(appError(error, 401, 'AuthError'))
 		if( error ) return res.redirect('/login')
 
 		req.userId = payload._id

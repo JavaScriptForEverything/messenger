@@ -62,34 +62,103 @@ const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
 // videoContainer.classList.add('active') 
 
+let wssValue = 'no-reject'
+console.log({ wssValue })
 
+if(wssValue === 'on-success') { 		// on('call-success', {})
+	elements.callingDialog({
+		title : 'Incomming Audio Call', 			// string
+		callSide: 'callee', 									// caller | callee
+		error: '', 														// string
+		onSuccess : (evt) => {
+			evt.target.remove() 								// close dialog
+			// console.log(evt.target)
+			console.log('you click success')
+		},
+		onReject : (evt) => {
+			evt.target.remove() 								// close dialog
+			// console.log(evt.target)
+			console.log('you click reject')
+		},
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+				wssValue = 'on-error'
+			})
+		}
+	})
+}
+
+if(wssValue === 'no-reject') { 		// on('call-error', {})
+	elements.callingDialog({
+		title : 'Not Found', 									// string
+		callSide: 'caller', 									// caller | callee
+		error: 'caller may be busy', 					// string
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			}, 3000)
+		}
+	})
+}
+
+
+
+const preCallHandler = () => new Promise((resolve, reject) => { 
+
+	elements.callingDialog({
+		title : 'Calling', 										// string
+		callSide: 'caller', 									// caller | callee
+		error: '', 														// string
+		onSuccess : (evt) => {
+			evt.target.remove()
+			// console.log(evt.target)
+			wssValue = 'on-success'
+			resolve(true)
+		},
+		onReject : (evt) => {
+			evt.target.remove()
+			// console.log(evt.target)
+			wssValue = 'on-reject'
+			resolve(false)
+		},
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			})
+		}
+	})
+})
 
 // force user to stop audio call if already in video call 
-const audioCallHandler = () => {
+const audioCallHandler = async () => {
 	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
 		ui.showError('Your video call must be terminate first')
 		return
 	}
+
+	const isPreCallSucceed = await preCallHandler()
+	if( !isPreCallSucceed ) return
+
 	audioCallButton.disabled = true
 	rightSideAudioCallButton.disabled = true
-
-	console.log('handle audio call here')
 	closeCallHandler() 																// 1. close previous call style 
 
 	textMessagesContainer.classList.add('hidden') 		// 2. hide chat messages
 	videoContainer.classList.add('active') 						// 3. show calling dialog
 	callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
 }
-const videoCallHandler = () => {
+const videoCallHandler = async () => {
 	if(audioCallButton.disabled || rightSideAudioCallButton.disabled) {
 		ui.showError('Your audio call must be terminate first')
 		return
 	}
+
+	const isPreCallSucceed = await preCallHandler()
+	if( !isPreCallSucceed ) return
+
 	videoCallButton.disabled = true
 	rightSideVideoCallButton.disabled = true
-
-	console.log('handle video call here')
-
 	closeCallHandler() 																// 1. close previous call style 
 
 	videoContainer.classList.add('active') 						// 2. show calling dialog
@@ -244,54 +313,7 @@ recordingPanelStopRecordingButton.addEventListener('click', stopRecordingHandler
 
 
 
-// elements.callingDialog({
-// 	title : 'Incomming Audio Call', 			// string
-// 	callSide: 'callee', 									// caller | callee
-// 	error: '', 														// string
-// 	onSuccess : (evt) => {
-// 		evt.target.remove()
-// 		console.log(evt.target)
-// 	},
-// 	onReject : (evt) => {
-// 		evt.target.remove()
-// 		console.log(evt.target)
-// 	},
-// 	onError : (evt) => {
-// 		setTimeout(() => {
-// 			evt.target.remove()
-// 		})
-// 	}
-// })
 
-// elements.callingDialog({
-// 	title : 'Calling', 										// string
-// 	callSide: 'caller', 									// caller | callee
-// 	error: '', 														// string
-// 	onSuccess : (evt) => {
-// 		evt.target.remove()
-// 		console.log(evt.target)
-// 	},
-// 	onReject : (evt) => {
-// 		evt.target.remove()
-// 		console.log(evt.target)
-// 	},
-// 	onError : (evt) => {
-// 		setTimeout(() => {
-// 			evt.target.remove()
-// 		})
-// 	}
-// })
-
-// elements.callingDialog({
-// 	title : 'Not Found', 									// string
-// 	callSide: 'caller', 									// caller | callee
-// 	error: 'caller may be busy', 					// string
-// 	onError : (evt) => {
-// 		setTimeout(() => {
-// 			evt.target.remove()
-// 		}, 3000)
-// 	}
-// })
 
 
 //----------[ Right-Side: Attachments filters ]----------

@@ -15,8 +15,8 @@ const router = Router()
 	router.route('/')
 		.get(userController.getAllUsers)
 
-	// router.route('/:id')
-	// 	.get(userController.getUserById)
+	router.route('/:id')
+		.get(userController.getUserById)
 
 	router.route('/:id/follow-unfollow')
 		.patch(authController.protect, userController.toggleFollow)

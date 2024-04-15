@@ -6,7 +6,6 @@ import { $, toggleClass } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
-import * as http from '../module/http.js'
 import * as elements from '../module/elements.js'
 
 /*----------[ Note ]----------
@@ -25,7 +24,7 @@ wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js fil
 
 // store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
 
-let timer = null
+// let timer = null
 // let controller = null
 
 // const leftFriendPanel = $('[name=left-main]') 	
@@ -39,7 +38,7 @@ const audio = $('[name=microphone-audio') // required for microphone audio captu
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
 const rightSideAudioCallButton = $('[name=right-side] [name=audio-call-button]') 	
-const rightSideAvideoCallButton = $('[name=right-side] [name=video-call-button]') 	
+const rightSideVideoCallButton = $('[name=right-side] [name=video-call-button]') 	
 
 // attachments buttons
 const attachmentsFilterImageButton = $('[name=attachments-container] [name=filter-image]') 	
@@ -48,14 +47,87 @@ const attachmentsFilterVideoButton = $('[name=attachments-container] [name=filte
 const attachmentsFilterFileButton = $('[name=attachments-container] [name=filter-file]') 	
 const attachmentsViewAllButton = $('[name=attachments-container] [name=view-all]') 	
 
+const textMessagesContainer = $('[name=text-message-container]') 	
+const videoContainer = $('[name=video-container]') 	
+const callPanel = $('[name=call-panel]') 	
+
+const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
+const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
+const callPanelCallButton = $('[name=call-panel] [name=call]') 	
+const callPanelScreenShareButton = $('[name=call-panel] [name=flip-camera]') 	
+const callPanelRecordingButton = $('[name=call-panel] [name=recording]') 	
+
+const recordingPanel = $('[name=recording-panel]') 	
+const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
+const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
+// videoContainer.classList.add('active') 
 
 
-// const videoContainer = $('[name=video-container]') 	
-// const chatsContainer = $('#chats-container')
-// videoContainer.classList.add('active')
 
-// hide left-panel: for testing
-	// $('#left-side-checkbox').checked = false
+// force user to stop audio call if already in video call 
+const audioCallHandler = () => {
+	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
+		ui.showError('Your video call must be terminate first')
+		return
+	}
+	audioCallButton.disabled = true
+	rightSideAudioCallButton.disabled = true
+
+	console.log('handle audio call here')
+	closeCallHandler() 																// 1. close previous call style 
+
+	textMessagesContainer.classList.add('hidden') 		// 2. hide chat messages
+	videoContainer.classList.add('active') 						// 3. show calling dialog
+	callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
+}
+const videoCallHandler = () => {
+	if(audioCallButton.disabled || rightSideAudioCallButton.disabled) {
+		ui.showError('Your audio call must be terminate first')
+		return
+	}
+	videoCallButton.disabled = true
+	rightSideVideoCallButton.disabled = true
+
+	console.log('handle video call here')
+
+	closeCallHandler() 																// 1. close previous call style 
+
+	videoContainer.classList.add('active') 						// 2. show calling dialog
+	textMessagesContainer.classList.add('hidden') 		// 3. hide old chat messages
+	callPanel.classList.remove('audio') 							// 4. make video call
+}
+const closeCallHandler = () => {
+	console.log('stop call')
+
+	//----------[ if success then reset styles ]----------
+	textMessagesContainer.classList.remove('hidden') 	// 1. show old chats after call end
+	videoContainer.classList.remove('active') 				// 2. hide video container
+
+	// 3. reset callPanel
+	callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
+	callPanelCameraButton.classList.remove('called') 					// reset camera style
+	callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
+	stopRecordingHandler() 	// reset recording
+}
+const resetCallHandler = () => {
+	audioCallButton.disabled = false
+	videoCallButton.disabled = false
+	rightSideAudioCallButton.disabled = false
+	rightSideVideoCallButton.disabled = false
+	// 
+}
+
+const stopRecordingHandler = () => {
+		console.log('stop recording handler')
+	
+		// handle close functionality
+			// 1. stop webRTC call
+			// ...
+
+	callPanelRecordingButton.classList.remove('called') 				// 1. reset active recording button style
+	recordingPanel.classList.add('hidden') 											// 2. hide recording panel
+	recordingPanelPlayPauseButton.classList.add('called') 			// 3. make recording pause state
+}
 
 
 
@@ -98,34 +170,78 @@ microphoneInsideInput.addEventListener('click', async (evt) => {
 
 	// toggleClass(evt.target, 'blink') // evt.target.classList.toggle('blink', !evt.target.classList.contains('blink') )
 })
+
+
+
+//----------[ call audio/video ]----------
+
+audioCallButton.addEventListener('click', (evt) => {
+	audioCallHandler()
+})
+videoCallButton.addEventListener('click', (evt) => {
+	videoCallHandler()
+})
+rightSideAudioCallButton.addEventListener('click', (evt) => {
+	audioCallHandler()
+})
+rightSideVideoCallButton.addEventListener('click', (evt) => {
+	videoCallHandler()
+})
+
+
+callPanelMicrophoneButton.addEventListener('click', (evt) => {
+	if(evt.target.classList.contains('called')) {
+		evt.target.classList.remove('called')
+	} else {
+		evt.target.classList.add('called')
+	}
+})
+callPanelCameraButton.addEventListener('click', (evt) => {
+	if(evt.target.classList.contains('called')) {
+		evt.target.classList.remove('called')
+	} else {
+		evt.target.classList.add('called')
+	}
+})
+callPanelCallButton.addEventListener('click', () => {
+	closeCallHandler()
+	resetCallHandler()
+})
+callPanelScreenShareButton.addEventListener('click', (evt) => {
+	if(evt.target.classList.contains('called')) {
+		evt.target.classList.remove('called')
+	} else {
+		evt.target.classList.add('called')
+	}
+})
+callPanelRecordingButton.addEventListener('click', (evt) => {
+	if(evt.target.classList.contains('called')) {
+		evt.target.classList.remove('called')
+		stopRecordingHandler()
+
+	} else {
+		evt.target.classList.add('called') 													// 1. active recording button style
+		recordingPanel.classList.remove('hidden') 									// 2.1. To show recording panel remove: hidden
+		recordingPanel.classList.add('flex') 												// 2.2. then add flex, [ because that is flex container]
+		recordingPanelPlayPauseButton.classList.remove('called') 		// 3. make recording pay state
+	}
+})
+
+recordingPanelPlayPauseButton.addEventListener('click', (evt) => {
+	if(evt.target.classList.contains('called')) {
+		evt.target.classList.remove('called')
+	} else {
+		evt.target.classList.add('called')
+	}
+})
+
+recordingPanelStopRecordingButton.addEventListener('click', stopRecordingHandler)
+
+
 // -----
 
 
-const audioCallHandler = () => {
-	ui.showError('audio call handler')	
 
-}
-const videoCallHandler = () => {
-	ui.showError('video call handler')	
-}
-
-
-audioCallButton.addEventListener('click', (evt) => {
-	toggleClass(evt.target, 'active')
-	audioCallHandler()
-
-})
-videoCallButton.addEventListener('click', (evt) => {
-	toggleClass(evt.target, 'active')
-	videoCallHandler()
-})
-
-rightSideAudioCallButton.addEventListener('click', () => {
-	audioCallHandler()
-})
-rightSideAvideoCallButton.addEventListener('click', () => {
-	videoCallHandler()
-})
 
 
 // elements.callingDialog({
@@ -177,6 +293,8 @@ rightSideAvideoCallButton.addEventListener('click', () => {
 // 	}
 // })
 
+
+//----------[ Right-Side: Attachments filters ]----------
 const handleAttachment = (type='text') => () => {
 	ui.filterMessageByAttachmentType(type)
 }

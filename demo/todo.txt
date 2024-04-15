@@ -1,5 +1,10 @@
 
 
+handle audio/video call
+	. show dialogs
+	. handle wss
+	. handle WebRTC
+
 
 
 task:

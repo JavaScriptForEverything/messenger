@@ -201,9 +201,10 @@ const addMessage = (messageDoc) => {
 	}
 }
 
+
+// hide message in UI for testing video call
 const showAllMessagesInUI = async (receiver) => {
 	textMessagesContainer.innerHTML = '' 		// empty container before add new items
-
 
 	const payload = {
 		sender: logedInUser._id,

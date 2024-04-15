@@ -2034,6 +2034,12 @@ video {
   border-color: rgb(239 68 68 / var(--tw-border-opacity));
 }
 
+.hover\:scale-110:hover {
+  --tw-scale-x: 1.1;
+  --tw-scale-y: 1.1;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .hover\:scale-125:hover {
   --tw-scale-x: 1.25;
   --tw-scale-y: 1.25;
@@ -2437,6 +2443,26 @@ video {
   color: rgb(71 85 105 / var(--tw-text-opacity));
 }
 
+.disabled\:text-slate-300:disabled {
+  --tw-text-opacity: 1;
+  color: rgb(203 213 225 / var(--tw-text-opacity));
+}
+
+.disabled\:text-slate-500:disabled {
+  --tw-text-opacity: 1;
+  color: rgb(100 116 139 / var(--tw-text-opacity));
+}
+
+.disabled\:hover\:bg-slate-300:hover:disabled {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
+.disabled\:active\:bg-slate-300:active:disabled {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
 .group:invalid .group-invalid\:text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
@@ -2486,22 +2512,6 @@ video {
 .peer\/search-messages:checked ~ .peer-checked\/search-messages\:scale-x-0 {
   --tw-scale-x: 0;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.peer\/camera:checked ~ .peer-checked\/camera\:bg-slate-700\/90 {
-  background-color: rgb(51 65 85 / 0.9);
-}
-
-.peer\/flip-camera:checked ~ .peer-checked\/flip-camera\:bg-slate-700\/90 {
-  background-color: rgb(51 65 85 / 0.9);
-}
-
-.peer\/microphone:checked ~ .peer-checked\/microphone\:bg-slate-700\/90 {
-  background-color: rgb(51 65 85 / 0.9);
-}
-
-.peer\/recording:checked ~ .peer-checked\/recording\:bg-slate-700\/90 {
-  background-color: rgb(51 65 85 / 0.9);
 }
 
 .peer\/attachment-icon-button:checked ~ .peer-checked\/attachment-icon-button\:text-slate-600 {
@@ -2616,6 +2626,28 @@ video {
   background-color: rgb(59 130 246 / 0.8);
 }
 
+.\[\&\.audio\>\*\:not\(\:nth-child\(3\)\)\]\:hidden.audio>*:not(:nth-child(3)) {
+  display: none;
+}
+
+.\[\&\.called\:first-child\]\:text-red-500.called:first-child {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.\[\&\.called\]\:bg-red-500.called {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
+.\[\&\.called\]\:bg-red-700\/90.called {
+  background-color: rgb(185 28 28 / 0.9);
+}
+
+.\[\&\.called\]\:bg-slate-700\/90.called {
+  background-color: rgb(51 65 85 / 0.9);
+}
+
 .\[\&\.called_\.called\]\:hidden.called .called {
   display: none;
 }
@@ -2668,27 +2700,27 @@ video {
   display: block;
 }
 
+.\[\&\>\*\:first-child\]\:hidden>*:first-child {
+  display: none;
+}
+
 .group\/firend-list.message-success .group-\[\.message-success\]\/firend-list\:\[\&\>\*\:first-child\]\:block>*:first-child {
   display: block;
-}
-
-.peer\/camera:checked ~ .peer-checked\/camera\:\[\&\>\*\:first-child\]\:hidden>*:first-child {
-  display: none;
-}
-
-.peer\/microphone:checked ~ .peer-checked\/microphone\:\[\&\>\*\:first-child\]\:hidden>*:first-child {
-  display: none;
 }
 
 .peer\/play-pause:checked ~ .peer-checked\/play-pause\:\[\&\>\*\:first-child\]\:hidden>*:first-child {
   display: none;
 }
 
-.peer\/recording:checked ~ .peer-checked\/recording\:\[\&\>\*\:first-child\]\:hidden>*:first-child {
+.\[\&\>\*\:first-child\]\:\[\&\.active\]\:hidden.active>*:first-child {
   display: none;
 }
 
-.\[\&\>\*\:first-child\]\:\[\&\.active\]\:hidden.active>*:first-child {
+.\[\&\.called\]\:\[\&\>\*\:first-child\]\:hidden>*:first-child.called {
+  display: none;
+}
+
+.\[\&\>\*\:first-child\]\:\[\&\.called\]\:hidden.called>*:first-child {
   display: none;
 }
 
@@ -2704,6 +2736,14 @@ video {
   display: block;
 }
 
+.\[\&\.called\]\:\[\&\>\*\:last-child\]\:block>*:last-child.called {
+  display: block;
+}
+
+.\[\&\>\*\:last-child\]\:\[\&\.called\]\:block.called>*:last-child {
+  display: block;
+}
+
 .\[\&\>\*\:last-child\]\:\[\&\.message-notification\]\:block.message-notification>*:last-child {
   display: block;
 }
@@ -2712,24 +2752,60 @@ video {
   display: none;
 }
 
-.\[\&\>\*\:nth-child\(2\)\]\:hidden>*:nth-child(2) {
+.\[\&\>\*\:not\(\:first-child\)\]\:hidden>*:not(:first-child) {
   display: none;
 }
 
-.peer\/camera:checked ~ .peer-checked\/camera\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
+.\[\&\>\*\:not\(\:nth-child\(3\)\)\]\:hidden>*:not(:nth-child(3)) {
+  display: none;
+}
+
+.\[\&\.audio\]\:\[\&\>\*\:not\(\:nth-child\(3\)\)\]\:hidden>*:not(:nth-child(3)).audio {
+  display: none;
+}
+
+.\[\&\>\*\:not\(nth-child\(3\)\)\]\:hidden>*:not(nth-child(3)) {
+  display: none;
+}
+
+.\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
   display: block;
 }
 
-.peer\/microphone:checked ~ .peer-checked\/microphone\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
-  display: block;
+.\[\&\>\*\:nth-child\(2\)\]\:hidden>*:nth-child(2) {
+  display: none;
 }
 
 .peer\/play-pause:checked ~ .peer-checked\/play-pause\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
   display: block;
 }
 
-.peer\/recording:checked ~ .peer-checked\/recording\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
+.\[\&\.called\]\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2).called {
   display: block;
+}
+
+.\[\&\>\*\:nth-child\(2\)\]\:\[\&\.called\]\:block.called>*:nth-child(2) {
+  display: block;
+}
+
+.\[\&\>\*\]\:hidden>* {
+  display: none;
+}
+
+.\[\&\>\*_button\]\:hidden>* button {
+  display: none;
+}
+
+.\[\&\.audio\]\:\[\&\>\*_button\]\:hidden>* button.audio {
+  display: none;
+}
+
+.\[\&\.audio\]\:\[\&\>_button\]\:hidden> button.audio {
+  display: none;
+}
+
+.\[\&\>button\]\:hidden>button {
+  display: none;
 }
 
 .\[\&\>svg\]\:pointer-events-none>svg {
@@ -2758,4 +2834,12 @@ video {
 .\[\&_\.active\]\:bg-red-500 .active {
   --tw-bg-opacity: 1;
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
+.\[\&_button\]\:hidden button {
+  display: none;
+}
+
+.\[\&\.audio\]\:\[\&_button\]\:hidden button.audio {
+  display: none;
 }

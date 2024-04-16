@@ -1,5 +1,6 @@
 const User = require('../models/userModel')
 const userDto = require('../dtos/userDto')
+const { isValidObjectId } = require('mongoose')
 
 exports.register = (req, res, next) => {
 	const payload = {
@@ -46,7 +47,7 @@ exports.home = async (req, res, next) => {
 exports.profile = async (req, res, next) => {
 	try {
 		const userId = req.params.id || req.userId 	// comes from authController.protect middleware
-		const filter = { _id: userId }
+		let filter = isValidObjectId(userId) ? { _id: userId } : { username: userId }
 		const logedInUser = await User.findOne( filter )
 
 		const filteredUser = userDto.filterUser(logedInUser._doc)

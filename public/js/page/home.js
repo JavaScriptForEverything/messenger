@@ -317,6 +317,7 @@ recordingPanelStopRecordingButton.addEventListener('click', stopRecordingHandler
 const dragAndDropContainer = $('[name=drag-and-drop-container]')
 const dropListContainer = $('[name=drop-list-container]')
 const dragAndDropFileInput = $('[id=drag-and-drop-file]')
+const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 const showDragItemsInUI = (fileArray) => {
 	// Step-1: show Files in UI
@@ -328,7 +329,15 @@ const showDragItemsInUI = (fileArray) => {
 	})
 
 	// Step-2: handle fileUpload here
-	console.log('file uploads')
+	ui.showError('file uploads handle via webRTC')
+
+
+	// Step-3: reset
+	setTimeout(() => {
+		dropListContainer.innerHTML = '' 						// empty list items
+		attachmentInputCheckbox.checked = false 		// hide the 'drag-and-drop-panel'
+		
+	}, 3000);
 }
 
 dragAndDropContainer.addEventListener('dragover', (evt) => {

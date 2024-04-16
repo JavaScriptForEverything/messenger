@@ -71,7 +71,7 @@ const userSchema = new Schema({
 		default: false
 	},
 
-	title: {
+	title: { 																// short intro
 		type: String,
 		default: 'senior developer'
 	},
@@ -98,6 +98,15 @@ const userSchema = new Schema({
 // virtual properties work from api end point but dosen't working on pageRouter, but why ?
 userSchema.virtual('fullName').get(function() {
 	return `${this.firstName} ${this.lastName}`
+})
+
+// this middleware only work on 'save' = .create() but not working for 'findOneAndUpdate' == .findByIdAndUpdate()
+userSchema.pre(/save|findOneAndUpdate/, function(next) {
+	if(this.username) {
+		this.username = slug(this.username, '-')
+	}
+
+	next()
 })
 
 userSchema.pre('save', async function(next) {

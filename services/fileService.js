@@ -56,6 +56,8 @@ module.exports.handleBase64File = async (dataUrl, subDir='/users', fileType='ima
 }
 
 module.exports.removeFile = (relativePath) => {
+	if(typeof relativePath !== 'string') return appError(`file path must be string, but got '${relativePath}'`)
+
 	const filePath = path.join( process.cwd(), relativePath )
 
 	if( !fs.existsSync(filePath) ) return console.log(`[removeFile] Error: ${filePath} not exist`)

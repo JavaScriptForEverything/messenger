@@ -932,8 +932,8 @@ video {
   height: 100vh;
 }
 
-.h-60 {
-  height: 15rem;
+.max-h-60 {
+  max-height: 15rem;
 }
 
 .max-h-80 {
@@ -942,10 +942,6 @@ video {
 
 .max-h-96 {
   max-height: 24rem;
-}
-
-.max-h-60 {
-  max-height: 15rem;
 }
 
 .min-h-96 {
@@ -2535,11 +2531,11 @@ video {
   margin-left: 0px;
 }
 
-.peer\/emoji-icon-button:checked ~ .peer-checked\/emoji-icon-button\:block {
+.peer\/attachment-icon-button:checked ~ .peer-checked\/attachment-icon-button\:block {
   display: block;
 }
 
-.peer\/attachment-icon-button:checked ~ .peer-checked\/attachment-icon-button\:block {
+.peer\/emoji-icon-button:checked ~ .peer-checked\/emoji-icon-button\:block {
   display: block;
 }
 

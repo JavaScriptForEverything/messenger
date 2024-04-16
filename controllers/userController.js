@@ -3,6 +3,7 @@ const { apiFeatures } = require('../utils')
 const { catchAsync, appError } = require('./errorController')
 const User = require('../models/userModel')
 const userDto = require('../dtos/userDto')
+const slug = require('slug')
 
 // GET /api/users
 exports.getAllUsers = catchAsync( async (req, res, next) => {
@@ -67,13 +68,34 @@ exports.getFilteredUsers = catchAsync( async (req, res, next) => {
 
 
 
-// GET /api/users/:id
+// GET /api/users/:id 		: id can by id or username slug
 exports.getUserById = catchAsync( async (req, res, next) => {
+	const userId = req.params.id
+	let filter = isValidObjectId(userId) ? { _id: userId } : { username: userId }
+
+	const user = await User.findOne(filter)
+	if(!user) return next(appError('user not found'))
+
+	res.status(200).json({
+		status: 'success',
+		data: user 	
+	})
+})
+
+// PATCH /api/users/:id
+exports.updateUserById = catchAsync( async (req, res, next) => {
 	const userId = req.params.id
 	if( !isValidObjectId(userId) ) return next(appError(`userId: ${userId} is invalid, please provide valid Id`))
 
-	const user = await User.findById(userId)
-	if(!user) return next(appError('user not found'))
+	const filteredBody = userDto.filterBodyForUpdate(req.body)
+	// console.log({ filteredBody })
+	if(filteredBody.username) {
+		filteredBody.username = slug(filteredBody.username, '-')
+	}
+
+	// const user = await User.findById(userId)
+	const user = await User.findByIdAndUpdate(userId, filteredBody, { new: true })
+	if(!user) return next(appError('user update failed'))
 
 	res.status(200).json({
 		status: 'success',

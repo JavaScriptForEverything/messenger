@@ -59,7 +59,7 @@ const handleModalSearch = (modalSelector) => async (evt) => {
 		const { data: friends } = await res.json()
 
 		modalSelector.innerHTML = '' 	// empty old modal friends before add new friends
-		evt.target.value = '' 							// empty input value after search success
+		// evt.target.value = '' 							// empty input value after search success
 
 		// console.log(friends)
 
@@ -141,12 +141,13 @@ const selectedUserHandler = (user) => {
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
 	const avatarImg = selectedUserListContainer.querySelector('[name=avatar]')
 	const avatarBadge = selectedUserListContainer.querySelector('[name=avatar-badge]')
-	const nameP = selectedUserListContainer.querySelector('[name=username]')
+	const name = selectedUserListContainer.querySelector('[name=username]')
 	
 	selectedUserListContainer.id = user.id
 	avatarImg.src = user.avatar
 	avatarBadge.classList.toggle('active', true) 	// if user active then make true
-	nameP.textContent = user.fullName
+	name.textContent = user.fullName
+	name.href = user.username || user._id
 
 	// // show userId without page refresh: problem require #userId=undefined on page load
 	// const url = new URL(location.href)

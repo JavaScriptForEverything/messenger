@@ -40,8 +40,8 @@ block script
 							div(name='avatar-badge' class='active hidden [&.active]:block absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
 
 						div(class='label-container' class='flex-1')
-							p(name='username' 
-								class='text-blue-600 font-medium max-w-40 truncate capitalize'
+							a(href=`/profile/${logedInUser.username || logedInUser._id}` name='username' 
+								class='hover:text-blue-700 text-blue-600 font-medium max-w-40 truncate capitalize'
 								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
 
 							p(name='title' 
@@ -122,12 +122,12 @@ block script
 							<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17h14M5 12h14M5 7h14"/></svg>
 
 						div(class='h-full relative flex-shrink-0 grid place-items-center')
-							img(name='avatar' src=logedInUser.avatar || '' alt='avatar' class='w-10 h-10 border border-slate-300 rounded-full')
+							img(name='avatar' src=logedInUser.avatar||'' 	alt='avatar' class='w-10 h-10 border border-slate-300 rounded-full')
 							div(name='avatar-badge' class='hidden [&.active]:block absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
 
 						div(class='label-container' class='flex-1')
-							p(name='username' class='text-blue-600 font-medium max-w-40 truncate capitalize'
-								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+							a(href=`/profile/${logedInUser.username || logedInUser._id}` name='username' class='hover:text-blue-600 text-blue-500 font-medium max-w-40 truncate capitalize'
+								) #{`${logedInUser.firstName} ${logedInUser.lastName}`}
 
 							p(name='title' 
 								class='hidden text-slate-600 font-light text-xs -mt-1 max-w-40 truncate lowercase'
@@ -349,7 +349,7 @@ block script
 
 					div(class='absolute right-1 flex items-center gap-1')
 						//- input(type='file' hidden id='attachment-icon-button' class='peer/attachment-icon-button')
-						input(type='checkbox' hidden id='attachment-icon-button' class='peer/attachment-icon-button')
+						input(type='checkbox' checked=false hidden id='attachment-icon-button' class='peer/attachment-icon-button')
 						label(for='attachment-icon-button' type='button'
 							class='text-slate-500/80 rounded-full'
 							class='hover:bg-slate-50 hover:text-slate-500'
@@ -438,10 +438,10 @@ block script
 
 					div(name='image-container' class='flex flex-col justify-center items-center border border-slate-100 py-2')
 						img(src=logedInUser.avatar || '/images/users/default.jpg' alt='avatar' class='w-20 h-20 rounded-full border-2 border-slate-50')
-						div
-							p( class=' text-center text-slate-700 capitalize'
+						div(class='flex flex-col items-center')
+							a( href=`/profile/${logedInUser.username || logedInUser._id}` class='hover:text-slate-900 text-slate-700 capitalize'
 								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
-							p(class='font-light text-sm text-slate-600 text-center -mt-1 capitalize'
+							p(class='font-light text-sm text-slate-600 -mt-1 capitalize'
 							) #{logedInUser.title || 'Senior Web Developer'}
 
 					div(name='call-container' class='flex justify-evenly mt-4')

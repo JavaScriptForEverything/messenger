@@ -8,6 +8,8 @@ handle audio/video call
 
 
 task:
+	. Try to apply apiFeatures on every route.
+
 	. disable every button on click for api request and enable back of response: success or failed
 
 	. on click user list, add ?userId=user.id, and then select that user on page refresh in UI

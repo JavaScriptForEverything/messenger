@@ -492,3 +492,37 @@ export const callingDialog = ( props = {}) => {
 	}
 
 }
+
+
+
+
+
+
+
+
+// Drag-and-Drop Element
+
+export const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
+	const htmlString =`
+		<div name='drop-list' class='flex items-center gap-1 px-2 py-1 border border-slate-200'>
+			<span>
+				<svg class='w-5 h-5' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="m210.83 85.17l-56-56A4 4 0 0 0 152 28H56a12 12 0 0 0-12 12v176a12 12 0 0 0 12 12h144a12 12 0 0 0 12-12V88a4 4 0 0 0-1.17-2.83M156 41.65L198.34 84H156ZM200 220H56a4 4 0 0 1-4-4V40a4 4 0 0 1 4-4h92v52a4 4 0 0 0 4 4h52v124a4 4 0 0 1-4 4"/></svg>
+			</span>
+			<p name='drop-text' class='flex-1 flex gap-2'> 
+				<span class='text-slate-700 max-w-48 truncate'> ${fileName} </span>
+				<span class=''> ( ${fileSize} ) </span>
+			</p>
+			<button name='close-button' class='p-0.5 border active:border-slate-300 rounded-full hover:text-slate-600 hover:scale-110'>
+				<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/></svg>
+			</button>
+		</div>
+	` 
+
+	const element = stringToElement( htmlString )
+	const closeButton = element.querySelector('[name=close-button]')
+
+	closeButton.addEventListener('click', (evt) => {
+		element.remove()
+	})
+	return element
+}

@@ -204,21 +204,21 @@ const addMessage = (messageDoc) => {
 
 // hide message in UI for testing video call
 const showAllMessagesInUI = async (receiver) => {
-	textMessagesContainer.innerHTML = '' 		// empty container before add new items
+	// textMessagesContainer.innerHTML = '' 		// empty container before add new items
 
-	const payload = {
-		sender: logedInUser._id,
-		receiver
-	}
+	// const payload = {
+	// 	sender: logedInUser._id,
+	// 	receiver
+	// }
 	
-	const { data:messages, message:errorMessage } = await http.getAllChatMessages(payload)
-	if(errorMessage) return showError(errorMessage)
+	// const { data:messages, message:errorMessage } = await http.getAllChatMessages(payload)
+	// if(errorMessage) return showError(errorMessage)
 
-	messages.forEach(messageDoc => {
-		// console.log(messageDoc)
-		// show error alert for not populated senerio
-		addMessage(messageDoc)
-	})
+	// messages.forEach(messageDoc => {
+	// 	// console.log(messageDoc)
+	// 	// show error alert for not populated senerio
+	// 	addMessage(messageDoc)
+	// })
 }
 
 
@@ -455,43 +455,44 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 })
 
 
+// --- handle in home page: [ drag-and-drop ]
 // ----------[ file upload: via webRTC ]----------
-attachmentButtonInput.addEventListener('change', async (evt) => {
-	const message = 'only share large file via WebRTC'
-	console.log(message)
-	showError(message)
+// attachmentButtonInput.addEventListener('change', async (evt) => {
+// 	const message = 'only share large file via WebRTC'
+// 	console.log(message)
+// 	showError(message)
 
-	try {
-		const selectedUserListContainer = $('[name=selected-user-list-container]')
-		const dataUrl = await readAsDataURL(evt.target.files[0], { type: 'file' })
-
-
-		// const payload = {
-		// 	sender: logedInUser._id,
-		// 	receiver: selectedUserListContainer.id,
-		// 	message: dataUrl,
-		// 	type: 'file'
-		// }
-		// Don't store file in backend, just transfer via webRTC client <==> client
+// 	try {
+// 		const selectedUserListContainer = $('[name=selected-user-list-container]')
+// 		const dataUrl = await readAsDataURL(evt.target.files[0], { type: 'file' })
 
 
-		// elements.createYourMessage(textMessagesContainer, { 
-		// 	type: 'image', 
-		// 	message: dataUrl
-		// })
+// 		// const payload = {
+// 		// 	sender: logedInUser._id,
+// 		// 	receiver: selectedUserListContainer.id,
+// 		// 	message: dataUrl,
+// 		// 	type: 'file'
+// 		// }
+// 		// Don't store file in backend, just transfer via webRTC client <==> client
 
 
-		// send this element via wss + webRTC
-			// elements.createTheirMessage(textMessagesContainer, { 
-			// 	type: 'image', 
-			// 	// message: messageDoc.message,
-			// 	// avatar: messageDoc.sender.avatar
-			// })
+// 		// elements.createYourMessage(textMessagesContainer, { 
+// 		// 	type: 'image', 
+// 		// 	message: dataUrl
+// 		// })
 
-	} catch (err) {
-		showError(err.message)
-	}
-})
+
+// 		// send this element via wss + webRTC
+// 			// elements.createTheirMessage(textMessagesContainer, { 
+// 			// 	type: 'image', 
+// 			// 	// message: messageDoc.message,
+// 			// 	// avatar: messageDoc.sender.avatar
+// 			// })
+
+// 	} catch (err) {
+// 		showError(err.message)
+// 	}
+// })
 
 
 

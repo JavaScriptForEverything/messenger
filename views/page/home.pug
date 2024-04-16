@@ -348,7 +348,8 @@ block script
 						<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><path fill="currentColor" d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48M96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6"/></svg>
 
 					div(class='absolute right-1 flex items-center gap-1')
-						input(type='file' hidden id='attachment-icon-button' class='peer/attachment-icon-button')
+						//- input(type='file' hidden id='attachment-icon-button' class='peer/attachment-icon-button')
+						input(type='checkbox' hidden id='attachment-icon-button' class='peer/attachment-icon-button')
 						label(for='attachment-icon-button' type='button'
 							class='text-slate-500/80 rounded-full'
 							class='hover:bg-slate-50 hover:text-slate-500'
@@ -356,7 +357,34 @@ block script
 							)
 							<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="none" stroke="currentColor" d="m13.5 7.5l-5.757 5.757a4.243 4.243 0 0 1-6-6l5.929-5.929a2.828 2.828 0 0 1 4 4l-5.758 5.758a1.414 1.414 0 0 1-2-2L9.5 3.5"/></svg>
 
-						//- input(type='checkbox' hidden id='camera-icon-button' class='peer/camera-icon-button')
+						div( name='drag-and-drop-panel'
+							class='flex justify-center items-center absolute right-0 bottom-10'
+							class='hidden peer-checked/attachment-icon-button:block'
+							class='w-96 text-slate-500'
+							)
+							div(name='drag-and-drop-container'
+								class='h-48 bg-slate-50 border border-slate-200'
+								class='flex flex-col justify-center items-center gap-1'
+								)
+								span
+									<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
+								p(name='drop-text' class='text-slate-800 ') 
+									span Drag and drop files or 
+									input(type='file' multiple id='drag-and-drop-file' hidden)
+									label(for='drag-and-drop-file' 
+										class='underline decoration-dotted'
+										class='hover:text-slate-900 cursor-pointer'
+										class=''
+										) Browse
+
+								p(name='drop-text' class='text-xs') Supported formats: JPG, JPEG, PNG
+								p(name='drop-text' class='text-xs') File size: 5.5 MB
+
+							div(name='drop-list-container'
+								class='mt-1 bg-slate-50 border border-slate-200 '
+								class='max-h-60 overflow-y-scroll'
+								)
+
 						input(type='file' id='camera-icon-button' hidden accept='image/*')
 						label(for='camera-icon-button' type='button'
 							class='text-slate-500/80 rounded-full'
@@ -373,7 +401,6 @@ block script
 							)
 							<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 1 1 0 16a8 8 0 0 1 0-16m0 1a7 7 0 1 0 0 14a7 7 0 0 0 0-14m-2.845 9.427a4.011 4.011 0 0 0 5.512.17l.178-.17a.5.5 0 0 1 .767.636l-.057.07l-.023.022a5.011 5.011 0 0 1-7.087-.023a.5.5 0 0 1 .71-.705M12.5 7.5a1 1 0 1 1 0 2a1 1 0 0 1 0-2m-5 0a1 1 0 1 1 0 2a1 1 0 0 1 0-2"/></svg>
 						div( name='picker-container'
-							class='border border-red-500'
 							class='absolute right-0 bottom-10'
 							class='hidden peer-checked/emoji-icon-button:block'
 							)

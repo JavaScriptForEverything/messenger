@@ -10,12 +10,42 @@ block script
 		}
 
 block body 
-	div(class='h-screen mt-20')
+	div(class='h-screen')
 
-		input(type='search' placeholder='searching')
-
-		input( type='search' placeholder='searching' 
-			class='[&::-webkit-search-cancel-button]:appearance-none'
+		div(name='drag-and-drop-container'
+			class='w-full h-full p-4'
 		)
+			div(name='drag-and-drop-container'
+				class='w-full h-full border-4 border-dashed border-slate-400'
+				class='grid place-content-center'
+			)
+				p(class='text-slate-400 text-2xl') Drag file here
 
+	script.
+		const $ = (selector) => document.querySelector(selector)
+
+		const dragAndDropContainer = $('[name=drag-and-drop-container]')
+
+		dragAndDropContainer.addEventListener('dragover', (evt) => {
+			evt.preventDefault()
+			evt.target.style.borderColor = 'red'
+		})
+		dragAndDropContainer.addEventListener('dragleave', (evt) => {
+			const rect = evt.target.getBoundingClientRect()
+			if(
+				evt.clientX > rect.left + rect.width || 
+				evt.clientX < rect.left || 
+				evt.clientY > rect.top + rect.height || 
+				evt.clientY < rect.top
+			) {
+				evt.target.removeAttribute('style')
+			}
+		})
+		
+		dragAndDropContainer.addEventListener('drop', (evt) => {
+			evt.preventDefault()
+			evt.target.removeAttribute('style')
+
+			console.log(evt.dataTransfer.files[0])
+		})
 		

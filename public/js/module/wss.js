@@ -14,7 +14,6 @@ let socketIo = null
 const userId = logedInUser._id
 
 
-// console.log(logedInUser)
 
 
 /* 
@@ -27,6 +26,9 @@ export const registerSocketEvents = (socket) => {
 
 	socket.on('connect', () => {
 		socketIo = socket
+
+		store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
+
 		socket.on('error', ({ message, reason }) => {
 			ui.showError(message, reason)
 		})

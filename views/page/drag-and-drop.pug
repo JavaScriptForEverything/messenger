@@ -1,0 +1,147 @@
+extends ../layout
+block script
+	//- script( defer type='module' src='/js/page/demo.js')
+	//- style.
+		input[type="search"]::-webkit-search-decoration,
+		input[type="search"]::-webkit-search-cancel-button,
+		input[type="search"]::-webkit-search-results-button,
+		input[type="search"]::-webkit-search-results-decoration {
+			-webkit-appearance:none;
+		}
+
+block body 
+	div(class='h-screen bg-slate-100')
+
+		div(
+			class='w-full h-full flex justify-center items-center'
+			)
+			div( class='w-96 text-slate-500')
+
+				div(name='drag-and-drop-container'
+					class='h-48 bg-slate-50 border border-slate-200'
+					class='flex flex-col justify-center items-center gap-1'
+					)
+					span(class='')
+						<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
+					p(name='drop-text' class='text-slate-800 ') 
+						span Drag and drop files or 
+						input(type='file' multiple id='drag-and-drop-file' hidden)
+						label(for='drag-and-drop-file' 
+							class='underline decoration-dotted'
+							class='hover:text-slate-900 cursor-pointer'
+							class=''
+							) Browse
+
+					p(name='drop-text' class='text-xs') Supported formats: JPG, JPEG, PNG
+					p(name='drop-text' class='text-xs') File size: 5.5 MB
+
+				div(name='drop-list-container'
+					class='mt-1 bg-slate-50 border border-slate-200 '
+					class='max-h-60 overflow-y-scroll'
+					)
+					//- div(name='drop-list'
+						class='flex items-center gap-1 px-2 py-1'
+						class='border border-slate-200 '
+						)
+						span
+							<svg class='w-5 h-5' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="m210.83 85.17l-56-56A4 4 0 0 0 152 28H56a12 12 0 0 0-12 12v176a12 12 0 0 0 12 12h144a12 12 0 0 0 12-12V88a4 4 0 0 0-1.17-2.83M156 41.65L198.34 84H156ZM200 220H56a4 4 0 0 1-4-4V40a4 4 0 0 1 4-4h92v52a4 4 0 0 0 4 4h52v124a4 4 0 0 1-4 4"/></svg>
+						p(name='drop-text' class='flex-1 flex gap-2') 
+							span(class='text-slate-700 max-w-48 truncate') your picture.jpg
+							span(class='') ( 5.5 MB )
+						
+						button(class='p-0.5 border active:border-slate-300 rounded-full hover:text-slate-600 hover:scale-110')
+							<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/></svg>
+
+					
+
+	script.
+		const $ = (selector) => document.querySelector(selector)
+		const dragAndDropContainer = $('[name=drag-and-drop-container]')
+		const dropListContainer = $('[name=drop-list-container]')
+		const dragAndDropFileInput = $('[id=drag-and-drop-file]')
+
+		dragAndDropContainer.addEventListener('dragover', (evt) => {
+			evt.preventDefault()
+			evt.target.style.borderColor = '#2879e377'
+		})
+		dragAndDropContainer.addEventListener('dragleave', (evt) => {
+			const rect = evt.target.getBoundingClientRect()
+			if(
+				evt.clientX > rect.left + rect.width || 
+				evt.clientX < rect.left || 
+				evt.clientY > rect.top + rect.height || 
+				evt.clientY < rect.top
+			) {
+				evt.target.removeAttribute('style')
+			}
+		})
+			
+		
+		const showDragItemsInUI = (fileArray) => {
+			fileArray.forEach( file => {
+				dropListContainer.insertAdjacentElement('beforeend', dropList({
+					fileName: file.name,
+					fileSize: getReadableFileSizeString(file.size),
+				}))
+			})
+		}
+		dragAndDropContainer.addEventListener('drop', (evt) => {
+			evt.preventDefault()
+			evt.target.removeAttribute('style')
+
+			const fileArray = [...evt.dataTransfer.files]
+			showDragItemsInUI(fileArray)
+		})
+		dragAndDropFileInput.addEventListener('change', (evt) => {
+			evt.preventDefault()
+
+			const fileArray = [...evt.target.files]
+			showDragItemsInUI(fileArray)
+		})
+
+		const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
+			const htmlString =`
+				<div name='drop-list' class='flex items-center gap-1 px-2 py-1 border border-slate-200'>
+					<span>
+						<svg class='w-5 h-5' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="m210.83 85.17l-56-56A4 4 0 0 0 152 28H56a12 12 0 0 0-12 12v176a12 12 0 0 0 12 12h144a12 12 0 0 0 12-12V88a4 4 0 0 0-1.17-2.83M156 41.65L198.34 84H156ZM200 220H56a4 4 0 0 1-4-4V40a4 4 0 0 1 4-4h92v52a4 4 0 0 0 4 4h52v124a4 4 0 0 1-4 4"/></svg>
+					</span>
+					<p name='drop-text' class='flex-1 flex gap-2'> 
+						<span class='text-slate-700 max-w-48 truncate'> ${fileName} </span>
+						<span class=''> ( ${fileSize} ) </span>
+					</p>
+					<button name='close-button' class='p-0.5 border active:border-slate-300 rounded-full hover:text-slate-600 hover:scale-110'>
+						<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/></svg>
+					</button>
+				</div>
+			` 
+
+			const element = stringToElement( htmlString )
+			const closeButton = element.querySelector('[name=close-button]')
+
+			closeButton.addEventListener('click', (evt) => {
+				element.remove()
+			})
+			return element
+		}
+
+		const stringToElement = ( htmlString ) => {
+			const parser = new DOMParser()
+			const doc = parser.parseFromString( htmlString, 'text/html' )
+
+			return doc.body.firstChild
+		}
+		
+		//- console.log(getReadableFileSizeString(1551859712)); // output is "1.4 GB"
+		const getReadableFileSizeString = (fileSizeInBytes) => {
+			var i = -1;
+			var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+
+			do {
+				fileSizeInBytes /= 1024;
+				i++;
+			} while (fileSizeInBytes > 1024);
+
+			return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+		}
+
+

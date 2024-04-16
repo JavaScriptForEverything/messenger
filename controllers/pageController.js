@@ -78,6 +78,15 @@ exports.customAudioPlayer = (req, res, next) => {
 
 	res.render('page/custom-audio-player', payload)
 }
+
+// Demo page: for testing drag-and-drop files
+exports.dragAndDrop = (req, res, next) => {
+	const payload = {
+		title: 'Drag and Drop file handler',
+	}
+
+	res.render('page/drag-and-drop', payload)
+}
 exports.demo = (req, res, next) => {
 	const payload = {
 		title: 'Demo Page',

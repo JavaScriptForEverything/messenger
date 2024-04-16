@@ -2,8 +2,9 @@
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 import { createPicker } from '../plugins/picmo/index.js';
 // import WaveSurfer from '../plugins/wavesurfer/index.js'
-import { $, toggleClass } from '../module/utils.js'
+import { $, getReadableFileSizeString } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
+// import * as store from '../module/store.js' 		
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
 import * as elements from '../module/elements.js'
@@ -22,7 +23,6 @@ const socket = io('/')
 wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
 // webRTCHandler.getLocalPreview()
 
-// store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
 
 // let timer = null
 // let controller = null
@@ -62,7 +62,7 @@ const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
 // videoContainer.classList.add('active') 
 
-let wssValue = 'no-reject'
+let wssValue = ''
 console.log({ wssValue })
 
 if(wssValue === 'on-success') { 		// on('call-success', {})
@@ -311,6 +311,55 @@ recordingPanelStopRecordingButton.addEventListener('click', stopRecordingHandler
 
 
 
+
+
+//----------[ Drag-and-Drop File Upload ]----------
+const dragAndDropContainer = $('[name=drag-and-drop-container]')
+const dropListContainer = $('[name=drop-list-container]')
+const dragAndDropFileInput = $('[id=drag-and-drop-file]')
+
+const showDragItemsInUI = (fileArray) => {
+	// Step-1: show Files in UI
+	fileArray.forEach( file => {
+		dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
+			fileName: file.name,
+			fileSize: getReadableFileSizeString(file.size),
+		}))
+	})
+
+	// Step-2: handle fileUpload here
+	console.log('file uploads')
+}
+
+dragAndDropContainer.addEventListener('dragover', (evt) => {
+	evt.preventDefault()
+	evt.target.style.borderColor = '#2879e377'
+})
+dragAndDropContainer.addEventListener('dragleave', (evt) => {
+	const rect = evt.target.getBoundingClientRect()
+	if(
+		evt.clientX > rect.left + rect.width || 
+		evt.clientX < rect.left || 
+		evt.clientY > rect.top + rect.height || 
+		evt.clientY < rect.top
+	) {
+		evt.target.removeAttribute('style')
+	}
+})
+	
+dragAndDropContainer.addEventListener('drop', (evt) => {
+	evt.preventDefault()
+	evt.target.removeAttribute('style')
+
+	const fileArray = [...evt.dataTransfer.files]
+	showDragItemsInUI(fileArray)
+})
+dragAndDropFileInput.addEventListener('change', (evt) => {
+	evt.preventDefault()
+
+	const fileArray = [...evt.target.files]
+	showDragItemsInUI(fileArray)
+})
 
 
 

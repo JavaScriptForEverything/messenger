@@ -12,6 +12,7 @@ router.get('/login', pageController.login)
 router.get('/register', pageController.register)
 router.get('/demo', pageController.demo)
 router.get('/custom-audio-player', pageController.customAudioPlayer)
+router.get('/drag-and-drop', pageController.dragAndDrop)
 router.get('/', authController.protect, pageController.home)
 
 

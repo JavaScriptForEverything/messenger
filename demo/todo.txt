@@ -1,7 +1,7 @@
 
 
 handle audio/video call
-	. show dialogs
+	. handle drag and drop file upload
 	. handle wss
 	. handle WebRTC
 

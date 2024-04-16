@@ -40,3 +40,19 @@
 		- Send audio to backend as message and shows those messages in UI
 		- Show audio in `Wavefrom` format instead of simple audio 
 		- Show latest message in friendList message : text | image | audio 
+		- Handle `Dran & Drop` file upload: handle via `WebRTC`: Peer-to-Peer file sharing
+
+
+#### Routes
+```
+GET 	/ 												: 
+GET 	/login 										: 
+GET 	/register 								: 
+GET 	/profile 									:
+GET 	/profile/:id 							:
+
+GET 	/demo 	 									: Testing page
+GET 	/custom-audio-player 	 		: Custom Audio player 
+GET 	/drag-and-drop 	 					: To handle drag and drop file upload
+```
+

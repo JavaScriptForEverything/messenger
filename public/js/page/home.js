@@ -63,7 +63,6 @@ const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-r
 // videoContainer.classList.add('active') 
 
 let wssValue = ''
-console.log({ wssValue })
 
 if(wssValue === 'on-success') { 		// on('call-success', {})
 	elements.callingDialog({

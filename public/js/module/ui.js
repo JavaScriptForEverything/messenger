@@ -26,6 +26,7 @@ const searchMessageInput = $('#search-messages')
 
 
 
+let timer = 0
 let controller = null
 
 const showSearchModal = (modalSelector) => () => {
@@ -370,11 +371,10 @@ leftPanelAvatar.addEventListener('click', async (evt) => {
 
 // ----------[ send message ]----------
 writeMessageInput.addEventListener('input', () => {
-	let timer = 0
-	// handle socket typeing indication
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
 	const titleP = selectedUserListContainer.querySelector('[name=title]')
 
+	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
 
 	clearTimeout(timer)
 	timer = setTimeout(() => {

@@ -1,9 +1,10 @@
 
 
 handle audio/video call
-	. handle drag and drop file upload
+	. send messages via wss
 	. handle wss
 	. handle WebRTC
+	. handle drag and drop file upload
 
 
 

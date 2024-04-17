@@ -112,27 +112,57 @@ const handleModalSearch = (modalSelector) => async (evt) => {
 // }
 
 
-const handleListSelection = (friends) => {
+const showSelectedUser = async (selectedUserId) => {
+	
 	let friendsListItems = friendsListContainer.querySelectorAll('[name=list-container]')
 			friendsListItems = Array.from(friendsListItems)
 
-	// initial user is first friends
-	selectedUserHandler(friends[0])
+	const { data: selectedUser, message } = await http.getSelectedUser(selectedUserId)
+	if(message) showError(message)
+
+	selectedUserHandler(selectedUser)
+
+	friendsListItems.forEach( el => {
+		el.classList.toggle('selected', el.id === selectedUserId) 
+	})
+}
+
+
+// const handleListSelection = (friends) => {
+// 	const url = new URL(location.href)
+// 	if(!url.hash.startsWith('#userId')) return
+
+// 	const selectedUserId = url.hash.split('=').pop()
+// 	console.log({ selectedUserId })
+
+// 	// initial user is first friends
+// 	if(selectedUserId) {
+// 		showSelectedUser(selectedUserId)
+// 	} else {
+// 		selectedUserHandler(friends[0])
+// 	}
+
+
+// 	friendsListContainer.addEventListener('click', async (evt) => {
+// 		const selectedUserId = evt.target.id
+// 		console.log({ selectedUserId })
+// 		showSelectedUser(selectedUserId)
+// 	})
+// }
+const handleListSelection = (friends) => {
+	const url = new URL(location.href)
+
+	if(url.hash.startsWith('#userId')) {
+		const selectedUserId = url.hash.split('=').pop()
+		showSelectedUser(selectedUserId)
+	} else {
+		selectedUserHandler(friends[0])
+	}
 
 	friendsListContainer.addEventListener('click', async (evt) => {
 		const selectedUserId = evt.target.id
-
-		const { data: selectedUser, message } = await http.getSelectedUser(selectedUserId)
-		if(message) showError(message)
-
-		selectedUserHandler(selectedUser)
-
-		friendsListItems.forEach( el => {
-			el.classList.toggle('selected', el.id === selectedUserId) 
-		})
-
+		showSelectedUser(selectedUserId)
 	})
-
 }
 
 
@@ -147,7 +177,7 @@ const selectedUserHandler = (user) => {
 	avatarImg.src = user.avatar
 	avatarBadge.classList.toggle('active', true) 	// if user active then make true
 	name.textContent = user.fullName
-	name.href = user.username || user._id
+	name.href = `/profile/${user.username || user._id}`
 
 	// // show userId without page refresh: problem require #userId=undefined on page load
 	// const url = new URL(location.href)
@@ -640,24 +670,16 @@ searchMessageInput.addEventListener('input', async (evt) => {
 // 2. then handle ?#userId=aksdjfasdjf 	comes from /profile page message button click
 
 // trying to handle /profile page message button click redirectTo
-document.addEventListener('DOMContentLoaded', async () => {
-	const url = new URL(location.href)
-	if(!url.hash.startsWith('#userId')) return
+// document.addEventListener('DOMContentLoaded', async () => {
+// 	const url = new URL(location.href)
+// 	if(!url.hash.startsWith('#userId')) return
 
-	const selectedUserId = url.hash.split('=').pop()
-	console.log({ selectedUserId })
+// 	const selectedUserId = url.hash.split('=').pop()
+// 	console.log({ selectedUserId })
 
-	// let friendsListItems = friendsListContainer.querySelectorAll('[name=list-container]')
-	// 		friendsListItems = Array.from(friendsListItems)
 
-	// const { data: selectedUser, message } = await http.getSelectedUser(selectedUserId)
-	// if(message) showError(message)
-
-	// selectedUserHandler(selectedUser)
-
-	// friendsListItems.forEach( el => {
-	// 	el.classList.toggle('selected', el.id === selectedUserId) 
-	// })
-})
-
+// 	setTimeout(async () => {
+// 		showSelectedUser(selectedUserId)
+// 	}, 2000);
+// })
 

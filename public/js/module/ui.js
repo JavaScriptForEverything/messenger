@@ -2,6 +2,7 @@ import { Snackbar } from './components/index.js'
 import { $, redirectTo, readAsDataURL, followFollowingHandler } from './utils.js'
 import * as elements from '../module/elements.js'
 import * as http from './http.js'
+import * as wss from './wss.js'
 
 // const middleTop = $('[name=middle-top]')
 // const middleTopAvatar = middleTop.querySelector('[name=avatar]')
@@ -370,12 +371,15 @@ leftPanelAvatar.addEventListener('click', async (evt) => {
 
 
 // ----------[ send message ]----------
+
 writeMessageInput.addEventListener('input', () => {
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
 	const titleP = selectedUserListContainer.querySelector('[name=title]')
+	const activeUserId = selectedUserListContainer.id
 
 	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
-
+	wss.sendMessageTypingIndicator({ activeUserId })
+	
 	clearTimeout(timer)
 	timer = setTimeout(() => {
 		titleP.classList.add('hidden') 		// hide typing... indicator from top
@@ -406,6 +410,19 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	// friend.latestMessage = message
 
 })
+
+// update typing indicator in other-side
+export const updateMessageTypingIndicator = ({ activeUserId }) => {
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const titleP = selectedUserListContainer.querySelector('[name=title]')
+
+	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
+
+	clearTimeout(timer)
+	timer = setTimeout(() => {
+		titleP.classList.add('hidden') 		// hide typing... indicator from top
+	}, [1000])
+}
 
 // ----------[ image upload ]----------
 cameraIconButtonInput.addEventListener('change', async (evt) => {

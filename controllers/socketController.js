@@ -1,22 +1,27 @@
 let connectedPeers = []
-let rooms = []
 
-const testing = (io) => (socket) => {
-	rooms = Array.from( socket.rooms ) 		// method-1: convert set to pure array
-
-	console.log(rooms)
-
-	// rooms.forEach( (roomId) => {
-	// 	const clients = [ ...io.sockets.adapter.rooms.get( roomId ) ] 	// method-2: convert to pure array
-
-	// 	clients.forEach( (clientId) => { 													// add socket.id connected to particular room 
-	// 		console.log({ clientId })
-	// 	})
-	// })
-
-	// console.log(socket.rooms)
-	// console.log(io.sockets.adapter.rooms)
+const isUserExists = (userId) => {
+	const user = connectedPeers.find( peer => userId === peer.userId )
+	return user ? true : false
 }
+// let rooms = []
+
+// const testing = (io) => (socket) => {
+// 	rooms = Array.from( socket.rooms ) 		// method-1: convert set to pure array
+
+// 	console.log(rooms)
+
+// 	// rooms.forEach( (roomId) => {
+// 	// 	const clients = [ ...io.sockets.adapter.rooms.get( roomId ) ] 	// method-2: convert to pure array
+
+// 	// 	clients.forEach( (clientId) => { 													// add socket.id connected to particular room 
+// 	// 		console.log({ clientId })
+// 	// 	})
+// 	// })
+
+// 	// console.log(socket.rooms)
+// 	// console.log(io.sockets.adapter.rooms)
+// }
 
 module.exports = (io) => (socket) => {
 	// connectedPeers.push(socket.id)
@@ -30,23 +35,20 @@ module.exports = (io) => (socket) => {
 		connectedPeers.push({ socketId, userId })
 		socket.join(userId)
 
-		// console.log({ userId })
-		// console.log(io.sockets.adapter.rooms)
-		// console.log(socket.rooms)
-
 		io.emit('user-joinded', { 
 			rooms: connectedPeers
-			// rooms: Array.from(socket.rooms)
 		})
 
 		usersInRoom(io)('aaa')
-		// console.log(connectedPeers)
-
 	})
 
-	// socket.on('disconnecting', (socket) => {
-	// 	console.log(io.sockets.adapter.rooms)
-	// })
+	socket.on('typing', ({ activeUserId }) => {
+		// socket.emit('typing', { activeUserId })
+		if( !isUserExists(activeUserId) ) return console.log('handle error: user not exits')
+
+		// emit to this user : by private roomId === activeUser._id
+		socket.to(activeUserId).emit('typing', { activeUserId })
+	})
 
 	socket.on('disconnect', () => {
 		connectedPeers = connectedPeers.filter(({ socketId }) => socketId !== socket.id )

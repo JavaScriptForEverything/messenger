@@ -26,35 +26,44 @@ export const registerSocketEvents = (socket) => {
 
 	socket.on('connect', () => {
 		socketIo = socket
-
 		store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
 
-		socket.on('error', ({ message, reason }) => {
-			ui.showError(message, reason)
-		})
 
 
 		socket.emit('user-join', { socketId: socket.id, userId })
-		socket.on('user-joinded', async ({ rooms }) => {
-
-			store.setRooms(rooms)
-
-			const { data: friends, message } = await getFilteredUsers()
-			if(message) {
-				ui.doShowNotFoundFriends()	
-				ui.showError(message)
-				return
-			}
-
-			// update UI
-			ui.doShowNotFoundFriends(false)	
-			ui.showFriendLists(friends)
-			// console.log(friends)
-
-		})
 
 
 	})
 
+	socket.on('error', ({ message, reason }) => {
+		ui.showError(message, reason)
+	})
+	socket.on('user-joinded', async ({ rooms }) => {
+
+		store.setRooms(rooms)
+
+		const { data: friends, message } = await getFilteredUsers()
+		if(message) {
+			ui.doShowNotFoundFriends()	
+			ui.showError(message)
+			return
+		}
+
+		// update UI
+		ui.doShowNotFoundFriends(false)	
+		ui.showFriendLists(friends)
+		// console.log(friends)
+
+	})
+
+	socket.on('typing', ({ activeUserId }) => {
+
+		ui.updateMessageTypingIndicator({ activeUserId })
+		// console.log(userId)
+	})
+
 }
 
+export const sendMessageTypingIndicator = ({ activeUserId }) => {
+	socketIo.emit('typing', { activeUserId })
+}

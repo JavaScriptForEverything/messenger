@@ -1,31 +1,50 @@
+import * as store from './store.js'
+
+
 const tempUserIds = [
   "6603b309c39dffe6f5a3aba6", 	// ayan
   "6606b8c47844a6763050de3c", 	// riajul
 	"6606f381e629d675c08c85b8",
 	"6606f3a6e629d675c08c85ba"
 ]
-export const getFilteredUsers = async (userIds) => {
-	userIds = tempUserIds
 
 
+const addOnlineProperty = (data) => {
+	if(!data) return console.log(`data must be array or object, but got ${data}`)
+
+	const rooms = store.getState().rooms
+	const logedInUser = store.getState().logedInUser
+	
+	// const usersIds = []
+	const usersIds = tempUserIds
+	let output = null
+
+	rooms
+		.filter((room ) => room.userId !== logedInUser._id) 	
+		.forEach(({ userId }) =>  usersIds.push(userId))
+
+	if(Array.isArray(data)) {
+		output = data.map( doc => usersIds.includes( doc._id ) ?  { ...doc, isOnline: true } : { ...doc, isOnline: false } )
+
+	} else {
+		const doc = data
+		output = usersIds.includes( doc._id ) ? { ...doc, isOnline: true } : { ...doc, isOnline: false } 
+	}
+
+	return output
+}
+
+
+// wss.js: on('user-joined', {})
+export const getFilteredUsers = async () => {
 	try {
-		// const res = await fetch(`/api/users/filtered-users`, {
-		// 	method: 'POST',
-		// 	body: JSON.stringify({ userIds }),
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 		'Accept': 'application/json',
-		// 	}
-		// })
-
 		const res = await fetch(`/api/users/friends`)
 		if( !res.ok ) throw await res.json()
 
 		let output = await res.json()
-		output.data = output.data.map( doc => userIds.includes( doc.id ) ? { ...doc, isOnline: true } : doc)
+		output.data = addOnlineProperty(output.data)
 
 		return output
-		// return await res.json()
 
 	} catch (error) {
 		return error
@@ -51,7 +70,12 @@ export const getSelectedUser = async (userId) => {
 		const res = await fetch(`/api/users/${userId}`)
 		if( !res.ok ) throw await res.json()
 
-		return await res.json()
+		const output = await res.json()
+		// console.log( store.getState().rooms)
+
+		output.data = addOnlineProperty(output.data)
+
+		return output
 
 	} catch (error) {
 		return error

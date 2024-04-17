@@ -61,8 +61,6 @@ const handleModalSearch = (modalSelector) => async (evt) => {
 		modalSelector.innerHTML = '' 	// empty old modal friends before add new friends
 		// evt.target.value = '' 							// empty input value after search success
 
-		// console.log(friends)
-
 		friends.forEach( friend => {
 			elements.createFirendList(modalSelector, {
 				id: friend.id,
@@ -83,8 +81,6 @@ const handleModalSearch = (modalSelector) => async (evt) => {
 			modalSelector.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
 		})
 
-
-
 	} catch (err) {
 		if(err.name === 'AbortError') return 
 
@@ -92,28 +88,8 @@ const handleModalSearch = (modalSelector) => async (evt) => {
 		evt.target.value = ''
 	}
 }
-// const getChatById = async (chatId) => {
-// 	try {
-// 		const res = await fetch('/api/users', {
-// 			method: 'GET',
-// 			headers: {
-// 				'content-type': 'application/json'
-// 			}
-// 		})
-
-// 		if(!res.ok) throw await res.json()
-
-// 		const { status, data } = await res.json()
-// 		console.log(data)
-
-// 	} catch (err) {
-// 		console.log(err)		
-// 	}
-// }
-
 
 const showSelectedUser = async (selectedUserId) => {
-	
 	let friendsListItems = friendsListContainer.querySelectorAll('[name=list-container]')
 			friendsListItems = Array.from(friendsListItems)
 
@@ -128,27 +104,6 @@ const showSelectedUser = async (selectedUserId) => {
 }
 
 
-// const handleListSelection = (friends) => {
-// 	const url = new URL(location.href)
-// 	if(!url.hash.startsWith('#userId')) return
-
-// 	const selectedUserId = url.hash.split('=').pop()
-// 	console.log({ selectedUserId })
-
-// 	// initial user is first friends
-// 	if(selectedUserId) {
-// 		showSelectedUser(selectedUserId)
-// 	} else {
-// 		selectedUserHandler(friends[0])
-// 	}
-
-
-// 	friendsListContainer.addEventListener('click', async (evt) => {
-// 		const selectedUserId = evt.target.id
-// 		console.log({ selectedUserId })
-// 		showSelectedUser(selectedUserId)
-// 	})
-// }
 const handleListSelection = (friends) => {
 	const url = new URL(location.href)
 
@@ -175,15 +130,14 @@ const selectedUserHandler = (user) => {
 	
 	selectedUserListContainer.id = user.id
 	avatarImg.src = user.avatar
-	avatarBadge.classList.toggle('active', true) 	// if user active then make true
+	avatarBadge.classList.toggle('active', user.isOnline) 	// if user active then make true
 	name.textContent = user.fullName
 	name.href = `/profile/${user.username || user._id}`
 
-	// // show userId without page refresh: problem require #userId=undefined on page load
-	// const url = new URL(location.href)
-	// url.hash = `userId=${user.id}`
-	// location.href = url
-	// console.log(url.hash)
+	// show userId without page refresh: problem require #userId=undefined on page load
+	const url = new URL(location.href)
+	url.hash = `userId=${user._id}`
+	location.href = url
 
 	showAllMessagesInUI(user.id) 				
 	leftPannelSlideButtonInputCheckbox.checked = false 	// hide left-panel
@@ -666,20 +620,4 @@ searchMessageInput.addEventListener('input', async (evt) => {
 
 
 
-// 1. handle active user based on ?#userId=aksdjfasdjf
-// 2. then handle ?#userId=aksdjfasdjf 	comes from /profile page message button click
-
-// trying to handle /profile page message button click redirectTo
-// document.addEventListener('DOMContentLoaded', async () => {
-// 	const url = new URL(location.href)
-// 	if(!url.hash.startsWith('#userId')) return
-
-// 	const selectedUserId = url.hash.split('=').pop()
-// 	console.log({ selectedUserId })
-
-
-// 	setTimeout(async () => {
-// 		showSelectedUser(selectedUserId)
-// 	}, 2000);
-// })
 

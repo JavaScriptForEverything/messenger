@@ -9,13 +9,13 @@
 
 
 const store = {
-	logedInUser: null
+	logedInUser: null,
+	rooms: [{}]
 }
 
-export const setLogedInUser = (logedInUser) => {
-	store.logedInUser = logedInUser
-}
+export const getState = () => store
+export const setLogedInUser = (logedInUser) => store.logedInUser = logedInUser
+export const setRooms = (rooms) => store.rooms = rooms
 
-export const getState = () => {
-	return store
-}
+
+

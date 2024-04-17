@@ -37,12 +37,9 @@ export const registerSocketEvents = (socket) => {
 		socket.emit('user-join', { socketId: socket.id, userId })
 		socket.on('user-joinded', async ({ rooms }) => {
 
-			const users = []
-			rooms
-				.filter((room ) => room.userId !== userId)
-				.forEach(({ userId }) => users.push(userId))
+			store.setRooms(rooms)
 
-			const { data: friends, message } = await getFilteredUsers(users)
+			const { data: friends, message } = await getFilteredUsers()
 			if(message) {
 				ui.doShowNotFoundFriends()	
 				ui.showError(message)

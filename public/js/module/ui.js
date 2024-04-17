@@ -56,17 +56,19 @@ const handleModalSearch = (modalSelector) => async (evt) => {
 	try {
 		const res = await fetch(`/api/users/friends?_search=${search},email,firstName,lastName`, { signal })
 		if(!res.ok) throw await res.json()
-		const { data: friends } = await res.json()
+		const { data } = await res.json()
 
 		modalSelector.innerHTML = '' 	// empty old modal friends before add new friends
 		// evt.target.value = '' 							// empty input value after search success
+
+		const friends = http.addOnlineProperty(data)
 
 		friends.forEach( friend => {
 			elements.createFirendList(modalSelector, {
 				id: friend.id,
 				avatar: friend.avatar,
 				message: friend.fullName,
-				isActive: true,
+				isActive: friend.isOnline,
 				isTitle: false,
 			})
 		})
@@ -514,8 +516,9 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 		const res = await fetch(`/api/users/?_search=${search},email,firstName,lastName`, { signal })
 		// const res = await fetch(`/api/users/`, { signal })
 		if(!res.ok) throw await res.json()
-		const { data: people } = await res.json()
+		const { data } = await res.json()
 
+		const people = http.addOnlineProperty(data)
 
 		searchPeopleModal.innerHTML = '' 	// empty old modal friends before add new friends
 		// evt.target.value = '' 							// empty input value after search success

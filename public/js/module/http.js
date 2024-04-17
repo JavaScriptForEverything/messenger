@@ -9,7 +9,7 @@ const tempUserIds = [
 ]
 
 
-const addOnlineProperty = (data) => {
+export const addOnlineProperty = (data) => {
 	if(!data) return console.log(`data must be array or object, but got ${data}`)
 
 	const rooms = store.getState().rooms

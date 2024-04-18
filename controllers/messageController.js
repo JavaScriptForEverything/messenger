@@ -66,6 +66,13 @@ exports.createMessage = catchAsync( async (req, res, next) => {
 		// if(true) throw new Error('creating message failed') 
 		const message = await Message.create(filteredBody)
 		if(!message) throw new Error('creating message failed') 
+
+		// await User.populate(message, 'sender', 'avatar') 	// filter not working
+		await User.populate(message, { 												// => Object notation works
+			path: 'sender',
+			select: 'avatar'
+		}) 	
+
 		
 		// Add User.latestMessage to receiver: which will be viewd in friendsList as soon as he got message
 		const receiver = filteredBody.receiver 		// no need to check, because if .create() failed then Schema handle error

@@ -6,6 +6,12 @@ handle audio/video call
 	. handle WebRTC
 	. handle drag and drop file upload
 
+Loading:
+	. when fetch user on selected user (by click friend list)
+			. add skeleton for middle-top as well as messaging body
+
+Scripts:
+	. create script to backup database and restore again: before creating production demo
 
 
 task:

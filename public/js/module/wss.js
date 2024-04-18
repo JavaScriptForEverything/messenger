@@ -57,13 +57,17 @@ export const registerSocketEvents = (socket) => {
 	})
 
 	socket.on('typing', ({ activeUserId }) => {
-
-		ui.updateMessageTypingIndicator({ activeUserId })
-		// console.log(userId)
+		ui.receiveUpdateMessageTypingIndicator({ activeUserId })
+	})
+	socket.on('message', ({ type, activeUserId, message }) => {
+		ui.receiveMessage({ type, activeUserId, message })
 	})
 
 }
 
 export const sendMessageTypingIndicator = ({ activeUserId }) => {
 	socketIo.emit('typing', { activeUserId })
+}
+export const sendMessage = ({ type, activeUserId, message }) => {
+	socketIo.emit('message', { type, activeUserId, message })
 }

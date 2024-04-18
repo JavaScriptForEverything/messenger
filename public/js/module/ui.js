@@ -251,6 +251,39 @@ export const showFriendLists = (friends=[]) => {
 }
 
 
+// ----------[ Other user Side ]----------
+export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const titleP = selectedUserListContainer.querySelector('[name=title]')
+
+	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
+
+	clearTimeout(timer)
+	timer = setTimeout(() => {
+		titleP.classList.add('hidden') 		// hide typing... indicator from top
+	}, [1000])
+}
+export const receiveMessage = ({ type, activeUserId, message }) => {
+	// console.log(message)
+
+	// show text or image message
+	if(type === 'text' || type === 'image') return elements.createTheirMessage(textMessagesContainer, { 
+		type: message.type,
+		message: message.message,
+		avatar: message.sender.avatar
+	})
+
+	// show audio message
+	if(type === 'audio') return elements.createTheirAudio(textMessagesContainer, { 
+		avatar: message.sender.avatar,
+		audioUrl: message.message,
+		audioDuration: message.duration,
+		createdAt: message.createdAt,
+	})
+
+}
+
+
 // ----------[ audio upload ]----------
 export const showAudio = async (blob, audio, audioDuration) => {
 	try {
@@ -266,9 +299,10 @@ export const showAudio = async (blob, audio, audioDuration) => {
 
 		// Step-2: Send audio to backend
 		const selectedUserListContainer = $('[name=selected-user-list-container]')
+		const activeUserId = selectedUserListContainer.id
 		const payload = {
 			sender: logedInUser._id,
-			receiver: selectedUserListContainer.id,
+			receiver: activeUserId,
 			message: dataUrl,
 			type: 'audio',
 			duration: audioDuration,
@@ -276,11 +310,9 @@ export const showAudio = async (blob, audio, audioDuration) => {
 		const { data:messageDoc, message } = await http.createMessage(payload)
 		if(message) return showError(message)
 
-		// console.log(messageDoc)
 
 		// Step-3: Send MessageDoc to other-user: WebSocket + and show in UI
-		// io.on('')
-
+		wss.sendMessage({ type: 'audio', activeUserId, message: messageDoc })
 
 		// Step-4: Show Audio in sender: user himself
 		elements.createYourAudio(textMessagesContainer, { 
@@ -290,12 +322,14 @@ export const showAudio = async (blob, audio, audioDuration) => {
 			createdAt: messageDoc.createdAt
 		})
 
+
 	} catch (err) {
 		showError(err.message)
 	}
 }
 
 
+// home.js: [ right-side: attachment ]
 export const filterMessageByAttachmentType = async (type='text') => {
 	try {
 		const { error, data:messages } = await http.filterAttachments(type)
@@ -370,8 +404,8 @@ leftPanelAvatar.addEventListener('click', async (evt) => {
 })
 
 
-// ----------[ send message ]----------
-
+// ----------[ send message: text + emoji ]----------
+// Step-1: Show typing indicator in self UI
 writeMessageInput.addEventListener('input', () => {
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
 	const titleP = selectedUserListContainer.querySelector('[name=title]')
@@ -389,10 +423,11 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	evt.preventDefault()
 
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const activeUserId = selectedUserListContainer.id
 
 	const payload = {
 		sender: logedInUser._id,
-		receiver: selectedUserListContainer.id,
+		receiver: activeUserId,
 		message: writeMessageInput.value,
 		type: 'text',
 	}
@@ -406,40 +441,31 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	})
 	writeMessageInput.value = '' 	// reset
 
+	wss.sendMessage({ type: 'text', activeUserId, message: messageDoc })
 	// send the messageDoc via wss to other end to handle and update activeFriendList 
 	// friend.latestMessage = message
 
 })
 
-// update typing indicator in other-side
-export const updateMessageTypingIndicator = ({ activeUserId }) => {
-	const selectedUserListContainer = $('[name=selected-user-list-container]')
-	const titleP = selectedUserListContainer.querySelector('[name=title]')
 
-	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
-
-	clearTimeout(timer)
-	timer = setTimeout(() => {
-		titleP.classList.add('hidden') 		// hide typing... indicator from top
-	}, [1000])
-}
-
-// ----------[ image upload ]----------
+// ----------[ send message: image ]----------
+// Step-1: Show typing indicator in self UI
 cameraIconButtonInput.addEventListener('change', async (evt) => {
 	try {
 		const selectedUserListContainer = $('[name=selected-user-list-container]')
 		const dataUrl = await readAsDataURL(evt.target.files[0])
+		const activeUserId = selectedUserListContainer.id
 
 		const payload = {
 			sender: logedInUser._id,
-			receiver: selectedUserListContainer.id,
+			receiver: activeUserId,
 			message: dataUrl,
 			type: 'image'
 		}
 		const { data:messageDoc, message } = await http.createMessage(payload)
 		if(message) return showError(message)
 
-		console.log(messageDoc)
+		// console.log(messageDoc)
 
 		elements.createYourMessage(textMessagesContainer, { 
 			type: 'image', 
@@ -447,16 +473,13 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 		})
 
 		// send this element via wss
-			// elements.createTheirMessage(textMessagesContainer, { 
-			// 	type: 'image', 
-			// 	// message: messageDoc.message,
-			// 	// avatar: messageDoc.sender.avatar
-			// })
+		wss.sendMessage({ type: 'image', activeUserId, message: messageDoc })
 
 	} catch (err) {
 		showError(err.message)
 	}
 })
+
 
 
 // --- handle in home page: [ drag-and-drop ]

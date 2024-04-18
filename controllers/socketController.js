@@ -43,11 +43,17 @@ module.exports = (io) => (socket) => {
 	})
 
 	socket.on('typing', ({ activeUserId }) => {
-		// socket.emit('typing', { activeUserId })
 		if( !isUserExists(activeUserId) ) return  // only send typing if activeUser is selected in front-end
 
 		// emit to this user : by private roomId === activeUser._id
 		socket.to(activeUserId).emit('typing', { activeUserId })
+	})
+
+	socket.on('message', ({ type, activeUserId, message }) => {
+		if( !isUserExists(activeUserId) ) return  // only send typing if activeUser is selected in front-end
+
+		// emit to this user : by private roomId === activeUser._id
+		socket.to(activeUserId).emit('message', { type, activeUserId, message })
 	})
 
 	socket.on('disconnect', () => {

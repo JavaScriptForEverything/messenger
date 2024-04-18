@@ -192,12 +192,14 @@ block script
 
 				hr(class='my-1 border-spacing-x-0.5 border-slate-100')
 				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 border border-slate-300 rounded')
-					div(name='message-container' class='px-3 py-1.5 text-slate-700')
-						div(name='text-message-container')
+
+					//- if has .call class then hide text-message-container and show video-container else oposite
+					div(name='message-container' class='call group px-3 py-1.5 text-slate-700')
+
+						div(name='text-message-container' class='block group-[&.call]:hidden')
 							//- message container : fill via client-side
 
-
-						div(name='video-container' class='mb-2 hidden [&.active]:block')
+						div(name='video-container' class='hidden group-[&.call]:block mb-2 ')
 							div(name='their-video-container' class=' border border-slate-200 max-h-80 aspect-video mx-auto relative')
 								video(name='their-video' src='/music/video2.mp4' muted class='h-full')
 								video(name='your-video' src='/music/video.mp4' muted class='w-32 aspect-video absolute top-0 left-0')
@@ -228,27 +230,25 @@ block script
 									class=''
 									)
 
-									//- called class apply on style
+									//- add .called class to apply active icon
 									button(name='microphone-on-off'
 										class='cursor-pointer p-2 rounded-full bg-slate-700/60 text-white hover:bg-slate-700/70 active:bg-slate-700/90 hover:scale-110 transition-transform duration-200'
 										class='[&.called]:bg-slate-700/90 '
-										class='[&>*:first-child]:[&.called]:hidden'
-										class='[&>*:last-child]:[&.called]:block'
-										class=''
+										class='group '
 									)
-										<svg class='block pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 1024 1024"><path fill="currentColor" d="M512 128a128 128 0 0 0-128 128v256a128 128 0 1 0 256 0V256a128 128 0 0 0-128-128m0-64a192 192 0 0 1 192 192v256a192 192 0 1 1-384 0V256A192 192 0 0 1 512 64m-32 832v-64a288 288 0 0 1-288-288v-32a32 32 0 0 1 64 0v32a224 224 0 0 0 224 224h64a224 224 0 0 0 224-224v-32a32 32 0 1 1 64 0v32a288 288 0 0 1-288 288v64h64a32 32 0 1 1 0 64H416a32 32 0 1 1 0-64z"/></svg>
-										<svg class='hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 1024 1024"><path fill="currentColor" d="m412.16 592.128l-45.44 45.44A191.232 191.232 0 0 1 320 512V256a192 192 0 1 1 384 0v44.352l-64 64V256a128 128 0 1 0-256 0v256c0 30.336 10.56 58.24 28.16 80.128m51.968 38.592A128 128 0 0 0 640 512v-57.152l64-64V512a192 192 0 0 1-287.68 166.528zM314.88 779.968l46.144-46.08A222.976 222.976 0 0 0 480 768h64a224 224 0 0 0 224-224v-32a32 32 0 1 1 64 0v32a288 288 0 0 1-288 288v64h64a32 32 0 1 1 0 64H416a32 32 0 1 1 0-64h64v-64c-61.44 0-118.4-19.2-165.12-52.032M266.752 737.6A286.976 286.976 0 0 1 192 544v-32a32 32 0 0 1 64 0v32c0 56.832 21.184 108.8 56.064 148.288z"/><path fill="currentColor" d="M150.72 859.072a32 32 0 0 1-45.44-45.056l704-708.544a32 32 0 0 1 45.44 45.056z"/></svg>
+										<svg class='block group-[&.called]:hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 1024 1024"><path fill="currentColor" d="M512 128a128 128 0 0 0-128 128v256a128 128 0 1 0 256 0V256a128 128 0 0 0-128-128m0-64a192 192 0 0 1 192 192v256a192 192 0 1 1-384 0V256A192 192 0 0 1 512 64m-32 832v-64a288 288 0 0 1-288-288v-32a32 32 0 0 1 64 0v32a224 224 0 0 0 224 224h64a224 224 0 0 0 224-224v-32a32 32 0 1 1 64 0v32a288 288 0 0 1-288 288v64h64a32 32 0 1 1 0 64H416a32 32 0 1 1 0-64z"/></svg>
+										<svg class='hidden group-[&.called]:block pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 1024 1024"><path fill="currentColor" d="m412.16 592.128l-45.44 45.44A191.232 191.232 0 0 1 320 512V256a192 192 0 1 1 384 0v44.352l-64 64V256a128 128 0 1 0-256 0v256c0 30.336 10.56 58.24 28.16 80.128m51.968 38.592A128 128 0 0 0 640 512v-57.152l64-64V512a192 192 0 0 1-287.68 166.528zM314.88 779.968l46.144-46.08A222.976 222.976 0 0 0 480 768h64a224 224 0 0 0 224-224v-32a32 32 0 1 1 64 0v32a288 288 0 0 1-288 288v64h64a32 32 0 1 1 0 64H416a32 32 0 1 1 0-64h64v-64c-61.44 0-118.4-19.2-165.12-52.032M266.752 737.6A286.976 286.976 0 0 1 192 544v-32a32 32 0 0 1 64 0v32c0 56.832 21.184 108.8 56.064 148.288z"/><path fill="currentColor" d="M150.72 859.072a32 32 0 0 1-45.44-45.056l704-708.544a32 32 0 0 1 45.44 45.056z"/></svg>
 
 
 									button(name='camera-on-off'
 										class='cursor-pointer p-2 rounded-full bg-slate-700/60 text-white hover:bg-slate-700/70 active:bg-slate-700/90 hover:scale-110 transition-transform duration-200'
 										class='[&.called]:bg-slate-700/90 '
-										class='[&>*:first-child]:[&.called]:hidden'
-										class='[&>*:last-child]:[&.called]:block'
+										class='group '
 									)
-										<svg class='block pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4h-3.17L15 2H9L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H4V6h4.05l1.83-2h4.24l1.83 2H20zM12 7a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3a3 3 0 0 1 3-3a3 3 0 0 1 3 3a3 3 0 0 1-3 3"/></svg>
-										<svg class='hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M17 12c0 .54-.1 1.05-.26 1.54L15 11.78A3.057 3.057 0 0 0 12.22 9l-1.76-1.74c.49-.16 1-.26 1.54-.26c2.76 0 5 2.24 5 5M9.88 4h4.24l1.83 2H20v10.8l1.88 1.88c.08-.21.12-.44.12-.68V6c0-1.11-.89-2-2-2h-3.17L15 2H9L7.18 4L8.6 5.4zm12.23 17.46l-1.27 1.27L18.11 20H4a2 2 0 0 1-2-2V6c0-.58.25-1.1.65-1.46L1.11 3l1.28-1.27zM9 12c0 1.66 1.34 3 3 3c.33 0 .65-.07.94-.17l-3.77-3.77c-.1.3-.17.61-.17.94m7.11 6l-1.66-1.66c-.73.41-1.56.66-2.45.66c-2.76 0-5-2.24-5-5c0-.89.25-1.72.66-2.45L4.11 6H4v12z"/></svg>
-
+										//- <svg class='block pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4h-3.17L15 2H9L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H4V6h4.05l1.83-2h4.24l1.83 2H20zM12 7a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3a3 3 0 0 1 3-3a3 3 0 0 1 3 3a3 3 0 0 1-3 3"/></svg>
+										//- <svg class='hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M17 12c0 .54-.1 1.05-.26 1.54L15 11.78A3.057 3.057 0 0 0 12.22 9l-1.76-1.74c.49-.16 1-.26 1.54-.26c2.76 0 5 2.24 5 5M9.88 4h4.24l1.83 2H20v10.8l1.88 1.88c.08-.21.12-.44.12-.68V6c0-1.11-.89-2-2-2h-3.17L15 2H9L7.18 4L8.6 5.4zm12.23 17.46l-1.27 1.27L18.11 20H4a2 2 0 0 1-2-2V6c0-.58.25-1.1.65-1.46L1.11 3l1.28-1.27zM9 12c0 1.66 1.34 3 3 3c.33 0 .65-.07.94-.17l-3.77-3.77c-.1.3-.17.61-.17.94m7.11 6l-1.66-1.66c-.73.41-1.56.66-2.45.66c-2.76 0-5-2.24-5-5c0-.89.25-1.72.66-2.45L4.11 6H4v12z"/></svg>
+										<svg class='block group-[&.called]:hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15.75v-7.5a2 2 0 0 1 2-2h8.5a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2m17.168-8.759l-4 3.563a.5.5 0 0 0-.168.373v1.778a.5.5 0 0 0 .168.373l4 3.563a.5.5 0 0 0 .832-.374V7.365a.5.5 0 0 0-.832-.374"/></svg>
+										<svg class='hidden group-[&.called]:block pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M3.28 2.22a.75.75 0 1 0-1.06 1.06l1.915 1.916A3.25 3.25 0 0 0 2 8.25v7.5A3.25 3.25 0 0 0 5.25 19h7.5c1.403 0 2.599-.89 3.054-2.135l4.915 4.916a.75.75 0 0 0 1.061-1.061zM14.5 15.56v.19a1.75 1.75 0 0 1-1.75 1.75h-7.5a1.75 1.75 0 0 1-1.75-1.75v-7.5c0-.966.784-1.75 1.75-1.75h.19zm0-7.31v3.068l1.5 1.5v-2.434l4.11-2.838a.25.25 0 0 1 .392.206v8.495a.25.25 0 0 1-.392.206l-1.535-1.06l2.432 2.433c.57-.274.995-.849.995-1.579V7.752c0-1.41-1.584-2.242-2.744-1.44L16 8.562V8.25A3.25 3.25 0 0 0 12.75 5H8.182l1.5 1.5h3.068c.966 0 1.75.784 1.75 1.75"/></svg>
 
 									button(name='call' 
 										class='cursor-pointer p-2 rounded-full bg-slate-700/60 text-white hover:bg-slate-700/70 active:bg-slate-700/90 hover:scale-125 transition-transform duration-200'
@@ -431,96 +431,104 @@ block script
 							class='w-full max-h-96 bg-slate-100 border border-slate-300 shadow'
 							class='absolute top-0 left-0 rounded-md'
 							class='overflow-y-scroll pt-12 '
+							class='hidden'
 						)
 
 				hr(class='my-1 border-spacing-x-0.5 border-slate-100')
-				div(name='right-main' class='p-2 flex-1 overflow-x-auto text-slate-700 border border-slate-300 bg-slate-50 rounded')
 
-					div(name='image-container' class='flex flex-col justify-center items-center border border-slate-100 py-2')
-						img(src=logedInUser.avatar || '/images/users/default.jpg' alt='avatar' class='w-20 h-20 rounded-full border-2 border-slate-50')
-						div(class='flex flex-col items-center')
-							a( href=`/profile/${logedInUser.username || logedInUser._id}` class='hover:text-slate-900 text-slate-700 capitalize'
-								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
-							p(class='font-light text-sm text-slate-600 -mt-1 capitalize'
-							) #{logedInUser.title || 'Senior Web Developer'}
+				//- add .active class to toggle child div container
+				div(name='right-main' class='group p-2 flex-1 overflow-x-auto text-slate-700 border border-slate-300 bg-slate-50 rounded')
+					//- child one
+					div(name='chat-container' class='hidden group-[&.active]:block border border-red-300')
+						p chat message: confitrue later
 
-					div(name='call-container' class='flex justify-evenly mt-4')
-						div(name='audio-call-container' class='flex flex-col justify-center items-center gap-1')
-							button(name='audio-call-button' type='button' 
-								class='p-2 rounded-full bg-slate-200/60 text-blue-500 border border-slate-50'
-								class='hover:bg-slate-200/80 hover:border-slate-100'
-								class='active:bg-slate-300/80 active:border-slate-200/80'
-								class='grow-0'
+					//- child two
+					div(name='call-container' class='block group-[&.active]:hidden ')
+						div(name='image-container' class='flex flex-col justify-center items-center border border-slate-100 py-2')
+							img(src=logedInUser.avatar || '/images/users/default.jpg' alt='avatar' class='w-20 h-20 rounded-full border-2 border-slate-50')
+							div(class='flex flex-col items-center')
+								a( href=`/profile/${logedInUser.username || logedInUser._id}` class='hover:text-slate-900 text-slate-700 capitalize'
+									) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+								p(class='font-light text-sm text-slate-600 -mt-1 capitalize'
+								) #{logedInUser.title || 'Senior Web Developer'}
 
-								class='disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-400'
-								class='disabled:hover:bg-slate-300'
-								class='disabled:active:bg-slate-300'
-								)
-								<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" d="M6.987 2.066a2 2 0 0 1 2.327.946l.074.149l.662 1.471a2.497 2.497 0 0 1-.442 2.718l-.133.132l-1.043.973c-.188.178-.047.867.633 2.045c.612 1.06 1.11 1.555 1.355 1.582h.043l.053-.01l2.05-.627a1.5 1.5 0 0 1 1.564.441l.091.115l1.357 1.88a2 2 0 0 1-.125 2.497l-.122.126l-.542.514a3.5 3.5 0 0 1-3.715.705c-1.935-.78-3.693-2.562-5.29-5.328c-1.6-2.773-2.265-5.19-1.968-7.26a3.5 3.5 0 0 1 2.261-2.789l.193-.064z"/></svg>
+						div(name='call-container' class='flex justify-evenly mt-4')
+							div(name='audio-call-container' class='flex flex-col justify-center items-center gap-1')
+								button(name='audio-call-button' type='button' 
+									class='p-2 rounded-full bg-slate-200/60 text-blue-500 border border-slate-50'
+									class='hover:bg-slate-200/80 hover:border-slate-100'
+									class='active:bg-slate-300/80 active:border-slate-200/80'
+									class='grow-0'
 
-							span(class='text-sm font-light text-slate-500') Audio Call
+									class='disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-400'
+									class='disabled:hover:bg-slate-300'
+									class='disabled:active:bg-slate-300'
+									)
+									<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" d="M6.987 2.066a2 2 0 0 1 2.327.946l.074.149l.662 1.471a2.497 2.497 0 0 1-.442 2.718l-.133.132l-1.043.973c-.188.178-.047.867.633 2.045c.612 1.06 1.11 1.555 1.355 1.582h.043l.053-.01l2.05-.627a1.5 1.5 0 0 1 1.564.441l.091.115l1.357 1.88a2 2 0 0 1-.125 2.497l-.122.126l-.542.514a3.5 3.5 0 0 1-3.715.705c-1.935-.78-3.693-2.562-5.29-5.328c-1.6-2.773-2.265-5.19-1.968-7.26a3.5 3.5 0 0 1 2.261-2.789l.193-.064z"/></svg>
 
-						p(name='vertical-divider' class='border-r border-slate-300') 
+								span(class='text-sm font-light text-slate-500') Audio Call
 
-						div(name='video-call-container' class='flex flex-col justify-center items-center gap-1')
-							button(name='video-call-button' type='button' 
-								class='p-2 rounded-full bg-slate-200/60 text-blue-500 border border-slate-50'
-								class='hover:bg-slate-200/80 hover:border-slate-100'
-								class='active:bg-slate-300/80 active:border-slate-200/80'
-								class='grow-0'
+							p(name='vertical-divider' class='border-r border-slate-300') 
 
-								class='disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-400'
-								class='disabled:hover:bg-slate-300'
-								class='disabled:active:bg-slate-300'
-								)
-								<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26"><path fill="currentColor" d="M8.5 6C2.5 6 0 6.813 0 7.469V18.5c0 .641 2.5 1.5 8.5 1.5s8.5-.813 8.5-1.469V7.5C17 6.859 14.5 6 8.5 6m16.875.031a.885.885 0 0 0-.469.157l-6.5 4.187c-.25.188-.406.498-.406.813v3.624c0 .315.156.624.406.813l6.5 4.188c.176.133 1.032.55 1.032-.813V7c0-.787-.271-.981-.563-.969"/></svg>
+							div(name='video-call-container' class='flex flex-col justify-center items-center gap-1')
+								button(name='video-call-button' type='button' 
+									class='p-2 rounded-full bg-slate-200/60 text-blue-500 border border-slate-50'
+									class='hover:bg-slate-200/80 hover:border-slate-100'
+									class='active:bg-slate-300/80 active:border-slate-200/80'
+									class='grow-0'
 
-							span(class='text-sm font-light text-slate-500') Video Call
+									class='disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-400'
+									class='disabled:hover:bg-slate-300'
+									class='disabled:active:bg-slate-300'
+									)
+									<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26"><path fill="currentColor" d="M8.5 6C2.5 6 0 6.813 0 7.469V18.5c0 .641 2.5 1.5 8.5 1.5s8.5-.813 8.5-1.469V7.5C17 6.859 14.5 6 8.5 6m16.875.031a.885.885 0 0 0-.469.157l-6.5 4.187c-.25.188-.406.498-.406.813v3.624c0 .315.156.624.406.813l6.5 4.188c.176.133 1.032.55 1.032-.813V7c0-.787-.271-.981-.563-.969"/></svg>
 
-
-					div(name='links-container' class='mt-4')
-						div(name='view-friends-container' class='flex items-center gap-1')
-							button(id='view-friends-button' type='button' 
-								class='p-1 rounded-full bg-slate-200/50 text-slate-500 border border-slate-50'
-								class='hover:bg-slate-200/80 hover:border-slate-100'
-								class='active:bg-slate-300/80 active:border-slate-200/80'
-								class='grow-0'
-								)
-								<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path fill="currentColor" d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8M72 96a56 56 0 1 1 56 56a56.06 56.06 0 0 1-56-56"/></svg>
-
-							label(for='view-friends-button' class='hover:text-blue-500 cursor-pointer text-sm font-light text-slate-500') View Friends
-
-						div(name='add-to-favorite-container' class='flex items-center gap-1')
-							button(id='add-to-favorite-button' type='button' 
-								class='p-1 rounded-full bg-slate-200/50 text-slate-500 border border-slate-50'
-								class='hover:bg-slate-200/80 hover:border-slate-100'
-								class='active:bg-slate-300/80 active:border-slate-200/80'
-								class='grow-0'
-								)
-								<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3"/></svg>
-
-							label(for='add-to-favorite-button' class='hover:text-blue-500 cursor-pointer text-sm font-light text-slate-500') Add to favorite
+								span(class='text-sm font-light text-slate-500') Video Call
 
 
-					div(name='attachments-container' class='my-4 ')
-						p(class='font-medium text-slate-600') Attachments
+						div(name='links-container' class='mt-4')
+							div(name='view-friends-container' class='flex items-center gap-1')
+								button(id='view-friends-button' type='button' 
+									class='p-1 rounded-full bg-slate-200/50 text-slate-500 border border-slate-50'
+									class='hover:bg-slate-200/80 hover:border-slate-100'
+									class='active:bg-slate-300/80 active:border-slate-200/80'
+									class='grow-0'
+									)
+									<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path fill="currentColor" d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8M72 96a56 56 0 1 1 56 56a56.06 56.06 0 0 1-56-56"/></svg>
 
-						div(name='attachments-container' class='text-xs my-2 grid grid-cols-4 gap-2')
-							button(name='filter-image' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
-								span(class='text-blue-500') Image
+								label(for='view-friends-button' class='hover:text-blue-500 cursor-pointer text-sm font-light text-slate-500') View Friends
 
-							button(name='filter-audio' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
-								span(class='text-blue-500') Audio
+							div(name='add-to-favorite-container' class='flex items-center gap-1')
+								button(id='add-to-favorite-button' type='button' 
+									class='p-1 rounded-full bg-slate-200/50 text-slate-500 border border-slate-50'
+									class='hover:bg-slate-200/80 hover:border-slate-100'
+									class='active:bg-slate-300/80 active:border-slate-200/80'
+									class='grow-0'
+									)
+									<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3"/></svg>
 
-							button(name='filter-video' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
-								span(class='text-blue-500') Video
-
-							button(name='filter-file' class='w-14 h-14 bg-blue-100/80 grid place-items-center rounded-lg')
-								span(class='text-blue-500') File
+								label(for='add-to-favorite-button' class='hover:text-blue-500 cursor-pointer text-sm font-light text-slate-500') Add to favorite
 
 
-						p(name='view-all' class='text-center mt-4')
-							a(href='#' class='text-blue-500 px-3 py-1.5 border border-blue-300 rounded-md') View All
+						div(name='attachments-container' class='my-4 ')
+							p(class='font-medium text-slate-600') Attachments
+
+							div(name='attachments-container' class='text-xs my-2 grid grid-cols-4 gap-2')
+								button(name='filter-image' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
+									span(class='text-blue-500') Image
+
+								button(name='filter-audio' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
+									span(class='text-blue-500') Audio
+
+								button(name='filter-video' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
+									span(class='text-blue-500') Video
+
+								button(name='filter-file' class='w-14 h-14 bg-blue-100/80 grid place-items-center rounded-lg')
+									span(class='text-blue-500') File
+
+
+							p(name='view-all' class='text-center mt-4')
+								a(href='#' class='text-blue-500 px-3 py-1.5 border border-blue-300 rounded-md') View All
 
 
 

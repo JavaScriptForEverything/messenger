@@ -1382,6 +1382,11 @@ video {
   border-color: rgb(51 65 85 / var(--tw-border-opacity));
 }
 
+.border-red-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(252 165 165 / var(--tw-border-opacity));
+}
+
 .bg-blue-100\/80 {
   background-color: rgb(219 234 254 / 0.8);
 }
@@ -2624,6 +2629,38 @@ video {
   display: block;
 }
 
+.groupactive .group-\[active\]\:block {
+  display: block;
+}
+
+.group.active .group-\[\&\.active\]\:block {
+  display: block;
+}
+
+.group.call .group-\[\&\.call\]\:block {
+  display: block;
+}
+
+.group.called .group-\[\&\.called\]\:block {
+  display: block;
+}
+
+.groupactive .group-\[active\]\:hidden {
+  display: none;
+}
+
+.group.active .group-\[\&\.active\]\:hidden {
+  display: none;
+}
+
+.group.call .group-\[\&\.call\]\:hidden {
+  display: none;
+}
+
+.group.called .group-\[\&\.called\]\:hidden {
+  display: none;
+}
+
 .peer\/left-side-checkbox:checked ~ .peer-checked\/left-side-checkbox\:ml-0 {
   margin-left: 0px;
 }
@@ -2672,6 +2709,10 @@ video {
 .peer\/search-people:focus ~ .peer-focus\/search-people\:text-blue-500 {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
+}
+
+.group:has(active) .group-has-\[active\]\:block {
+  display: block;
 }
 
 @media (min-width: 768px) {

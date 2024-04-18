@@ -47,8 +47,7 @@ const attachmentsFilterVideoButton = $('[name=attachments-container] [name=filte
 const attachmentsFilterFileButton = $('[name=attachments-container] [name=filter-file]') 	
 const attachmentsViewAllButton = $('[name=attachments-container] [name=view-all]') 	
 
-const textMessagesContainer = $('[name=text-message-container]') 	
-const videoContainer = $('[name=video-container]') 	
+const messagesContainer = $('[name=message-container]') 	
 const callPanel = $('[name=call-panel]') 	
 
 const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
@@ -60,7 +59,6 @@ const callPanelRecordingButton = $('[name=call-panel] [name=recording]')
 const recordingPanel = $('[name=recording-panel]') 	
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
-// videoContainer.classList.add('active') 
 
 let wssValue = ''
 
@@ -129,6 +127,14 @@ const preCallHandler = () => new Promise((resolve, reject) => {
 	})
 })
 
+
+/* To show message panel in right side: in Desktop-View
+const rightPanelMainBlock = $('[name=right-main]')
+rightPanelMainBlock.classList.add('active') 			// to show right-panel message block
+rightPanelMainBlock.classList.remove('active') 			// to hide right-panel message block
+*/
+
+
 // force user to stop audio call if already in video call 
 const audioCallHandler = async () => {
 	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
@@ -136,15 +142,15 @@ const audioCallHandler = async () => {
 		return
 	}
 
-	const isPreCallSucceed = await preCallHandler()
-	if( !isPreCallSucceed ) return
+	// const isPreCallSucceed = await preCallHandler()
+	// if( !isPreCallSucceed ) return
+
 
 	audioCallButton.disabled = true
 	rightSideAudioCallButton.disabled = true
 	closeCallHandler() 																// 1. close previous call style 
 
-	textMessagesContainer.classList.add('hidden') 		// 2. hide chat messages
-	videoContainer.classList.add('active') 						// 3. show calling dialog
+	messagesContainer.classList.add('call') 				// show video-container and hide message container
 	callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
 }
 const videoCallHandler = async () => {
@@ -153,23 +159,21 @@ const videoCallHandler = async () => {
 		return
 	}
 
-	const isPreCallSucceed = await preCallHandler()
-	if( !isPreCallSucceed ) return
+	// const isPreCallSucceed = await preCallHandler()
+	// if( !isPreCallSucceed ) return
 
 	videoCallButton.disabled = true
 	rightSideVideoCallButton.disabled = true
 	closeCallHandler() 																// 1. close previous call style 
 
-	videoContainer.classList.add('active') 						// 2. show calling dialog
-	textMessagesContainer.classList.add('hidden') 		// 3. hide old chat messages
+	messagesContainer.classList.add('call') 				// show video-container and hide message container
 	callPanel.classList.remove('audio') 							// 4. make video call
 }
 const closeCallHandler = () => {
 	console.log('stop call')
 
 	//----------[ if success then reset styles ]----------
-	textMessagesContainer.classList.remove('hidden') 	// 1. show old chats after call end
-	videoContainer.classList.remove('active') 				// 2. hide video container
+	messagesContainer.classList.remove('call') 				// hide video-container
 
 	// 3. reset callPanel
 	callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style

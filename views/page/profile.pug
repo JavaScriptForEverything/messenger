@@ -8,7 +8,7 @@ block script
 		const logedInUser = !{logedInUserJs} 		// pass logedInUser to client-side too
 
 	- const fullName = `${logedInUser.firstName} ${logedInUser.lastName}`
-	div(class='h-screen container mx-auto ')
+	div(class='h-screen container mx-auto font-roboto')
 		div(class='w-full md:w-3/4 mx-auto border-x border-slate-200 rounded-md')
 			img( src=logedInUser.coverPhoto || '/images/users/coverPhoto.png'
 				class='h-48 w-full object-cover'

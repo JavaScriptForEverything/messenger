@@ -1389,6 +1389,11 @@ video {
   border-color: rgb(100 116 139 / var(--tw-border-opacity));
 }
 
+.border-slate-700 {
+  --tw-border-opacity: 1;
+  border-color: rgb(51 65 85 / var(--tw-border-opacity));
+}
+
 .bg-blue-100\/80 {
   background-color: rgb(219 234 254 / 0.8);
 }
@@ -1653,6 +1658,10 @@ video {
   padding-right: 8rem;
 }
 
+.pr-4 {
+  padding-right: 1rem;
+}
+
 .pt-0 {
   padding-top: 0px;
 }
@@ -1681,9 +1690,18 @@ video {
   text-align: center;
 }
 
+.font-roboto {
+  font-family: Roboto, sans-serif;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .text-\[length\:0px\] {
@@ -2789,3 +2807,4 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
 }
+

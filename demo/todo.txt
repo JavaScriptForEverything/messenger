@@ -1,10 +1,16 @@
 
 
 handle audio/video call
-	. send messages via wss
 	. handle wss
 	. handle WebRTC
 	. handle drag and drop file upload
+	. /profile page
+			. image upload: cropped
+					. avatar
+					. coverPhoto
+
+	. /error page
+			. nice error page
 
 Loading:
 	. when fetch user on selected user (by click friend list)

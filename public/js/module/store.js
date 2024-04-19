@@ -10,11 +10,13 @@
 
 const store = {
 	logedInUser: null,
+	activeUserId: null,
 	rooms: [{}]
 }
 
 export const getState = () => store
 export const setLogedInUser = (logedInUser) => store.logedInUser = logedInUser
+export const setActiveUserId = (activeUserId) => store.activeUserId = activeUserId
 export const setRooms = (rooms) => store.rooms = rooms
 
 

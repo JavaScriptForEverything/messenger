@@ -1,5 +1,6 @@
 import * as ui from './ui.js'
 import * as store from './store.js'
+import * as constants from './constants.js'
 import { getFilteredUsers } from './http.js'
 
 /* Global Variables 	
@@ -63,6 +64,36 @@ export const registerSocketEvents = (socket) => {
 		ui.receiveMessage({ type, activeUserId, message })
 	})
 
+	socket.on('pre-offer', ({ callType, activeUserId, callStatus }) => {
+		ui.handlePreOffer({ callType, activeUserId, callStatus })
+	})
+	socket.on('pre-offer-answer', ({ offerType, activeUserId, callStatus }) => {
+		// ui.handlePreOffer({ type, activeUserId })
+		const OFFER_TYPE = constants.offerType
+
+		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
+			console.log('call accepted')
+			console.log({ offerType, callStatus })
+		}
+		if(offerType === OFFER_TYPE.CALL_REJECTED) {
+			console.log('call rejected')
+			console.log({ offerType, callStatus })
+		}
+		if(offerType === OFFER_TYPE.CALL_CLOSED) {
+			console.log('call closed')
+			console.log({ offerType, callStatus })
+		}
+		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
+			console.log('callee not found')
+			console.log({ offerType, callStatus })
+		}
+		if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
+			console.log('call CALL_UNAVAILABLE')
+			console.log({ offerType, callStatus })
+		}
+
+	})
+
 }
 
 export const sendMessageTypingIndicator = ({ activeUserId }) => {
@@ -70,4 +101,16 @@ export const sendMessageTypingIndicator = ({ activeUserId }) => {
 }
 export const sendMessage = ({ type, activeUserId, message }) => {
 	socketIo.emit('message', { type, activeUserId, message })
+}
+
+// home.js: audioCallHandler
+export const sendPreOffer = ({ activeUserId, callType, callStatus }) => {
+	socketIo.emit('pre-offer', { callType, activeUserId, callStatus })
+
+	console.log('sendPreOffer: ', { activeUserId, callType, callStatus })
+}
+// ui.js: handlePreOffer
+export const sendPreOfferAnswer = ({ offerType, activeUserId, callStatus }) => {
+	socketIo.emit('pre-offer-answer', { offerType, activeUserId, callStatus })
+	console.log({ offerType, activeUserId, callStatus })
 }

@@ -419,7 +419,7 @@ elements.callingDialog({
 	}
 })
 */
-export const callingDialog = ( props = {}) => {
+const callingDialog = ( props = {}) => {
 	const { 
 		title='', 
 		callSide='caller', 
@@ -493,6 +493,66 @@ export const callingDialog = ( props = {}) => {
 
 }
 
+
+export const incommingCallDialog = () => new Promise((resolve, reject) => {
+
+	callingDialog({
+		title : 'Incomming Audio Call', 			// string
+		callSide: 'callee', 									// caller | callee
+		error: '', 														// string
+		onSuccess : (evt) => {
+			evt.target.remove() 								// close dialog
+			// console.log(evt.target)
+			resolve(true)
+		},
+		onReject : (evt) => {
+			evt.target.remove() 								// close dialog
+			// console.log(evt.target)
+			resolve(false)
+		},
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			})
+		}
+	})
+})  
+
+export const calleeNotFoundDialog = () => { 		// on('call-error', {})
+	callingDialog({
+		title : 'Not Found', 									// string
+		callSide: 'caller', 									// caller | callee
+		error: 'caller may be busy', 					// string
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			}, 3000)
+		}
+	})
+}
+
+export const outGoingCallDialog = () => new Promise((resolve, reject) => { 
+	callingDialog({
+		title : 'Calling', 										// string
+		callSide: 'caller', 									// caller | callee
+		error: '', 														// string
+		onSuccess : (evt) => {
+			evt.target.remove()
+			// console.log(evt.target)
+			resolve(true)
+		},
+		onReject : (evt) => {
+			evt.target.remove()
+			// console.log(evt.target)
+			resolve(false)
+		},
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			})
+		}
+	})
+})
 
 
 

@@ -3,6 +3,8 @@ import { $, redirectTo, readAsDataURL, followFollowingHandler } from './utils.js
 import * as elements from '../module/elements.js'
 import * as http from './http.js'
 import * as wss from './wss.js'
+import * as store from './store.js'
+import * as constants from '../module/constants.js'
 
 // const middleTop = $('[name=middle-top]')
 // const middleTopAvatar = middleTop.querySelector('[name=avatar]')
@@ -25,10 +27,85 @@ const searchPeopleInput = $('#search-people')
 const searchPeopleModal = $('[name=search-people-modal]')
 const searchMessageInput = $('#search-messages')
 
+const audioCallButton = $('[name=audio-call-button]') 	
+const videoCallButton = $('[name=video-call-button]') 	
+const rightSideAudioCallButton = $('[name=right-side] [name=audio-call-button]') 	
+const rightSideVideoCallButton = $('[name=right-side] [name=video-call-button]') 	
+const messagesContainer = $('[name=message-container]') 	
+const callPanel = $('[name=call-panel]') 	
 
+const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
+const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
+const callPanelScreenShareButton = $('[name=call-panel] [name=flip-camera]') 	
+const callPanelRecordingButton = $('[name=call-panel] [name=recording]') 	
+
+const recordingPanel = $('[name=recording-panel]') 	
+const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 
 let timer = 0
 let controller = null
+
+// ----------[ Other user Side ]----------
+export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
+	const selectedUserListContainer = $('[name=selected-user-list-container]')
+	const titleP = selectedUserListContainer.querySelector('[name=title]')
+
+	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
+
+	clearTimeout(timer)
+	timer = setTimeout(() => {
+		titleP.classList.add('hidden') 		// hide typing... indicator from top
+	}, [1000])
+}
+export const receiveMessage = ({ type, activeUserId, message }) => {
+	// console.log(message)
+
+	// show text or image message
+	if(type === 'text' || type === 'image') return elements.createTheirMessage(textMessagesContainer, { 
+		type: message.type,
+		message: message.message,
+		avatar: message.sender.avatar
+	})
+
+	// show audio message
+	if(type === 'audio') return elements.createTheirAudio(textMessagesContainer, { 
+		avatar: message.sender.avatar,
+		audioUrl: message.message,
+		audioDuration: message.duration,
+		createdAt: message.createdAt,
+	})
+
+}
+
+// wss.js
+export const handlePreOffer = async ({ callType, activeUserId, callStatus }) => {
+	const { CALL_BUSY, CALL_AVAILABLE } = constants.callStatus
+	const { CALL_ACCEPTED, CALL_REJECTED, CALL_UNAVAILABLE } = constants.offerType
+
+	if(callStatus === CALL_BUSY ) {
+		// don't call any more: show caller busy dialog
+		return console.log('caller is busy')
+	}
+
+	try {
+		const isSucceed = await elements.incommingCallDialog()
+
+		if(isSucceed) {
+			wss.sendPreOfferAnswer({ offerType: CALL_ACCEPTED, activeUserId, callStatus: CALL_BUSY })
+			console.log(callType, activeUserId)
+			// now callee is busy
+
+		} else {
+			wss.sendPreOfferAnswer({ offerType: CALL_REJECTED , activeUserId, callStatus: CALL_AVAILABLE })
+			console.log('rejected')
+		}
+
+	} catch (error) {
+		wss.sendPreOfferAnswer({ offerType: CALL_UNAVAILABLE , activeUserId, callStatus: CALL_AVAILABLE })
+		console.log('handle error: ', error)
+	}
+}
+//----
 
 const showSearchModal = (modalSelector) => () => {
 	if(modalSelector.classList.contains('hidden') ) {
@@ -131,6 +208,8 @@ const selectedUserHandler = (user) => {
 	const avatarImg = selectedUserListContainer.querySelector('[name=avatar]')
 	const avatarBadge = selectedUserListContainer.querySelector('[name=avatar-badge]')
 	const name = selectedUserListContainer.querySelector('[name=username]')
+	
+	store.setActiveUserId(user.id)
 	
 	selectedUserListContainer.id = user.id
 	avatarImg.src = user.avatar
@@ -251,38 +330,6 @@ export const showFriendLists = (friends=[]) => {
 }
 
 
-// ----------[ Other user Side ]----------
-export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
-	const selectedUserListContainer = $('[name=selected-user-list-container]')
-	const titleP = selectedUserListContainer.querySelector('[name=title]')
-
-	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
-
-	clearTimeout(timer)
-	timer = setTimeout(() => {
-		titleP.classList.add('hidden') 		// hide typing... indicator from top
-	}, [1000])
-}
-export const receiveMessage = ({ type, activeUserId, message }) => {
-	// console.log(message)
-
-	// show text or image message
-	if(type === 'text' || type === 'image') return elements.createTheirMessage(textMessagesContainer, { 
-		type: message.type,
-		message: message.message,
-		avatar: message.sender.avatar
-	})
-
-	// show audio message
-	if(type === 'audio') return elements.createTheirAudio(textMessagesContainer, { 
-		avatar: message.sender.avatar,
-		audioUrl: message.message,
-		audioDuration: message.duration,
-		createdAt: message.createdAt,
-	})
-
-}
-
 
 // ----------[ audio upload ]----------
 export const showAudio = async (blob, audio, audioDuration) => {
@@ -352,12 +399,82 @@ export const filterMessageByAttachmentType = async (type='text') => {
 }
 
 
+// ----------[ call ]----------
+
+// force user to stop audio call if already in video call 
+export const audioCallHandler = async () => {
+	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
+		showError('Your video call must be terminate first')
+		return
+	}
+
+
+	const { activeUserId } = store.getState()
+	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
+
+	const { AUDIO_CALL } = constants.callType
+	const { CALL_BUSY } = constants.callStatus
+	wss.sendPreOffer({ activeUserId, callType: AUDIO_CALL, callStatus: CALL_BUSY })
+	console.log('sendPreOffer')
+	// now caller is busy
+
+	const isPreCallSucceed = await elements.outGoingCallDialog()
+	if( !isPreCallSucceed ) return
 
 
 
+	// audioCallButton.disabled = true
+	// rightSideAudioCallButton.disabled = true
+	// closeCallHandler() 																// 1. close previous call style 
+
+	// messagesContainer.classList.add('call') 				// show video-container and hide message container
+	// callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
+}
 
 
+export const videoCallHandler = async () => {
+	if(audioCallButton.disabled || rightSideAudioCallButton.disabled) {
+		showError('Your audio call must be terminate first')
+		return
+	}
 
+	const isPreCallSucceed = await elements.incommingCallDialog()
+	// const isPreCallSucceed = await outGoingCallDialog()
+	if( !isPreCallSucceed ) return
+
+	videoCallButton.disabled = true
+	rightSideVideoCallButton.disabled = true
+	closeCallHandler() 																// 1. close previous call style 
+
+	messagesContainer.classList.add('call') 				// show video-container and hide message container
+	callPanel.classList.remove('audio') 							// 4. make video call
+}
+
+
+const closeCallHandler = () => {
+	console.log('stop call')
+
+	//----------[ if success then reset styles ]----------
+	messagesContainer.classList.remove('call') 				// hide video-container
+
+	// 3. reset callPanel
+	callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
+	callPanelCameraButton.classList.remove('called') 					// reset camera style
+	callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
+	stopRecordingHandler() 	// reset recording
+}
+
+const stopRecordingHandler = () => {
+		console.log('stop recording handler')
+	
+		// handle close functionality
+			// 1. stop webRTC call
+			// ...
+
+	callPanelRecordingButton.classList.remove('called') 				// 1. reset active recording button style
+	recordingPanel.classList.add('hidden') 											// 2. hide recording panel
+	recordingPanelPlayPauseButton.classList.add('called') 			// 3. make recording pause state
+}
 
 
 

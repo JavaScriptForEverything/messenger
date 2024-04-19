@@ -1,4 +1,19 @@
 let connectedPeers = []
+let isUserGettingCall = false
+
+const CALL_STATUS = { 											// make same callStatus as constants.js in client-side has
+	CALL_AVAILABLE: 'CALL_AVAILABLE',
+	CALL_UNAVAILABLE: 'CALL_UNAVAILABLE',
+	CALL_BUSY: 'CALL_BUSY',
+	CALL_ENGAGED: 'CALL_ENGAGED',
+}
+const OFFER_TYPE = {
+	CALL_ACCEPTED 	: 'CALL_ACCEPTED',
+	CALL_REJECTED 	: 'CALL_REJECTED',
+	CALL_CLOSED 		: 'CALL_CLOSED',
+	CALLEE_NOT_FOUND: 'CALLEE_NOT_FOUND', 		// if try to call to a personalCode which not exists in backend
+	CALL_UNAVAILABLE: 'CALL_UNAVAILABLE', 		// if already calling someone: more than 2 user not allowed by WebRTC
+}
 
 const isUserExists = (userId) => {
 	const user = connectedPeers.find( peer => userId === peer.userId )
@@ -50,10 +65,82 @@ module.exports = (io) => (socket) => {
 	})
 
 	socket.on('message', ({ type, activeUserId, message }) => {
-		if( !isUserExists(activeUserId) ) return  // only send typing if activeUser is selected in front-end
+		if( !isUserExists(activeUserId) ) return  // if callee not exists then return
 
-		// emit to this user : by private roomId === activeUser._id
 		socket.to(activeUserId).emit('message', { type, activeUserId, message })
+	})
+
+
+	socket.on('pre-offer', ({ activeUserId, callType, callStatus }) => {
+
+		// Step-1: if callee not exinsts any more, close this dialog
+		if( !isUserExists(activeUserId) ) {
+			socket.emit('pre-offer-answer', {  							// tell only caller him-self
+				callType,
+				offerType: OFFER_TYPE.CALLEE_NOT_FOUND, 
+				callStatus: CALL_STATUS.CALL_UNAVAILABLE,
+				activeUserId, 
+			})
+			return
+		}
+
+		// Step-2: only allow first call, and tell other user is busy
+		if(callStatus === CALL_STATUS.CALL_BUSY && isUserGettingCall) {
+			socket.emit('pre-offer', { 
+				callType, 
+				callStatus: CALL_STATUS.CALL_BUSY,
+				activeUserId, 
+			})
+			return
+
+		} else {
+			isUserGettingCall = false
+		}
+
+		isUserGettingCall = true
+
+
+		// Step-2: tell caller that he is engaged
+		socket.to(activeUserId).emit('pre-offer', { 
+			callType, 
+			callStatus: CALL_STATUS.CALL_ENGAGED,
+			activeUserId, 
+		})
+
+		// Step-3: tell others that caller is busy
+		socket.broadcast.emit('pre-offer', { 
+			callType, 
+			callStatus: CALL_STATUS.CALL_BUSY,
+			activeUserId, 
+		})
+	})
+
+
+	socket.on('pre-offer-answer', ({ offerType, activeUserId, callStatus }) => {
+		// Step-1: tell caller him self: callee not found
+		if( !isUserExists(activeUserId) ) {
+			socket.emit('pre-offer-answer', {  							// tell only caller him-self
+				offerType: OFFER_TYPE.CALLEE_NOT_FOUND,
+				activeUserId, 
+				status: CALL_STATUS.CALL_AVAILABLE 
+			})
+			return
+		}
+
+		// Step-2: tell only callee 
+		socket.to(activeUserId).emit('pre-offer-answer', { 
+			offerType, 
+			activeUserId,
+			callStatus: CALL_STATUS.CALL_ENGAGED
+		})
+
+		// Step-3: tell others 
+		socket.broadcast.emit('pre-offer-answer', { 
+			offerType, 
+			activeUserId,
+			callStatus: CALL_STATUS.CALL_BUSY
+		})
+
 	})
 
 	socket.on('disconnect', () => {

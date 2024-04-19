@@ -1318,6 +1318,11 @@ video {
   border-color: rgb(254 226 226 / var(--tw-border-opacity));
 }
 
+.border-red-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(252 165 165 / var(--tw-border-opacity));
+}
+
 .border-red-400 {
   --tw-border-opacity: 1;
   border-color: rgb(248 113 113 / var(--tw-border-opacity));
@@ -1380,11 +1385,6 @@ video {
 .border-slate-700 {
   --tw-border-opacity: 1;
   border-color: rgb(51 65 85 / var(--tw-border-opacity));
-}
-
-.border-red-300 {
-  --tw-border-opacity: 1;
-  border-color: rgb(252 165 165 / var(--tw-border-opacity));
 }
 
 .bg-blue-100\/80 {
@@ -1984,24 +1984,10 @@ video {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-.roboto-thin {
-  font-family: Roboto;
-  font-family: sans-serif;
-  font-weight: 100;
-  font-style: normal;
-}
-
 .roboto-medium {
   font-family: Roboto;
   font-family: sans-serif;
   font-weight: 500;
-  font-style: normal;
-}
-
-.roboto-bold {
-  font-family: Roboto;
-  font-family: sans-serif;
-  font-weight: 700;
   font-style: normal;
 }
 
@@ -2621,18 +2607,6 @@ video {
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
-.group\/firend-list.active .group-\[\.active\]\/firend-list\:block {
-  display: block;
-}
-
-.group\/friend-list.message-success .group-\[\.message-success\]\/friend-list\:block {
-  display: block;
-}
-
-.groupactive .group-\[active\]\:block {
-  display: block;
-}
-
 .group.active .group-\[\&\.active\]\:block {
   display: block;
 }
@@ -2645,8 +2619,12 @@ video {
   display: block;
 }
 
-.groupactive .group-\[active\]\:hidden {
-  display: none;
+.group\/firend-list.active .group-\[\.active\]\/firend-list\:block {
+  display: block;
+}
+
+.group\/friend-list.message-success .group-\[\.message-success\]\/friend-list\:block {
+  display: block;
 }
 
 .group.active .group-\[\&\.active\]\:hidden {
@@ -2709,10 +2687,6 @@ video {
 .peer\/search-people:focus ~ .peer-focus\/search-people\:text-blue-500 {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
-}
-
-.group:has(active) .group-has-\[active\]\:block {
-  display: block;
 }
 
 @media (min-width: 768px) {

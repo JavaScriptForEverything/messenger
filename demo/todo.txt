@@ -1,4 +1,5 @@
 
+. add animation on calling dialog in both side
 
 handle audio/video call
 	. handle WebRTC

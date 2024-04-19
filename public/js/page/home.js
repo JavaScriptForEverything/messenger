@@ -4,7 +4,7 @@ import { createPicker } from '../plugins/picmo/index.js';
 // import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, getReadableFileSizeString } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
-// import * as store from '../module/store.js' 		
+import * as store from '../module/store.js' 		
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
 import * as elements from '../module/elements.js'
@@ -47,8 +47,6 @@ const attachmentsFilterVideoButton = $('[name=attachments-container] [name=filte
 const attachmentsFilterFileButton = $('[name=attachments-container] [name=filter-file]') 	
 const attachmentsViewAllButton = $('[name=attachments-container] [name=view-all]') 	
 
-const messagesContainer = $('[name=message-container]') 	
-const callPanel = $('[name=call-panel]') 	
 
 const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
 const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
@@ -60,73 +58,6 @@ const recordingPanel = $('[name=recording-panel]')
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
 
-let wssValue = ''
-
-if(wssValue === 'on-success') { 		// on('call-success', {})
-	elements.callingDialog({
-		title : 'Incomming Audio Call', 			// string
-		callSide: 'callee', 									// caller | callee
-		error: '', 														// string
-		onSuccess : (evt) => {
-			evt.target.remove() 								// close dialog
-			// console.log(evt.target)
-			console.log('you click success')
-		},
-		onReject : (evt) => {
-			evt.target.remove() 								// close dialog
-			// console.log(evt.target)
-			console.log('you click reject')
-		},
-		onError : (evt) => {
-			setTimeout(() => {
-				evt.target.remove()
-				wssValue = 'on-error'
-			})
-		}
-	})
-}
-
-if(wssValue === 'no-reject') { 		// on('call-error', {})
-	elements.callingDialog({
-		title : 'Not Found', 									// string
-		callSide: 'caller', 									// caller | callee
-		error: 'caller may be busy', 					// string
-		onError : (evt) => {
-			setTimeout(() => {
-				evt.target.remove()
-			}, 3000)
-		}
-	})
-}
-
-
-
-const preCallHandler = () => new Promise((resolve, reject) => { 
-
-	elements.callingDialog({
-		title : 'Calling', 										// string
-		callSide: 'caller', 									// caller | callee
-		error: '', 														// string
-		onSuccess : (evt) => {
-			evt.target.remove()
-			// console.log(evt.target)
-			wssValue = 'on-success'
-			resolve(true)
-		},
-		onReject : (evt) => {
-			evt.target.remove()
-			// console.log(evt.target)
-			wssValue = 'on-reject'
-			resolve(false)
-		},
-		onError : (evt) => {
-			setTimeout(() => {
-				evt.target.remove()
-			})
-		}
-	})
-})
-
 
 /* To show message panel in right side: in Desktop-View
 const rightPanelMainBlock = $('[name=right-main]')
@@ -135,52 +66,7 @@ rightPanelMainBlock.classList.remove('active') 			// to hide right-panel message
 */
 
 
-// force user to stop audio call if already in video call 
-const audioCallHandler = async () => {
-	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
-		ui.showError('Your video call must be terminate first')
-		return
-	}
 
-	// const isPreCallSucceed = await preCallHandler()
-	// if( !isPreCallSucceed ) return
-
-
-	audioCallButton.disabled = true
-	rightSideAudioCallButton.disabled = true
-	closeCallHandler() 																// 1. close previous call style 
-
-	messagesContainer.classList.add('call') 				// show video-container and hide message container
-	callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
-}
-const videoCallHandler = async () => {
-	if(audioCallButton.disabled || rightSideAudioCallButton.disabled) {
-		ui.showError('Your audio call must be terminate first')
-		return
-	}
-
-	// const isPreCallSucceed = await preCallHandler()
-	// if( !isPreCallSucceed ) return
-
-	videoCallButton.disabled = true
-	rightSideVideoCallButton.disabled = true
-	closeCallHandler() 																// 1. close previous call style 
-
-	messagesContainer.classList.add('call') 				// show video-container and hide message container
-	callPanel.classList.remove('audio') 							// 4. make video call
-}
-const closeCallHandler = () => {
-	console.log('stop call')
-
-	//----------[ if success then reset styles ]----------
-	messagesContainer.classList.remove('call') 				// hide video-container
-
-	// 3. reset callPanel
-	callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
-	callPanelCameraButton.classList.remove('called') 					// reset camera style
-	callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
-	stopRecordingHandler() 	// reset recording
-}
 const resetCallHandler = () => {
 	audioCallButton.disabled = false
 	videoCallButton.disabled = false
@@ -188,19 +74,6 @@ const resetCallHandler = () => {
 	rightSideVideoCallButton.disabled = false
 	// 
 }
-
-const stopRecordingHandler = () => {
-		console.log('stop recording handler')
-	
-		// handle close functionality
-			// 1. stop webRTC call
-			// ...
-
-	callPanelRecordingButton.classList.remove('called') 				// 1. reset active recording button style
-	recordingPanel.classList.add('hidden') 											// 2. hide recording panel
-	recordingPanelPlayPauseButton.classList.add('called') 			// 3. make recording pause state
-}
-
 
 
 // ----------[ Emoji Picker ]----------
@@ -248,16 +121,16 @@ microphoneInsideInput.addEventListener('click', async (evt) => {
 //----------[ call audio/video ]----------
 
 audioCallButton.addEventListener('click', (evt) => {
-	audioCallHandler()
+	ui.audioCallHandler()
 })
 videoCallButton.addEventListener('click', (evt) => {
-	videoCallHandler()
+	ui.videoCallHandler()
 })
 rightSideAudioCallButton.addEventListener('click', (evt) => {
-	audioCallHandler()
+	ui.audioCallHandler()
 })
 rightSideVideoCallButton.addEventListener('click', (evt) => {
-	videoCallHandler()
+	ui.videoCallHandler()
 })
 
 
@@ -276,7 +149,7 @@ callPanelCameraButton.addEventListener('click', (evt) => {
 	}
 })
 callPanelCallButton.addEventListener('click', () => {
-	closeCallHandler()
+	ui.closeCallHandler()
 	resetCallHandler()
 })
 callPanelScreenShareButton.addEventListener('click', (evt) => {
@@ -289,7 +162,7 @@ callPanelScreenShareButton.addEventListener('click', (evt) => {
 callPanelRecordingButton.addEventListener('click', (evt) => {
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
-		stopRecordingHandler()
+		ui.stopRecordingHandler()
 
 	} else {
 		evt.target.classList.add('called') 													// 1. active recording button style
@@ -307,7 +180,7 @@ recordingPanelPlayPauseButton.addEventListener('click', (evt) => {
 	}
 })
 
-recordingPanelStopRecordingButton.addEventListener('click', stopRecordingHandler)
+recordingPanelStopRecordingButton.addEventListener('click', ui.stopRecordingHandler)
 
 
 // -----

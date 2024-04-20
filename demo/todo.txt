@@ -4,6 +4,9 @@
 handle audio/video call
 	. handle WebRTC
 	. handle drag and drop file upload
+	 		. add progress bar in bottom,
+	 		. show file-upload progress on file uploading type
+
 	. /profile page
 			. image upload: cropped
 					. avatar

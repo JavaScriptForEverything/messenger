@@ -84,20 +84,20 @@ module.exports = (io) => (socket) => {
 			return
 		}
 
-		// Step-2: only allow first call, and tell other user is busy
-		if(callStatus === CALL_STATUS.CALL_BUSY && isUserGettingCall) {
-			socket.emit('pre-offer', { 
-				callType, 
-				callStatus: CALL_STATUS.CALL_BUSY,
-				activeUserId, 
-			})
-			return
+		// // Step-2: only allow first call, and tell other user is busy
+		// if(callStatus === CALL_STATUS.CALL_BUSY && isUserGettingCall) {
+		// 	socket.emit('pre-offer', { 
+		// 		callType, 
+		// 		callStatus: CALL_STATUS.CALL_BUSY,
+		// 		activeUserId, 
+		// 	})
+		// 	return
 
-		} else {
-			isUserGettingCall = false
-		}
+		// } else {
+		// 	isUserGettingCall = false
+		// }
 
-		isUserGettingCall = true
+		// isUserGettingCall = true
 
 
 		// Step-2: tell caller that he is engaged
@@ -108,7 +108,8 @@ module.exports = (io) => (socket) => {
 		})
 
 		// Step-3: tell others that caller is busy
-		socket.broadcast.emit('pre-offer', { 
+		// socket.broadcast.emit('pre-offer', { 
+		io.except(activeUserId).except(socket.id).emit('pre-offer', { 
 			callType, 
 			callStatus: CALL_STATUS.CALL_BUSY,
 			activeUserId, 
@@ -136,10 +137,12 @@ module.exports = (io) => (socket) => {
 
 		// Step-3: tell others 
 		socket.broadcast.emit('pre-offer-answer', { 
+		// io.except(activeUserId).emit('pre-offer-answer', { 
 			offerType, 
 			activeUserId,
 			callStatus: CALL_STATUS.CALL_BUSY
 		})
+
 
 	})
 

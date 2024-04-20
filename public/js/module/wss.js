@@ -66,31 +66,36 @@ export const registerSocketEvents = (socket) => {
 
 	socket.on('pre-offer', ({ callType, activeUserId, callStatus }) => {
 		ui.handlePreOffer({ callType, activeUserId, callStatus })
+		console.log('Step-2: comes to caller')
 	})
 	socket.on('pre-offer-answer', ({ offerType, activeUserId, callStatus }) => {
-		// ui.handlePreOffer({ type, activeUserId })
+		console.log('Step-4: reply comes back to caller')
+		// ui.handlePreOffer({ offerType, activeUserId, callStatus })
+
 		const OFFER_TYPE = constants.offerType
 
 		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
 			console.log('call accepted')
-			console.log({ offerType, callStatus })
+			// console.log({ offerType, callStatus })
+			ui.acceptCallHandler({ offerType, activeUserId, callStatus })
 		}
 		if(offerType === OFFER_TYPE.CALL_REJECTED) {
 			console.log('call rejected')
-			console.log({ offerType, callStatus })
+			// console.log({ offerType, callStatus })
+			ui.rejectCallHandler()
 		}
-		if(offerType === OFFER_TYPE.CALL_CLOSED) {
-			console.log('call closed')
-			console.log({ offerType, callStatus })
-		}
-		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
-			console.log('callee not found')
-			console.log({ offerType, callStatus })
-		}
-		if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
-			console.log('call CALL_UNAVAILABLE')
-			console.log({ offerType, callStatus })
-		}
+		// if(offerType === OFFER_TYPE.CALL_CLOSED) {
+		// 	console.log('call closed')
+		// 	console.log({ offerType, callStatus })
+		// }
+		// if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
+		// 	console.log('callee not found')
+		// 	console.log({ offerType, callStatus })
+		// }
+		// if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
+		// 	console.log('call CALL_UNAVAILABLE')
+		// 	console.log({ offerType, callStatus })
+		// }
 
 	})
 
@@ -103,14 +108,17 @@ export const sendMessage = ({ type, activeUserId, message }) => {
 	socketIo.emit('message', { type, activeUserId, message })
 }
 
-// home.js: audioCallHandler
+// ui.js: audioCallHandler
 export const sendPreOffer = ({ activeUserId, callType, callStatus }) => {
 	socketIo.emit('pre-offer', { callType, activeUserId, callStatus })
+	console.log('Step-1: from callee')
 
-	console.log('sendPreOffer: ', { activeUserId, callType, callStatus })
+	// console.log('sendPreOffer: ', { activeUserId, callType, callStatus })
 }
 // ui.js: handlePreOffer
 export const sendPreOfferAnswer = ({ offerType, activeUserId, callStatus }) => {
 	socketIo.emit('pre-offer-answer', { offerType, activeUserId, callStatus })
-	console.log({ offerType, activeUserId, callStatus })
+	// console.log({ offerType, activeUserId, callStatus })
+		console.log('Step-3: reply from caller')
+
 }

@@ -6,6 +6,7 @@
 ![home-page.png](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/page/web/home-page.png)
 
 
+
 ## Backend
 - file upload
 	- upload file as base64 dataUrl 
@@ -18,6 +19,11 @@
 	- searching 	[ based on multiple fields ]
 	- sorting,
 	- filter: only given fields fetched from database,
+
+- Stream
+	- send every file (image | audio, video, file) as `stream` so that no matter how large the file is, don't crush the server.
+
+
 
 
 

@@ -80,12 +80,20 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 // wss.js
 export const handlePreOffer = async ({ callType, activeUserId, callStatus }) => {
 	const { CALL_BUSY, CALL_AVAILABLE } = constants.callStatus
-	const { CALL_ACCEPTED, CALL_REJECTED, CALL_UNAVAILABLE } = constants.offerType
+	const { CALL_ACCEPTED, CALL_REJECTED, CALL_CLOSED, CALL_UNAVAILABLE } = constants.offerType
 
-	if(callStatus === CALL_BUSY ) {
-		// don't call any more: show caller busy dialog
-		return console.log('caller is busy')
-	}
+	// console.log({ callType, activeUserId, callStatus })
+	// wss.sendPreOfferAnswer({ offerType: CALL_CLOSED , activeUserId, callStatus: CALL_AVAILABLE }) 
+
+	// if(callStatus === CALL_BUSY ) {
+	// 	// don't call any more: show caller busy dialog
+
+	// 	// setTimeout(() => {
+	// 	// 	wss.sendPreOfferAnswer({ offerType: CALL_CLOSED , activeUserId, callStatus: CALL_AVAILABLE }) 
+	// 	// }, 1000);
+
+	// 	return console.log('caller is busy')
+	// }
 
 	try {
 		const isSucceed = await elements.incommingCallDialog()
@@ -94,9 +102,11 @@ export const handlePreOffer = async ({ callType, activeUserId, callStatus }) => 
 			wss.sendPreOfferAnswer({ offerType: CALL_ACCEPTED, activeUserId, callStatus: CALL_BUSY })
 			console.log(callType, activeUserId)
 			// now callee is busy
+			hideCallingDialog()
 
 		} else {
 			wss.sendPreOfferAnswer({ offerType: CALL_REJECTED , activeUserId, callStatus: CALL_AVAILABLE })
+			hideCallingDialog()
 			console.log('rejected')
 		}
 
@@ -104,6 +114,33 @@ export const handlePreOffer = async ({ callType, activeUserId, callStatus }) => 
 		wss.sendPreOfferAnswer({ offerType: CALL_UNAVAILABLE , activeUserId, callStatus: CALL_AVAILABLE })
 		console.log('handle error: ', error)
 	}
+}
+
+const hideCallingDialog = () => {
+	const callerCallingDialog = $('[name=calling-dialog]')
+	if(callerCallingDialog) callerCallingDialog.remove()
+}
+export const acceptCallHandler = ({ offerType, activeUserId, callStatus }) => {
+	// 1. hide call dialog from both side
+	// 2. tell callStatus busy to others
+	// 3. make both side's call button disabled
+	// 2. send webRTC connection request
+
+	console.log(' accepted')
+	hideCallingDialog()
+	
+	// wss.sendPreOfferAnswer({ 
+	// 	offerType, 
+	// 	activeUserId, 
+	// 	callStatus 
+	// }) 
+}
+
+export const rejectCallHandler = () => {
+	// 1. hide call dialog from both side
+	// 2. tell callStatus available to everyone
+	// 3. make both side's call button enabled
+	hideCallingDialog()
 }
 //----
 
@@ -400,6 +437,10 @@ export const filterMessageByAttachmentType = async (type='text') => {
 
 
 // ----------[ call ]----------
+// const callerRejectCallHandler = () => {
+// 	// console.log('reject call handler')
+// 	// evt.target.remove()
+// }
 
 // force user to stop audio call if already in video call 
 export const audioCallHandler = async () => {
@@ -408,18 +449,38 @@ export const audioCallHandler = async () => {
 		return
 	}
 
-
 	const { activeUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
 	const { AUDIO_CALL } = constants.callType
-	const { CALL_BUSY } = constants.callStatus
+	const { CALL_BUSY, CALL_AVAILABLE } = constants.callStatus
+	const { CALL_REJECTED } = constants.offerType
 	wss.sendPreOffer({ activeUserId, callType: AUDIO_CALL, callStatus: CALL_BUSY })
-	console.log('sendPreOffer')
-	// now caller is busy
+	// console.log('sendPreOffer')
 
-	const isPreCallSucceed = await elements.outGoingCallDialog()
-	if( !isPreCallSucceed ) return
+
+	elements.callingDialog({
+		title : 'Calling', 										// string
+		callSide: 'caller', 									// caller | callee
+		error: '', 														// string
+		onSuccess : (evt) => {
+			// evt.target.remove()
+			console.log('accept', evt.target)
+		},
+		onReject : (evt) => {
+			evt.target.remove()
+			wss.sendPreOfferAnswer({ offerType: CALL_REJECTED, activeUserId, callStatus: CALL_AVAILABLE })
+		},
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			})
+		}
+	})
+
+	// const isPreCallSucceed = await elements.outGoingCallDialog()
+	// // if( !isPreCallSucceed ) return
+	// console.log(isPreCallSucceed)
 
 
 
@@ -451,7 +512,7 @@ export const videoCallHandler = async () => {
 }
 
 
-const closeCallHandler = () => {
+export const closeCallHandler = () => {
 	console.log('stop call')
 
 	//----------[ if success then reset styles ]----------

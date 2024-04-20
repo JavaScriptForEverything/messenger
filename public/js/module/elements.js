@@ -419,7 +419,7 @@ elements.callingDialog({
 	}
 })
 */
-const callingDialog = ( props = {}) => {
+export const callingDialog = ( props = {}) => {
 	const { 
 		title='', 
 		callSide='caller', 
@@ -475,7 +475,7 @@ const callingDialog = ( props = {}) => {
 	`
 
 	const element = stringToElement(htmlString)
-	document.body.insertAdjacentElement('beforeend', element)
+	document.body.insertAdjacentElement('afterbegin', element)
 
 	const callAcceptButton = element.querySelector('[name=call-accept]')
 	callAcceptButton?.addEventListener('click', () => {
@@ -501,12 +501,12 @@ export const incommingCallDialog = () => new Promise((resolve, reject) => {
 		callSide: 'callee', 									// caller | callee
 		error: '', 														// string
 		onSuccess : (evt) => {
-			evt.target.remove() 								// close dialog
+			// evt.target.remove() 								// close dialog
 			// console.log(evt.target)
 			resolve(true)
 		},
 		onReject : (evt) => {
-			evt.target.remove() 								// close dialog
+			// evt.target.remove() 								// close dialog
 			// console.log(evt.target)
 			resolve(false)
 		},
@@ -533,26 +533,49 @@ export const calleeNotFoundDialog = () => { 		// on('call-error', {})
 
 export const outGoingCallDialog = () => new Promise((resolve, reject) => { 
 	callingDialog({
-		title : 'Calling', 										// string
-		callSide: 'caller', 									// caller | callee
+		title : 'Calling...', 								// string
+		callSide: 'caller', 									// 'caller' | 'callee'
 		error: '', 														// string
 		onSuccess : (evt) => {
-			evt.target.remove()
+			// evt.target.remove()
 			// console.log(evt.target)
 			resolve(true)
+			resolve({ status: 'success', element: evt.target })
 		},
 		onReject : (evt) => {
 			evt.target.remove()
 			// console.log(evt.target)
 			resolve(false)
+			resolve({ status: 'reject', element: evt.target })
 		},
 		onError : (evt) => {
 			setTimeout(() => {
 				evt.target.remove()
-			})
+			}, 3000)
 		}
 	})
 })
+
+// export const outGoingCloseCallDialog = () => new Promise((resolve, reject) => { 
+// 	callingDialog({
+// 		title : 'Calling...', 								// string
+// 		callSide: 'caller', 									// 'caller' | 'callee'
+// 		error: '', 														// string
+// 		onSuccess : (evt) => {
+// 			evt.target.remove()
+// 			// console.log(evt.target)
+// 			resolve(true)
+// 		},
+// 		onReject : (evt) => {
+// 			evt.target.remove()
+// 			// console.log(evt.target)
+// 			resolve(false)
+// 		},
+// 		onError : (evt) => {
+// 			evt.target.remove()
+// 		}
+// 	})
+// })
 
 
 

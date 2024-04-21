@@ -90,10 +90,8 @@ module.exports = (io) => (socket) => {
 				offerType: OFFER_TYPE.CALLEE_NOT_FOUND, 
 			})
 
-			io.emit('call-status', { 
-				callStatus: CALL_STATUS.CALL_AVAILABLE,
-			})
-			isUserGettingCalled = false
+			io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
+
 			return
 		}
 
@@ -105,7 +103,6 @@ module.exports = (io) => (socket) => {
 			callerUserId,
 			calleeUserId,
 			callType,
-			// callStatus: CALL_STATUS.CALL_ENGAGED,
 		})
 
 		// Step-4.1: tell only caller and callee them-selves is busy

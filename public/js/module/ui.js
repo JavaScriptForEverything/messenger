@@ -168,6 +168,9 @@ export const rejectCallHandler = ({ callerUserId, calleeUserId }) => {
 // 	store.setCallStatus(callStatus)
 // }
 
+
+// wss.js: on('call-status', )
+// wss.js: on('pre-offer-answer', )
 export const calleeNotFoundHandler = () => {
 	// 1. hide call dialog from both side
 	// 2. tell callStatus available to everyone
@@ -178,6 +181,11 @@ export const calleeNotFoundHandler = () => {
 
 	// store.setCallStatus('')
 	// console.log('re-set callStatus')
+}
+// wss.js: on('call-status', )
+export const calleeBusyHandler = () => {
+	hideCallingDialog()
+	elements.calleeBusyCallDialog()
 }
 //----
 
@@ -479,6 +487,7 @@ export const filterMessageByAttachmentType = async (type='text') => {
 // 	// evt.target.remove()
 // }
 
+
 // force user to stop audio call if already in video call 
 export const audioCallHandler = async () => {
 	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
@@ -487,58 +496,56 @@ export const audioCallHandler = async () => {
 	}
 
 
-	const { activeUserId } = store.getState()
+	const { activeUserId, logedInUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-	const { logedInUserId, callStatus } = store.getState()
-	console.log({ callStatus })
-	// return
+	// console.log( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE )
+	if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
 
-	if( wss.currentCallStatus !== CALL_STATUS.CALL_AVAILABLE ) {
-		elements.calleeBusyCallDialog()
-		console.log('all ready in call engaged')
-		return 
-	}
+		wss.sendPreOffer({ 
+			callerUserId: logedInUserId,
+			calleeUserId: activeUserId, 
+			callType: CALL_TYPE.AUDIO_CALL, 
+			// callStatus: wss.currentCallStatus,
+		})
 
-
-	wss.sendPreOffer({ 
-		callerUserId: logedInUserId,
-		calleeUserId: activeUserId, 
-		callType: CALL_TYPE.AUDIO_CALL, 
-	})
+	// if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
+		// calleeBusyHandler()
+		console.log('callee available')
 
 
-	elements.callingDialog({
-		title : 'Calling', 										// string
-		callSide: 'caller', 									// caller | callee
-		error: '', 														// string
-		// onSuccess : (evt) => {
-		// 	// evt.target.remove()
-		// 	console.log('accept', evt.target)
-		// },
-		onReject : (evt) => {
-			evt.target.remove()
-			console.log('reject call button')
-
+		const isSuccess = await elements.outGoingCallDialog()
+		if(!isSuccess) {
+			hideCallingDialog() 	// hide others if exists
 			wss.sendPreOfferAnswer({ 
 				callerUserId: logedInUserId,
 				calleeUserId: activeUserId, 
-				// calleeUserId: 'asdf',  						// test error by  invalid ids
 				offerType: OFFER_TYPE.CALL_REJECTED, 
-				callStatus: CALL_STATUS.CALL_AVAILABLE 
-			})
-		},
-		onError : (evt) => {
-			setTimeout(() => {
-				evt.target.remove()
-				console.log('calling dialog error')
 			})
 		}
-	})
+	}
 
-	// const isPreCallSucceed = await elements.outGoingCallDialog()
-	// // if( !isPreCallSucceed ) return
-	// console.log(isPreCallSucceed)
+
+	if( wss.currentCallStatus === CALL_STATUS.CALL_BUSY ) {
+		console.log('callee busy')
+
+		const { rooms, activeUserId } = store.getState()
+
+		const isUserActive = rooms.find( room => room.userId === activeUserId )
+		if(isUserActive) {
+			calleeBusyHandler()
+
+		} else {
+
+			calleeNotFoundHandler()
+		}
+		// console.log(store.getState().rooms)
+
+	}
+	// if( wss.currentCallStatus === CALL_STATUS.CALL_UNAVAILABLE ) {
+	// 	calleeNotFoundHandler()
+	// 	console.log('callee enavailable')
+	// }
 
 
 

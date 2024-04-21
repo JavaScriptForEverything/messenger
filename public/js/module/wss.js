@@ -1,6 +1,6 @@
 import * as ui from './ui.js'
 import * as store from './store.js'
-import { CALL_STATUS, OFFER_TYPE } from '../module/constants.js'
+import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
 import { getFilteredUsers } from './http.js'
 
 /* Global Variables 	
@@ -63,9 +63,8 @@ export const registerSocketEvents = (socket) => {
 
 	socket.on('call-status', ({ callStatus }) => {
 		console.log('call-status: ', { callStatus })
-
-		if(!callStatus) return ui.showError(`callStatus failed: ${callStatus}`)
-		currentCallStatus = callStatus
+		currentCallStatus = callStatus 						
+		// update local variable, so that when send pre-offer can checked
 	})
 
 	socket.on('pre-offer', ({ callerUserId, calleeUserId, callType }) => {
@@ -96,18 +95,6 @@ export const registerSocketEvents = (socket) => {
 
 	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType, callStatus }) => {
 		console.log('Step-4: reply comes back to caller')
-		// console.log({ callerUserId, calleeUserId })
-		// console.log({ callerUserId, calleeUserId, offerType, callStatus })
-
-
-		// const { logedInUserId } = store.getState()
-		// if(calleeUserId !== logedInUserId) {
-
-		// 	ui.calleeNotFoundHandler()
-		// 	return 
-		// }
-
-		// console.log({ callerUserId, calleeUserId, offerType, callStatus })
 
 		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
 			ui.acceptCallHandler({ callerUserId, calleeUserId })
@@ -124,8 +111,7 @@ export const registerSocketEvents = (socket) => {
 			console.log({ offerType, callStatus })
 		}
 		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
-			// console.log('callee not found')
-			// console.log({ offerType, callStatus })
+			console.log('callee not found')
 			ui.calleeNotFoundHandler()
 		}
 		if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {

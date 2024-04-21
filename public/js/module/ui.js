@@ -4,7 +4,7 @@ import * as elements from '../module/elements.js'
 import * as http from './http.js'
 import * as wss from './wss.js'
 import * as store from './store.js'
-import * as constants from '../module/constants.js'
+import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
 
 // const middleTop = $('[name=middle-top]')
 // const middleTopAvatar = middleTop.querySelector('[name=avatar]')
@@ -78,49 +78,61 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 }
 
 // wss.js
-export const handlePreOffer = async ({ callType, activeUserId, callStatus }) => {
-	const { CALL_BUSY, CALL_AVAILABLE } = constants.callStatus
-	const { CALL_ACCEPTED, CALL_REJECTED, CALL_CLOSED, CALL_UNAVAILABLE } = constants.offerType
+export const handlePreOffer = async ({ callerUserId, calleeUserId, callType, callStatus }) => {
 
-	// console.log({ callType, activeUserId, callStatus })
-	// wss.sendPreOfferAnswer({ offerType: CALL_CLOSED , activeUserId, callStatus: CALL_AVAILABLE }) 
-
-	// if(callStatus === CALL_BUSY ) {
-	// 	// don't call any more: show caller busy dialog
-
-	// 	// setTimeout(() => {
-	// 	// 	wss.sendPreOfferAnswer({ offerType: CALL_CLOSED , activeUserId, callStatus: CALL_AVAILABLE }) 
-	// 	// }, 1000);
-
-	// 	return console.log('caller is busy')
-	// }
+	const { currentCallStatus } = store.getState()
+	if(currentCallStatus === CALL_STATUS.CALL_ENGAGED) {
+		console.log('all ready in call engaged')
+		return showError('user is already in called')
+	}
 
 	try {
 		const isSucceed = await elements.incommingCallDialog()
 
 		if(isSucceed) {
-			wss.sendPreOfferAnswer({ offerType: CALL_ACCEPTED, activeUserId, callStatus: CALL_BUSY })
-			console.log(callType, activeUserId)
+			wss.sendPreOfferAnswer({ 
+				callerUserId: calleeUserId,
+				calleeUserId: callerUserId,
+				offerType: OFFER_TYPE.CALL_ACCEPTED, 
+				// callStatus: CALL_STATUS.CALL_ENGAGED,
+				callStatus,
+
+			})
+			// console.log(callType, activeUserId)
 			// now callee is busy
 			hideCallingDialog()
 
 		} else {
-			wss.sendPreOfferAnswer({ offerType: CALL_REJECTED , activeUserId, callStatus: CALL_AVAILABLE })
+			wss.sendPreOfferAnswer({ 
+				callerUserId: calleeUserId,
+				calleeUserId: callerUserId,
+				offerType: OFFER_TYPE.CALL_REJECTED, 
+				// callStatus: CALL_STATUS.CALL_AVAILABLE,
+				callStatus,
+			})
 			hideCallingDialog()
 			console.log('rejected')
 		}
 
 	} catch (error) {
-		wss.sendPreOfferAnswer({ offerType: CALL_UNAVAILABLE , activeUserId, callStatus: CALL_AVAILABLE })
+		wss.sendPreOfferAnswer({ 
+			callerUserId: calleeUserId,
+			calleeUserId: callerUserId,
+			offerType: OFFER_TYPE.CALL_UNAVAILABLE, 
+			// callStatus: CALL_STATUS.CALL_AVAILABLE,
+			callStatus,
+		})
 		console.log('handle error: ', error)
 	}
 }
 
-const hideCallingDialog = () => {
+export const hideCallingDialog = () => {
 	const callerCallingDialog = $('[name=calling-dialog]')
 	if(callerCallingDialog) callerCallingDialog.remove()
 }
-export const acceptCallHandler = ({ offerType, activeUserId, callStatus }) => {
+
+// wss.js: on('pre-offer-answer', ...)
+export const acceptCallHandler = ({ callerUserId, calleeUserId }) => {
 	// 1. hide call dialog from both side
 	// 2. tell callStatus busy to others
 	// 3. make both side's call button disabled
@@ -128,6 +140,9 @@ export const acceptCallHandler = ({ offerType, activeUserId, callStatus }) => {
 
 	console.log(' accepted')
 	hideCallingDialog()
+
+	// store.setCallStatus('')
+	// console.log('re-set callStatus')
 	
 	// wss.sendPreOfferAnswer({ 
 	// 	offerType, 
@@ -136,11 +151,33 @@ export const acceptCallHandler = ({ offerType, activeUserId, callStatus }) => {
 	// }) 
 }
 
-export const rejectCallHandler = () => {
+// wss.js: on('pre-offer-answer', ...)
+export const rejectCallHandler = ({ callerUserId, calleeUserId }) => {
 	// 1. hide call dialog from both side
 	// 2. tell callStatus available to everyone
 	// 3. make both side's call button enabled
+
+	console.log('rejected')
 	hideCallingDialog()
+
+}
+
+// export const callStatusResetHandler = ({ callStatus }) => {
+// 	// 1. Reset callStatus on both side 
+	
+// 	store.setCallStatus(callStatus)
+// }
+
+export const calleeNotFoundHandler = () => {
+	// 1. hide call dialog from both side
+	// 2. tell callStatus available to everyone
+	// 3. make both side's call button enabled
+
+	hideCallingDialog() 							// hide outgoing calling dialog
+	elements.calleeNotFoundDialog() 	// show notFound call dialog : which will be closed after 3sec
+
+	// store.setCallStatus('')
+	// console.log('re-set callStatus')
 }
 //----
 
@@ -449,31 +486,52 @@ export const audioCallHandler = async () => {
 		return
 	}
 
+
 	const { activeUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-	const { AUDIO_CALL } = constants.callType
-	const { CALL_BUSY, CALL_AVAILABLE } = constants.callStatus
-	const { CALL_REJECTED } = constants.offerType
-	wss.sendPreOffer({ activeUserId, callType: AUDIO_CALL, callStatus: CALL_BUSY })
-	// console.log('sendPreOffer')
+	const { logedInUserId, callStatus } = store.getState()
+	console.log({ callStatus })
+	// return
+
+	if( wss.currentCallStatus !== CALL_STATUS.CALL_AVAILABLE ) {
+		elements.calleeBusyCallDialog()
+		console.log('all ready in call engaged')
+		return 
+	}
+
+
+	wss.sendPreOffer({ 
+		callerUserId: logedInUserId,
+		calleeUserId: activeUserId, 
+		callType: CALL_TYPE.AUDIO_CALL, 
+	})
 
 
 	elements.callingDialog({
 		title : 'Calling', 										// string
 		callSide: 'caller', 									// caller | callee
 		error: '', 														// string
-		onSuccess : (evt) => {
-			// evt.target.remove()
-			console.log('accept', evt.target)
-		},
+		// onSuccess : (evt) => {
+		// 	// evt.target.remove()
+		// 	console.log('accept', evt.target)
+		// },
 		onReject : (evt) => {
 			evt.target.remove()
-			wss.sendPreOfferAnswer({ offerType: CALL_REJECTED, activeUserId, callStatus: CALL_AVAILABLE })
+			console.log('reject call button')
+
+			wss.sendPreOfferAnswer({ 
+				callerUserId: logedInUserId,
+				calleeUserId: activeUserId, 
+				// calleeUserId: 'asdf',  						// test error by  invalid ids
+				offerType: OFFER_TYPE.CALL_REJECTED, 
+				callStatus: CALL_STATUS.CALL_AVAILABLE 
+			})
 		},
 		onError : (evt) => {
 			setTimeout(() => {
 				evt.target.remove()
+				console.log('calling dialog error')
 			})
 		}
 	})
@@ -514,6 +572,7 @@ export const videoCallHandler = async () => {
 
 export const closeCallHandler = () => {
 	console.log('stop call')
+	wss.sendCloseCallSignal()
 
 	//----------[ if success then reset styles ]----------
 	messagesContainer.classList.remove('call') 				// hide video-container

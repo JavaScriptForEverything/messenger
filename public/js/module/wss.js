@@ -1,6 +1,6 @@
 import * as ui from './ui.js'
 import * as store from './store.js'
-import * as constants from './constants.js'
+import { CALL_STATUS, OFFER_TYPE } from '../module/constants.js'
 import { getFilteredUsers } from './http.js'
 
 /* Global Variables 	
@@ -13,7 +13,7 @@ let socketIo = null
 // const userId = crypto.randomUUID()
 // const userId = 'aaa'
 const userId = logedInUser._id
-
+export let currentCallStatus = CALL_STATUS.CALL_AVAILABLE
 
 
 
@@ -28,12 +28,9 @@ export const registerSocketEvents = (socket) => {
 	socket.on('connect', () => {
 		socketIo = socket
 		store.setLogedInUser( logedInUser ) 	// logedInUser comes from backend
-
-
+		// store.setCallStatus(CALL_STATUS.CALL_AVAILABLE)
 
 		socket.emit('user-join', { socketId: socket.id, userId })
-
-
 	})
 
 	socket.on('error', ({ message, reason }) => {
@@ -64,40 +61,81 @@ export const registerSocketEvents = (socket) => {
 		ui.receiveMessage({ type, activeUserId, message })
 	})
 
-	socket.on('pre-offer', ({ callType, activeUserId, callStatus }) => {
-		ui.handlePreOffer({ callType, activeUserId, callStatus })
-		console.log('Step-2: comes to caller')
-	})
-	socket.on('pre-offer-answer', ({ offerType, activeUserId, callStatus }) => {
-		console.log('Step-4: reply comes back to caller')
-		// ui.handlePreOffer({ offerType, activeUserId, callStatus })
+	socket.on('call-status', ({ callStatus }) => {
+		console.log('call-status: ', { callStatus })
 
-		const OFFER_TYPE = constants.offerType
+		if(!callStatus) return ui.showError(`callStatus failed: ${callStatus}`)
+		currentCallStatus = callStatus
+	})
+
+	socket.on('pre-offer', ({ callerUserId, calleeUserId, callType }) => {
+		console.log('Step-2: reply send to caller')
+
+		// const OFFER_TYPE = constants.offerType
+		// const CALL_STATUS = constants.callStatus
+		const { logedInUserId } = store.getState()
+
+		if(calleeUserId === logedInUserId) {
+			ui.handlePreOffer({ callerUserId, calleeUserId, callType })
+			// console.log('sendPreOffer: ', { callerUserId, calleeUserId, callType })
+
+		} 
+		
+		// if(callStatus === CALL_STATUS.CALL_BUSY) {
+		// 	store.setCallStatus( callStatus )
+		// 	// sendPreOfferAnswer({ 
+		// 	// 	callerUserId, 
+		// 	// 	calleeUserId, 
+		// 	// 	offerType: OFFER_TYPE.CALL_UNAVAILABLE, 
+		// 	// 	callStatus: CALL_STATUS.CALL_AVAILABLE,
+		// 	// })
+		// }
+
+		// // console.log({ callerUserId, calleeUserId, callType, callStatus })
+	})
+
+	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType, callStatus }) => {
+		console.log('Step-4: reply comes back to caller')
+		// console.log({ callerUserId, calleeUserId })
+		// console.log({ callerUserId, calleeUserId, offerType, callStatus })
+
+
+		// const { logedInUserId } = store.getState()
+		// if(calleeUserId !== logedInUserId) {
+
+		// 	ui.calleeNotFoundHandler()
+		// 	return 
+		// }
+
+		// console.log({ callerUserId, calleeUserId, offerType, callStatus })
 
 		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
-			console.log('call accepted')
-			// console.log({ offerType, callStatus })
-			ui.acceptCallHandler({ offerType, activeUserId, callStatus })
+			ui.acceptCallHandler({ callerUserId, calleeUserId })
+
+			console.log('call accepted', { callStatus })
 		}
 		if(offerType === OFFER_TYPE.CALL_REJECTED) {
-			console.log('call rejected')
-			// console.log({ offerType, callStatus })
-			ui.rejectCallHandler()
+			ui.rejectCallHandler({ callerUserId, calleeUserId })
+
+			console.log('call rejected', { callStatus })
 		}
-		// if(offerType === OFFER_TYPE.CALL_CLOSED) {
-		// 	console.log('call closed')
-		// 	console.log({ offerType, callStatus })
-		// }
-		// if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
-		// 	console.log('callee not found')
-		// 	console.log({ offerType, callStatus })
-		// }
-		// if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
-		// 	console.log('call CALL_UNAVAILABLE')
-		// 	console.log({ offerType, callStatus })
-		// }
+		if(offerType === OFFER_TYPE.CALL_CLOSED) {
+			console.log('call closed')
+			console.log({ offerType, callStatus })
+		}
+		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
+			// console.log('callee not found')
+			// console.log({ offerType, callStatus })
+			ui.calleeNotFoundHandler()
+		}
+		if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
+			console.log('call CALL_UNAVAILABLE')
+			ui.showError('call CALL_UNAVAILABLE')
+			// console.log({ offerType, callStatus })
+		}
 
 	})
+
 
 }
 
@@ -109,16 +147,17 @@ export const sendMessage = ({ type, activeUserId, message }) => {
 }
 
 // ui.js: audioCallHandler
-export const sendPreOffer = ({ activeUserId, callType, callStatus }) => {
-	socketIo.emit('pre-offer', { callType, activeUserId, callStatus })
+export const sendPreOffer = ({ callerUserId, calleeUserId, callType }) => { 	
 	console.log('Step-1: from callee')
-
-	// console.log('sendPreOffer: ', { activeUserId, callType, callStatus })
+	socketIo.emit('pre-offer', { callerUserId, calleeUserId, callType })
 }
 // ui.js: handlePreOffer
-export const sendPreOfferAnswer = ({ offerType, activeUserId, callStatus }) => {
-	socketIo.emit('pre-offer-answer', { offerType, activeUserId, callStatus })
-	// console.log({ offerType, activeUserId, callStatus })
-		console.log('Step-3: reply from caller')
-
+export const sendPreOfferAnswer = ({ callStatus, ...payload }) => { 		// { callerUserId, calleeUserId, offerType, callStatus }
+	console.log('Step-3: reply from caller')
+	socketIo.emit('pre-offer-answer', { callStatus, ...payload })
 }
+
+export const sendCloseCallSignal = () => {
+	socketIo.emit('call-status')
+}
+

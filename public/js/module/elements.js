@@ -518,11 +518,23 @@ export const incommingCallDialog = () => new Promise((resolve, reject) => {
 	})
 })  
 
+export const calleeBusyCallDialog = () => { 		// on('call-error', {})
+	callingDialog({
+		title : 'Callee Busy', 									// string
+		callSide: 'caller', 									// caller | callee
+		error: 'Callee is currently busy', 					// string
+		onError : (evt) => {
+			setTimeout(() => {
+				evt.target.remove()
+			}, 3000)
+		}
+	})
+}
 export const calleeNotFoundDialog = () => { 		// on('call-error', {})
 	callingDialog({
 		title : 'Not Found', 									// string
 		callSide: 'caller', 									// caller | callee
-		error: 'caller may be busy', 					// string
+		error: 'caller not selected or online', 					// string
 		onError : (evt) => {
 			setTimeout(() => {
 				evt.target.remove()

@@ -1,10 +1,10 @@
 
-export const callType = {
+export const CALL_TYPE = {
 	AUDIO_CALL 		: 'AUDIO-CALL',
 	VIDEO_CALL 		: 'VIDEO-CALL',
 	MESSAGE_CALL 	: 'MESSAGE-CALL',
 }
-export const offerType = {
+export const OFFER_TYPE = {
 	CALL_ACCEPTED 	: 'CALL_ACCEPTED',
 	CALL_REJECTED 	: 'CALL_REJECTED',
 	CALL_CLOSED 		: 'CALL_CLOSED',
@@ -12,9 +12,10 @@ export const offerType = {
 	CALL_UNAVAILABLE: 'CALL_UNAVAILABLE', 		// if already calling someone: more than 2 user not allowed by WebRTC
 }
 
-export const callStatus = {
+export const CALL_STATUS = { 											// make same callStatus as constants.js in client-side has
+	CALLING: 'CALLING',
+	CALL_ENGAGED: 'CALL_ENGAGED',
+	CALL_BUSY: 'CALL_BUSY',
 	CALL_AVAILABLE: 'CALL_AVAILABLE',
 	CALL_UNAVAILABLE: 'CALL_UNAVAILABLE',
-	CALL_BUSY: 'CALL_BUSY',
-	CALL_ENGAGED: 'CALL_ENGAGED',
 }

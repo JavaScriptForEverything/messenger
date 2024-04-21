@@ -1,11 +1,12 @@
 let connectedPeers = []
-let isUserGettingCall = false
+let isUserGettingCalled = false
 
 const CALL_STATUS = { 											// make same callStatus as constants.js in client-side has
+	CALLING: 'CALLING',
+	CALL_ENGAGED: 'CALL_ENGAGED',
+	CALL_BUSY: 'CALL_BUSY',
 	CALL_AVAILABLE: 'CALL_AVAILABLE',
 	CALL_UNAVAILABLE: 'CALL_UNAVAILABLE',
-	CALL_BUSY: 'CALL_BUSY',
-	CALL_ENGAGED: 'CALL_ENGAGED',
 }
 const OFFER_TYPE = {
 	CALL_ACCEPTED 	: 'CALL_ACCEPTED',
@@ -19,6 +20,8 @@ const isUserExists = (userId) => {
 	const user = connectedPeers.find( peer => userId === peer.userId )
 	return user ? true : false
 }
+const getPeer = (socketId) => connectedPeers.find( peer => peer.socketId === socketId)
+
 // let rooms = []
 
 // const testing = (io) => (socket) => {
@@ -43,10 +46,15 @@ module.exports = (io) => (socket) => {
 	// console.log(connectedPeers)
 	// console.log(socket.id)
 	// testing(io)(socket)
+	
+	// io.emit('call-status', { 
+	// 	callStatus: CALL_STATUS.CALL_AVAILABLE,
+	// })
 
 	socket.on('user-join', ({ socketId, userId }) => {
 		if(!userId) return sendError(socket, { message: 'userId is missing' })
 
+		// create new rooms from logedInUserId
 		connectedPeers.push({ socketId, userId })
 		socket.join(userId)
 
@@ -54,7 +62,7 @@ module.exports = (io) => (socket) => {
 			rooms: connectedPeers
 		})
 
-		usersInRoom(io)('aaa')
+		// usersInRoom(io)('aaa')
 	})
 
 	socket.on('typing', ({ activeUserId }) => {
@@ -71,80 +79,110 @@ module.exports = (io) => (socket) => {
 	})
 
 
-	socket.on('pre-offer', ({ activeUserId, callType, callStatus }) => {
+	socket.on('pre-offer', ({ callerUserId, calleeUserId, callType }) => {
 
 		// Step-1: if callee not exinsts any more, close this dialog
-		if( !isUserExists(activeUserId) ) {
+		if( !isUserExists(calleeUserId) ) {
 			socket.emit('pre-offer-answer', {  							// tell only caller him-self
+				callerUserId,
+				calleeUserId,
 				callType,
 				offerType: OFFER_TYPE.CALLEE_NOT_FOUND, 
-				callStatus: CALL_STATUS.CALL_UNAVAILABLE,
-				activeUserId, 
 			})
+
+			io.emit('call-status', { 
+				callStatus: CALL_STATUS.CALL_AVAILABLE,
+			})
+			isUserGettingCalled = false
 			return
 		}
 
-		// // Step-2: only allow first call, and tell other user is busy
-		// if(callStatus === CALL_STATUS.CALL_BUSY && isUserGettingCall) {
-		// 	socket.emit('pre-offer', { 
-		// 		callType, 
-		// 		callStatus: CALL_STATUS.CALL_BUSY,
-		// 		activeUserId, 
-		// 	})
-		// 	return
+		// Step-2: only allow first call, and tell other user is busy
+		
 
-		// } else {
-		// 	isUserGettingCall = false
-		// }
-
-		// isUserGettingCall = true
-
-
-		// Step-2: tell caller that he is engaged
-		socket.to(activeUserId).emit('pre-offer', { 
-			callType, 
-			callStatus: CALL_STATUS.CALL_ENGAGED,
-			activeUserId, 
+		// Step-3: tell caller that he is engaged
+		socket.to(calleeUserId).emit('pre-offer', { 
+			callerUserId,
+			calleeUserId,
+			callType,
+			// callStatus: CALL_STATUS.CALL_ENGAGED,
 		})
 
-		// Step-3: tell others that caller is busy
-		// socket.broadcast.emit('pre-offer', { 
-		io.except(activeUserId).except(socket.id).emit('pre-offer', { 
-			callType, 
+		// Step-4.1: tell only caller and callee them-selves is busy
+		io.to(calleeUserId).to(callerUserId).emit('call-status', { 
+			callStatus: CALL_STATUS.CALLING,
+			// callStatus:  isUserGettingCalled ? CALL_STATUS.CALL_BUSY : CALL_STATUS.CALLING,
+		})
+
+		// Step-4.2: tell others that, caller and callee is busy
+		io.except(calleeUserId).except(callerUserId).emit('call-status', { 
 			callStatus: CALL_STATUS.CALL_BUSY,
-			activeUserId, 
 		})
+
+		// isUserGettingCalled = true
+
 	})
 
 
-	socket.on('pre-offer-answer', ({ offerType, activeUserId, callStatus }) => {
+	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType }) => {
+		// isUserGettingCall = false 		// reset first to only allow first call
+
 		// Step-1: tell caller him self: callee not found
-		if( !isUserExists(activeUserId) ) {
+		if( !isUserExists(calleeUserId) ) {
 			socket.emit('pre-offer-answer', {  							// tell only caller him-self
+				callerUserId,
+				calleeUserId,
 				offerType: OFFER_TYPE.CALLEE_NOT_FOUND,
-				activeUserId, 
-				status: CALL_STATUS.CALL_AVAILABLE 
+			})
+			io.emit('call-status', { 
+				callStatus: CALL_STATUS.CALL_AVAILABLE,
 			})
 			return
 		}
 
-		// Step-2: tell only callee 
-		socket.to(activeUserId).emit('pre-offer-answer', { 
-			offerType, 
-			activeUserId,
-			callStatus: CALL_STATUS.CALL_ENGAGED
-		})
+		if( offerType === OFFER_TYPE.CALL_ACCEPTED ) {
+			// Step-2: tell only callee 
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('call-status', { callStatus: CALL_STATUS.CALL_ENGAGED })
 
-		// Step-3: tell others 
-		socket.broadcast.emit('pre-offer-answer', { 
-		// io.except(activeUserId).emit('pre-offer-answer', { 
-			offerType, 
-			activeUserId,
-			callStatus: CALL_STATUS.CALL_BUSY
-		})
+
+			io
+				.except(callerUserId)
+				.except(calleeUserId)
+				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+			io
+				.except(calleeUserId)
+				.except(callerUserId)
+				.emit('call-status', { callStatus: CALL_STATUS.CALL_BUSY })
+		}
+
+		if( offerType === OFFER_TYPE.CALL_REJECTED ) {
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+
+			io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
+		}
 
 
 	})
+
+	socket.on('call-status', () => {
+		isUserGettingCalled = false
+
+		io.emit('call-status', { 
+			callStatus: CALL_STATUS.CALL_AVAILABLE,
+		})
+	})
+
+	
 
 	socket.on('disconnect', () => {
 		connectedPeers = connectedPeers.filter(({ socketId }) => socketId !== socket.id )
@@ -166,19 +204,19 @@ const sendError = (socket, { message, reason='' }) => {
 }
 
 
-const usersInRoom = (io) => (roomId) => {
-	const room = io.sockets.adapter.rooms.get(roomId)
-	// console.log( 'room :', Array.from(room) )
+// const usersInRoom = (io) => (roomId) => {
+// 	const room = io.sockets.adapter.rooms.get(roomId)
+// 	// console.log( 'room :', Array.from(room) )
 
-	// let roomsSet = io.sockets.adapter.rooms
-	// roomsSet.forEach( room => {
-	// 	rooms.push([...room])
+// 	// let roomsSet = io.sockets.adapter.rooms
+// 	// roomsSet.forEach( room => {
+// 	// 	rooms.push([...room])
 
-	// })
-	// console.log({ rooms: roomsSet })
-	// rooms = Array.from(room) 
-	// console.log({ 
-	// 	room,
-	// 	roomSize: room.size 
-	// })
-}
+// 	// })
+// 	// console.log({ rooms: roomsSet })
+// 	// rooms = Array.from(room) 
+// 	// console.log({ 
+// 	// 	room,
+// 	// 	roomSize: room.size 
+// 	// })
+// }

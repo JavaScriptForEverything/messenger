@@ -4,7 +4,6 @@ import { createPicker } from '../plugins/picmo/index.js';
 // import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, getReadableFileSizeString } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
-import * as store from '../module/store.js' 		
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
 import * as elements from '../module/elements.js'

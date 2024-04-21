@@ -26,7 +26,8 @@ exports.home = async (req, res, next) => {
 		const filteredUser = userDto.filterUser(logedInUser._doc)
 
 		const payload = {
-			title: 'Home Page',
+			title: logedInUser._id.toString().slice(8),
+			// title: 'Home Page | updated',
 			userId,
 			logedInUser: filteredUser,
 			logedInUserJs: JSON.stringify( filteredUser )

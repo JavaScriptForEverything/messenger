@@ -1,3 +1,4 @@
+// import { CALL_STATUS } from '../module/constants.js'
 
 /*
 	To work store we must call after given value, if try to read before it returns null, 
@@ -6,16 +7,18 @@
 	on events, which will fire later, to get access value. 
 */
 
-
-
 const store = {
 	logedInUser: null,
+	logedInUserId: null,
 	activeUserId: null,
 	rooms: [{}]
 }
 
 export const getState = () => store
-export const setLogedInUser = (logedInUser) => store.logedInUser = logedInUser
+export const setLogedInUser = (logedInUser) => {
+	store.logedInUser = logedInUser
+	store.logedInUserId = logedInUser._id
+}
 export const setActiveUserId = (activeUserId) => store.activeUserId = activeUserId
 export const setRooms = (rooms) => store.rooms = rooms
 

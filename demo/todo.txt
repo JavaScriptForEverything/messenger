@@ -1,5 +1,15 @@
+. added callee busy but
+		. when when already in called then not-found users also shows callee is busy
+			- reason we are appling condition  before request send:
+					solution:
+						. in client-side: send request first then test condition
+						. in server-side: if user exists and busy then set callStatus busy, else not found
+								. don't reset callStatus
 
 . add animation on calling dialog in both side
+. calling Dialog
+		. if already engaged then prevent others to call
+		. if already engaged then prevent callee to response too
 
 handle audio/video call
 	. handle WebRTC

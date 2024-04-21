@@ -427,12 +427,13 @@ export const callingDialog = ( props = {}) => {
 		onSuccess=f=>f, 
 		onReject=f=>f,
 		onError=f=>f,
+		user={ }
 	} = props
 
 	const htmlString = `
-		<div name='calling-dialog' class='z-50 flex backdrop-blur-sm h-screen fixed inset-0 justify-center items-center bg-blue-300/20'>
+		<div name='calling-dialog' class='z-[100] flex backdrop-blur-sm h-screen fixed inset-0 justify-center items-center bg-blue-300/20'>
 			<div class='w-[280px] p-8 flex flex-col gap-4 items-center bg-slate-50 rounded-md border border-slate-300 shadow-sm'>
-				<p name='dialog-title' class='font-medium text-slate-800 capitalize'> 
+				<p name='dialog-title' class='animate-pulse font-medium text-slate-800 capitalize'> 
 					${title}
 				</p>
 
@@ -494,10 +495,10 @@ export const callingDialog = ( props = {}) => {
 }
 
 
-export const incommingCallDialog = () => new Promise((resolve, reject) => {
+export const incommingCallDialog = ({ type='audio'} = {}) => new Promise((resolve, reject) => {
 
 	callingDialog({
-		title : 'Incomming Audio Call', 			// string
+		title : `Incomming ${type} Call...`, 			// string
 		callSide: 'callee', 									// caller | callee
 		error: '', 														// string
 		onSuccess : (evt) => {

@@ -86,8 +86,12 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType, cal
 		return showError('user is already in called')
 	}
 
+	const type = callType.toLowerCase().startsWith('audio') ? 'audio' : 'video'
+	console.log({ callType })
+	console.log({ type })
+
 	try {
-		const isSucceed = await elements.incommingCallDialog()
+		const isSucceed = await elements.incommingCallDialog({ type })
 
 		if(isSucceed) {
 			wss.sendPreOfferAnswer({ 
@@ -499,20 +503,13 @@ export const audioCallHandler = async () => {
 	const { activeUserId, logedInUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-	// console.log( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE )
 	if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
 
 		wss.sendPreOffer({ 
 			callerUserId: logedInUserId,
 			calleeUserId: activeUserId, 
 			callType: CALL_TYPE.AUDIO_CALL, 
-			// callStatus: wss.currentCallStatus,
 		})
-
-	// if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
-		// calleeBusyHandler()
-		console.log('callee available')
-
 
 		const isSuccess = await elements.outGoingCallDialog()
 		if(!isSuccess) {
@@ -532,21 +529,10 @@ export const audioCallHandler = async () => {
 		const { rooms, activeUserId } = store.getState()
 
 		const isUserActive = rooms.find( room => room.userId === activeUserId )
-		if(isUserActive) {
-			calleeBusyHandler()
 
-		} else {
-
-			calleeNotFoundHandler()
-		}
-		// console.log(store.getState().rooms)
-
+		if(isUserActive) calleeBusyHandler()
+		else calleeNotFoundHandler()
 	}
-	// if( wss.currentCallStatus === CALL_STATUS.CALL_UNAVAILABLE ) {
-	// 	calleeNotFoundHandler()
-	// 	console.log('callee enavailable')
-	// }
-
 
 
 	// audioCallButton.disabled = true
@@ -564,16 +550,47 @@ export const videoCallHandler = async () => {
 		return
 	}
 
-	const isPreCallSucceed = await elements.incommingCallDialog()
-	// const isPreCallSucceed = await outGoingCallDialog()
-	if( !isPreCallSucceed ) return
+	const { activeUserId, logedInUserId } = store.getState()
+	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-	videoCallButton.disabled = true
-	rightSideVideoCallButton.disabled = true
-	closeCallHandler() 																// 1. close previous call style 
+	if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
 
-	messagesContainer.classList.add('call') 				// show video-container and hide message container
-	callPanel.classList.remove('audio') 							// 4. make video call
+		wss.sendPreOffer({ 
+			callerUserId: logedInUserId,
+			calleeUserId: activeUserId, 
+			callType: CALL_TYPE.VIDEO_CALL, 
+		})
+
+		const isSuccess = await elements.outGoingCallDialog()
+		if(!isSuccess) {
+			hideCallingDialog() 	// hide others if exists
+			wss.sendPreOfferAnswer({ 
+				callerUserId: logedInUserId,
+				calleeUserId: activeUserId, 
+				offerType: OFFER_TYPE.CALL_REJECTED, 
+			})
+		}
+	}
+
+
+	if( wss.currentCallStatus === CALL_STATUS.CALL_BUSY ) {
+		console.log('callee busy')
+
+		const { rooms, activeUserId } = store.getState()
+
+		const isUserActive = rooms.find( room => room.userId === activeUserId )
+
+		if(isUserActive) calleeBusyHandler()
+		else calleeNotFoundHandler()
+	}
+
+
+	// videoCallButton.disabled = true
+	// rightSideVideoCallButton.disabled = true
+	// closeCallHandler() 																// 1. close previous call style 
+
+	// messagesContainer.classList.add('call') 				// show video-container and hide message container
+	// callPanel.classList.remove('audio') 							// 4. make video call
 }
 
 

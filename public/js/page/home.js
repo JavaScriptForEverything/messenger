@@ -58,6 +58,12 @@ const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
 
 
+/* Toggle video-container
+		. if message-container has class 'call' then it shows video-container else hide video-container
+*/ 
+
+
+
 /* To show message panel in right side: in Desktop-View
 const rightPanelMainBlock = $('[name=right-main]')
 rightPanelMainBlock.classList.add('active') 			// to show right-panel message block

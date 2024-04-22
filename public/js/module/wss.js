@@ -93,22 +93,23 @@ export const registerSocketEvents = (socket) => {
 		// // console.log({ callerUserId, calleeUserId, callType, callStatus })
 	})
 
-	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType, callStatus }) => {
+	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType }) => {
 		console.log('Step-4: reply comes back to caller')
 
 		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
 			ui.acceptCallHandler({ callerUserId, calleeUserId })
 
-			console.log('call accepted', { callStatus })
+			console.log('call accepted', { offerType })
 		}
 		if(offerType === OFFER_TYPE.CALL_REJECTED) {
 			ui.rejectCallHandler({ callerUserId, calleeUserId })
 
-			console.log('call rejected', { callStatus })
+			console.log('call rejected', { offerType })
 		}
 		if(offerType === OFFER_TYPE.CALL_CLOSED) {
 			console.log('call closed')
-			console.log({ offerType, callStatus })
+			console.log({ offerType })
+			ui.hideVideoContainer()
 		}
 		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
 			console.log('callee not found')
@@ -143,7 +144,8 @@ export const sendPreOfferAnswer = ({ callStatus, ...payload }) => { 		// { calle
 	socketIo.emit('pre-offer-answer', { callStatus, ...payload })
 }
 
-export const sendCloseCallSignal = () => {
-	socketIo.emit('call-status')
+// ui.js: closeCallHandler
+export const sendCloseCallSignal = ({ callerUserId, calleeUserId, offerType }) => {
+	socketIo.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType }) 
 }
 

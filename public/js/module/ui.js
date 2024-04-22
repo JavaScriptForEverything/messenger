@@ -144,6 +144,7 @@ export const acceptCallHandler = ({ callerUserId, calleeUserId }) => {
 
 	console.log(' accepted')
 	hideCallingDialog()
+	showVideoContainer()
 
 	// store.setCallStatus('')
 	// console.log('re-set callStatus')
@@ -163,7 +164,6 @@ export const rejectCallHandler = ({ callerUserId, calleeUserId }) => {
 
 	console.log('rejected')
 	hideCallingDialog()
-
 }
 
 // export const callStatusResetHandler = ({ callStatus }) => {
@@ -376,6 +376,13 @@ const showAllMessagesInUI = async (receiver) => {
 }
 
 
+const showVideoContainer = () => {
+	messagesContainer.classList.add('call') 	
+}
+export const hideVideoContainer = () => {
+	messagesContainer.classList.remove('call') 	
+}
+
 
 
 export const showError = (message, reason) => {
@@ -519,6 +526,7 @@ export const audioCallHandler = async () => {
 				calleeUserId: activeUserId, 
 				offerType: OFFER_TYPE.CALL_REJECTED, 
 			})
+			showVideoContainer()
 		}
 	}
 
@@ -596,16 +604,24 @@ export const videoCallHandler = async () => {
 
 export const closeCallHandler = () => {
 	console.log('stop call')
-	wss.sendCloseCallSignal()
+	const { logedInUserId, activeUserId } = store.getState()
+
+	wss.sendCloseCallSignal({ 
+		callerUserId: logedInUserId, 
+		calleeUserId: activeUserId, 
+		offerType: OFFER_TYPE.CALL_CLOSED 
+	})
 
 	//----------[ if success then reset styles ]----------
-	messagesContainer.classList.remove('call') 				// hide video-container
+	// messagesContainer.classList.remove('call') 				// hide video-container
 
-	// 3. reset callPanel
-	callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
-	callPanelCameraButton.classList.remove('called') 					// reset camera style
-	callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
-	stopRecordingHandler() 	// reset recording
+
+
+	// // 3. reset callPanel
+	// callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
+	// callPanelCameraButton.classList.remove('called') 					// reset camera style
+	// callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
+	// stopRecordingHandler() 	// reset recording
 }
 
 const stopRecordingHandler = () => {

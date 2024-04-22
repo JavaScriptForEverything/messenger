@@ -168,16 +168,21 @@ module.exports = (io) => (socket) => {
 			io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
 		}
 
+		if( offerType === OFFER_TYPE.CALL_CLOSED ) {
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+
+			io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
+		}
+
 
 	})
 
-	socket.on('call-status', () => {
-		isUserGettingCalled = false
-
-		io.emit('call-status', { 
-			callStatus: CALL_STATUS.CALL_AVAILABLE,
-		})
-	})
+	// socket.on('call-status', () => {
+	// 	isUserGettingCalled = false
+	// })
 
 	
 

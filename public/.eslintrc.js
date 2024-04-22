@@ -1,7 +1,8 @@
 module.exports = {
 	"globals": {
 		// axios: true,
-		logedInUser: true
+		logedInUser: true,
+		Cropper: true,
 	},
 	"extends": "eslint:recommended",
 	"parserOptions": {

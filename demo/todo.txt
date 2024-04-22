@@ -11,10 +11,11 @@ Problem:
 					]
 		
 
-. add animation on calling dialog in both side
-. calling Dialog
-		. if already engaged then prevent others to call
-		. if already engaged then prevent callee to response too
+- handle image optimization
+	. multiple image 
+	. set uploaded image size
+	. show image size crose limit error in both frontend and backend side
+
 
 handle audio/video call
 	. handle WebRTC
@@ -94,3 +95,10 @@ Problem-1: Layout not 100% fit in small mobile
 
 
 
+- add documentation + routes
+	/docs/
+		. 
+
+- handle image upload image type limit error
+	. inside drag and drop
+	. file browse

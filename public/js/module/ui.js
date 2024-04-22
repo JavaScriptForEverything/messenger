@@ -41,9 +41,16 @@ const callPanelRecordingButton = $('[name=call-panel] [name=recording]')
 
 const recordingPanel = $('[name=recording-panel]') 	
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
+const rightPanelMainBlock = $('[name=right-main]')
 
 let timer = 0
 let controller = null
+
+
+
+
+
+
 
 // ----------[ Other user Side ]----------
 export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
@@ -376,12 +383,44 @@ const showAllMessagesInUI = async (receiver) => {
 }
 
 
+	// audioCallButton.disabled = true
+	// rightSideAudioCallButton.disabled = true
+	// closeCallHandler() 																// 1. close previous call style 
+
+	// messagesContainer.classList.add('call') 				// show video-container and hide message container
+	// callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
+
 const showVideoContainer = () => {
-	messagesContainer.classList.add('call') 	
+	messagesContainer.classList.add('call') 	 				// show message panel instead of userProfile details
+	rightPanelMainBlock.classList.add('active') 			// show videoContainer instead of message container
+
+	// disable audioCallButtons
+	audioCallButton.disabled = true 									// disable audioCallButton: in middle-top
+	rightSideAudioCallButton.disabled = true 					// disable audioCallButton: in right-main
+
+	// disable videoCallButtons
+	videoCallButton.disabled = true										// disable videoCallButton: in middle-top
+	rightSideVideoCallButton.disabled = true 					// disable videoCallButton: in right-main
 }
 export const hideVideoContainer = () => {
-	messagesContainer.classList.remove('call') 	
+	messagesContainer.classList.remove('call') 	 			// hide message panel, show userProfile details back
+	rightPanelMainBlock.classList.remove('active') 		// hide videoContainer, and show message container back
+
+	// enable audioCallButton
+	audioCallButton.disabled = false 									// enable audioCallButton: in middle-top
+	rightSideAudioCallButton.disabled = false 				// enable audioCallButton: in right-main
+
+	// enable videoCallButtons
+	videoCallButton.disabled = false									// enable videoCallButton: in middle-top
+	rightSideVideoCallButton.disabled = false 				// enable videoCallButton: in right-main
 }
+// const showRightMessagePanel = () => {
+// 	rightPanelMainBlock.classList.add('active') 		
+// }
+// export const hideRightMessagePanel = () => {
+// 	rightPanelMainBlock.classList.remove('active') 		
+// }
+
 
 
 
@@ -577,6 +616,8 @@ export const videoCallHandler = async () => {
 				calleeUserId: activeUserId, 
 				offerType: OFFER_TYPE.CALL_REJECTED, 
 			})
+
+			showVideoContainer()
 		}
 	}
 

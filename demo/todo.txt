@@ -1,10 +1,15 @@
-. added callee busy but
-		. when when already in called then not-found users also shows callee is busy
-			- reason we are appling condition  before request send:
-					solution:
-						. in client-side: send request first then test condition
-						. in server-side: if user exists and busy then set callStatus busy, else not found
-								. don't reset callStatus
+Problem:
+	. When calling then every users not calling caller or callee can't call each other
+			- Reason: send busy to every body else.
+			- Solution: instead of send every body busy, send which users are busy by object, and filter those user when try to call
+					const busyUsers = [
+						{
+							userId,
+							socketId,
+							callStatus: 'BUSY'
+						}
+					]
+		
 
 . add animation on calling dialog in both side
 . calling Dialog

@@ -65,9 +65,6 @@ const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-r
 
 
 /* To show message panel in right side: in Desktop-View
-const rightPanelMainBlock = $('[name=right-main]')
-rightPanelMainBlock.classList.add('active') 			// to show right-panel message block
-rightPanelMainBlock.classList.remove('active') 			// to hide right-panel message block
 */
 
 

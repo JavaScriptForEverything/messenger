@@ -599,170 +599,41 @@ export const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
 
 
 /*
-elements.imageUploadDialog({ 
+elements.imageUploadDialog({
+	type: 'file', 						// image | file = if image then preview, else show save button
 	multiple: true,
-	type: 'file',
-
+	round: false,
 	onSave: ({ dialog, files }) => {
-		dialog.remove()
 		console.log(files)
-		console.log(files[0].name)
-	},
-	onCancel: ({ dialog }) => {
-		console.log(dialog)
-		dialog.remove()
+		// dialog.remove()
 	}
 })
 */
-// export const imageUploadDialog = ( props = {}) => {
-// 	const { 
-// 		onSave=f=>f, 
-// 		onCancel=f=>f,
-// 		multiple=false,
-// 		type='image'
-// 	} = props
-
-// 	const htmlString = `
-// 		<div name='image-upload-dialog' class='z-[100] flex backdrop-blur-sm h-screen fixed inset-0 justify-center items-center bg-blue-300/20'>
-// 			<div class='w-4/5 sm:w-3/5  md:w-2/5 p-2 bg-slate-50 rounded-md border border-slate-300 shadow-sm'>
-				
-// 				<div  name='drag-and-drop-panel' class='flex-1 flex justify-center items-center 
-// 				 text-slate-500 bg-slate-100
-// 				 '
-// 				>
-// 					<div name='drag-and-drop-container'
-// 						class='min-h-48 bg-slate-50 border border-slate-200
-// 						flex-1 flex flex-col justify-center items-center gap-1'
-// 					>
-// 						<span>
-// 							<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
-// 						</span>
-
-// 						<p name='drop-text' class='text-slate-800 '>
-// 							<span> Drag and drop ${type}s or </span>
-// 							<input type='file' accept=${type === 'image' ? 'image/*' : '*'} multiple id='drag-and-drop-file' hidden />
-// 							<label for='drag-and-drop-file' 
-// 								class='underline decoration-dotted
-// 								hover:text-slate-900 cursor-pointer'
-// 								> Browse </label>
-// 						</p>
-
-// 						<p name='drop-text' class='text-xs'> Supported formats: JPG, JPEG, PNG</p>
-// 						<p name='drop-text' class='text-xs'> File size: 5.5 MB</p>
-// 					</div>
-// 				</div>
-
-// 				<div class='mt-2 flex gap-2 justify-end items-center'>
-// 					<button name='cancel-button' class='
-// 						border border-slate-300/80 bg-slate-300/80 text-slate-600 px-5 py-1 rounded
-// 						hover:border-slate-300 hover:bg-slate-300
-// 						active:border-slate-400/50 active:bg-slate-400/55
-// 					'>Cancel</button>
-
-// 					<button name='save-button' class='
-// 						border border-blue-500 bg-blue-500/80 text-slate-50 px-5 py-1 rounded
-// 						hover:border-blue-600/90 hover:bg-blue-500/90
-// 						active:border-blue-600 active:bg-blue-500
-// 						disabled:border-slate-300/80 disabled:bg-slate-300/80
-// 						disabled:text-slate-400
-// 					'>Save</button>
-// 				</div>
-// 			</div>
-// 		</div>
-// 	`
-
-// 	const element = stringToElement(htmlString)
-// 	document.body.insertAdjacentElement('afterbegin', element)
-
-// 	const dragAndDropContainer = element.querySelector('[name=drag-and-drop-panel]')
-// 	const inputFile = element.querySelector('#drag-and-drop-file')
-// 	const cancelButton = element.querySelector('[name=cancel-button]')
-// 	const saveButton = element.querySelector('[name=save-button]')
-
-// 	let storeFiles = []
-
-// 	saveButton.disabled = true
-
-// 	// --- Drag and Drop ]---
-// 	// NB: both 'dragover' and 'drop' event must preventDefault() else file open into browser
-// 	dragAndDropContainer.addEventListener('dragover', (evt) => {
-// 		evt.preventDefault()
-// 		evt.target.style.borderColor = '#2879e377'
-// 	})
-// 	dragAndDropContainer.addEventListener('dragleave', (evt) => {
-// 		evt.preventDefault()
-// 		const rect = evt.target.getBoundingClientRect()
-// 		if(
-// 			evt.clientX > rect.left + rect.width || 
-// 			evt.clientX < rect.left || 
-// 			evt.clientY > rect.top + rect.height || 
-// 			evt.clientY < rect.top
-// 		) evt.target.removeAttribute('style')
-// 	})
-// 	dragAndDropContainer.addEventListener('drop', (evt) => {
-// 		evt.preventDefault() 		
-// 		evt.target.removeAttribute('style')
-
-// 		const files = [ ...evt.dataTransfer.files ]
-// 		storeFiles= [] 		// clear old files (if have any)
-
-// 		saveButton.disabled = !!storeFiles.length
-
-// 		files.forEach( async (file) => {
-// 			const dataUrl = await readAsDataURL(file, { type })
-// 			storeFiles.push({ 
-// 				name: file.name, 
-// 				size: file.size, 
-// 				type: file.type, 
-// 				dataUrl 
-// 			})
-// 		})
-// 	})
-// 	// ---
-
-// 	inputFile.addEventListener('change', (evt) => {
-// 		const files = [ ...evt.target.files ]
-// 		storeFiles= [] 		// clear old files (if have any)
-
-// 		saveButton.disabled = !!storeFiles.length
-
-// 		files.forEach( async (file) => {
-// 			const dataUrl = await readAsDataURL(file, { type })
-// 			storeFiles.push({ 
-// 				name: file.name, 
-// 				size: file.size, 
-// 				type: file.type, 
-// 				dataUrl 
-// 			})
-// 		})
-// 	})
-// 	saveButton.addEventListener('click', (evt) => {
-// 		// if(!storeFiles.length) return console.log('must ')
-// 		onSave({ dialog: element, files: multiple ? storeFiles : [storeFiles[0]] })
-// 	})
-// 	cancelButton.addEventListener('click', (evt) => {
-// 		onCancel({ dialog: element })
-// 	})
-
-// 	// if(error) {
-// 	// 	onError({ target: element })
-// 	// }
-
-// }
-
 export const imageUploadDialog = ( props = {}) => {
 	const { 
+		type='image',
 		onSave=f=>f, 
 		onCancel,
-		multiple=false,
-		type='image'
+
+		multiple=true,
+		round=true,
+
 	} = props
 
 	const htmlString = `
 		<div name='image-upload-dialog' class='z-[100] flex backdrop-blur-sm h-screen fixed inset-0 justify-center items-center bg-blue-300/20'>
 			<div class='w-4/5 sm:w-3/5  md:w-2/5 p-2 bg-slate-50 rounded-md border border-slate-300 shadow-sm'>
 
-				<div name='drag-and-drop-container'>
+				<div name='drag-and-drop-container' class='relative'>
+
+					<button name='close-button' class='
+						ml-auto mr-1 mt-1 border text-slate-600 p-0.5 rounded-full
+						hover:border-slate-300 hover:bg-slate-300
+						active:border-slate-400/50 active:bg-slate-400/55
+						absolute top-0 right-0
+					'>
+						<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14s14-6.2 14-14S23.8 2 16 2m5.4 21L16 17.6L10.6 23L9 21.4l5.4-5.4L9 10.6L10.6 9l5.4 5.4L21.4 9l1.6 1.6l-5.4 5.4l5.4 5.4z"/></svg>
+					</button>
 
 					<div  name='drag-and-drop-content' class='flex-1 flex justify-center items-center text-slate-500 bg-slate-100 ' >
 						<div name='drag-and-drop-container'
@@ -787,15 +658,16 @@ export const imageUploadDialog = ( props = {}) => {
 						</div>
 					</div>
 
-					<div class='mt-2 flex gap-2 justify-end items-center'>
-						<button name='cancel-button' class='
+					${ /* add flex/hidden to toggle button block */ ''}
+					<div class='${type === 'image' ? 'hidden' : 'flex'} gap-2 justify-end items-center mt-2 '>
+						<button hidden name='cancel-button' class='
 							border border-slate-300/80 bg-slate-300/80 text-slate-600 px-5 py-1 rounded
 							hover:border-slate-300 hover:bg-slate-300
 							active:border-slate-400/50 active:bg-slate-400/55
 						'>Cancel</button>
 
 						<button name='save-button' class='
-							border border-blue-500 bg-blue-500/80 text-slate-50 px-5 py-1 rounded
+							text-xs border border-blue-500 bg-blue-500/80 text-slate-50 px-3 py-0.5 rounded
 							hover:border-blue-600/90 hover:bg-blue-500/90
 							active:border-blue-600 active:bg-blue-500
 							disabled:border-slate-300/80 disabled:bg-slate-300/80
@@ -808,6 +680,8 @@ export const imageUploadDialog = ( props = {}) => {
 		</div>
 	`
 
+
+
 	const element = stringToElement(htmlString)
 	document.body.insertAdjacentElement('afterbegin', element)
 
@@ -815,6 +689,7 @@ export const imageUploadDialog = ( props = {}) => {
 
 	const dragAndDropContent = element.querySelector('[name=drag-and-drop-content]')
 	const inputFile = element.querySelector('#drag-and-drop-file')
+	const closeButton = element.querySelector('[name=close-button]')
 	const cancelButton = element.querySelector('[name=cancel-button]')
 	const saveButton = element.querySelector('[name=save-button]')
 
@@ -849,13 +724,12 @@ export const imageUploadDialog = ( props = {}) => {
 
 		files.forEach( async (file) => {
 			const dataUrl = await readAsDataURL(file, { type })
-			storeFiles.push({ 
-				name: file.name, 
-				size: file.size, 
-				type: file.type, 
-				dataUrl 
-			})
+
+			storeFiles.push({ name: file.name, size: file.size, type: file.type, dataUrl })
+
+			if(type === 'image') imagePreviewContent(storeFiles)
 		})
+
 	})
 	// ---
 
@@ -863,27 +737,127 @@ export const imageUploadDialog = ( props = {}) => {
 		const files = [ ...evt.target.files ]
 		storeFiles= [] 		// clear old files (if have any)
 
-
 		saveButton.disabled = !!storeFiles.length
 
 		files.forEach( async (file) => {
 			const dataUrl = await readAsDataURL(file, { type })
-			storeFiles.push({ 
-				name: file.name, 
-				size: file.size, 
-				type: file.type, 
-				dataUrl 
-			})
+			storeFiles.push({ name: file.name, size: file.size, type: file.type, dataUrl })
+
+
+			if(type === 'image') imagePreviewContent(storeFiles)
 		})
+
 	})
-	saveButton.addEventListener('click', (evt) => {
+
+	const saveHandler = () => {
 		onSave({ dialog: element, files: multiple ? storeFiles : [storeFiles[0]] })
 
 		storeFiles= [] 		// clear old files (if have any)
-	})
-	cancelButton.addEventListener('click', (evt) => {
+	}
+
+	const cancelHandler = () => {
 		if(onCancel instanceof Function) return onCancel({ dialog: element })
 		element.remove()
 		storeFiles= [] 		// clear old files (if have any)
-	})
+	}
+
+	closeButton.addEventListener('click', cancelHandler)
+	cancelButton.addEventListener('click', cancelHandler)
+	saveButton.addEventListener('click', saveHandler)
+
+	// if type === 'image' then preview
+
+	const imagePreviewContent = (files) => {
+		// if(!files.length) return
+		dragAndDropContainer.innerHTML = '' 		// empty drag-and-drop content
+
+		const subHtmlString = `
+			<div name='image-slider' class='relative flex-1 flex flex-col justify-center items-center text-slate-500 bg-slate-100 
+				border border-slate-200 gap-1 
+			'>
+
+					<button name='close-button' class='
+						ml-auto mr-1 mt-1 border text-slate-600 p-0.5 rounded-full
+						hover:border-slate-300 hover:bg-slate-300
+						active:border-slate-400/50 active:bg-slate-400/55
+						absolute top-0 right-0
+					'>
+						<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14s14-6.2 14-14S23.8 2 16 2m5.4 21L16 17.6L10.6 23L9 21.4l5.4-5.4L9 10.6L10.6 9l5.4 5.4L21.4 9l1.6 1.6l-5.4 5.4l5.4 5.4z"/></svg>
+					</button>
+
+				<img name='slide-preview' src='${files[0].dataUrl}' alt='${files[0].dataUrl}' 
+					class='w-48 h-48 object-cover border-2 border-white ${round ? 'rounded-full' : ''}'
+				/>
+
+				<div name='slider-navigation-container' class='${files.length > 1 ? 'flex' : 'hidden'} w-full justify-center items-center border border-slate-200
+						overflow-scroll
+						h-12
+					'
+				>
+					${files.map( file => (
+						`
+						<img name='slide-image' src='${file.dataUrl}' alt='${file.dataUrl}' 
+							class='[&.active]:border-blue-400 [&.active]:scale-125 w-8 h-8 object-cover border border-slate-200 cursor-pointer'
+						/>
+						`
+					))
+				}
+				</div>
+
+				<div class='w-full mt-2 mr-2 pb-1 flex gap-2 justify-end items-center'>
+					<button name='crop-button' class='
+						text-xs border border-blue-500 bg-blue-500/80 text-slate-50 px-4 p-1 rounded
+						hover:border-blue-600/90 hover:bg-blue-500/90
+						active:border-blue-600 active:bg-blue-500
+						disabled:border-slate-300/80 disabled:bg-slate-300/80
+						disabled:text-slate-400
+					'>Crop</button>
+				</div>
+			</div>
+		`
+
+
+
+		// let subElement = stringToElement(subHtmlString)
+		let subElement = subHtmlString.replace(" , ", '')
+				subElement = stringToElement(subHtmlString)
+
+		dragAndDropContainer.insertAdjacentElement('afterbegin', subElement)
+		const slidePreview = dragAndDropContainer.querySelector('[name=slide-preview]')
+		const sliderNavigationContainer = dragAndDropContainer.querySelector('[name=slider-navigation-container]')
+		const closeButton = dragAndDropContainer.querySelector('[name=close-button]')
+		const cropButton = dragAndDropContainer.querySelector('[name=crop-button]')
+
+		const firstSlideImage = dragAndDropContainer.querySelector('[name=slide-image]')
+		firstSlideImage.classList.add('active')
+
+
+		sliderNavigationContainer.addEventListener('click', (evt) => {
+			if(evt.target.tagName !== 'IMG') return
+
+			slidePreview.src = evt.target.src
+			slidePreview.alt = evt.target.src
+			
+			const items =  Array.from(evt.currentTarget.children)
+
+			items.forEach( (item) => {
+				// evt.target.classList.toggle('active', evt.target.src === item.src ) 		// will not work
+				item.classList.toggle('active', evt.target.src === item.src ) 						// will works
+			})
+		})
+
+
+		cropButton.addEventListener('click', (evt) => {
+			saveHandler()
+			console.log('croped')
+		})
+		closeButton.addEventListener('click', cancelHandler)
+
+	}
+
+	// imagePreviewContent([
+	// 	{ dataUrl: '/images/users/default.jpg', },
+	// 	{ dataUrl: '/images/logo.png', },
+	// 	{ dataUrl: '/images/users/coverPhoto.png', },
+	// ])
 }

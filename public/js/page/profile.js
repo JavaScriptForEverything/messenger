@@ -15,13 +15,15 @@ import '../plugins/cropper/cropper.min.js'
 // console.log(logedInUser)
 
 
-elements.imageUploadDialog({
-	multiple: true,
-	onSave: ({ dialog, files }) => {
-		console.log(files)
-		// dialog.remove()
-	}
-})
+// elements.imageUploadDialog({
+// 	type: 'file', 						// image | file = if image then preview, else show save button
+// 	multiple: true,
+// 	round: false,
+// 	onSave: ({ dialog, files }) => {
+// 		console.log(files)
+// 		// dialog.remove()
+// 	}
+// })
 
 
 const goToMessageButton = $('[name=goto-message]')
@@ -34,12 +36,12 @@ const coverPhotoEditButtonHandler = (evt) => {
 	console.log('cover photo edit button handler')
 
 	elements.imageUploadDialog({ 
+		multiple: false,
+		type: 'image',
+		round: true,
 		onSave: ({ dialog, files }) => {
 			dialog.remove()
 			console.log(files)
-		},
-		onCancel: ({ dialog }) => {
-			dialog.remove()
 		}
 	})
 }
@@ -47,12 +49,12 @@ const avatarEditButtonHandler = (evt) => {
 	console.log('avatar photo edit button handler')
 
 	elements.imageUploadDialog({ 
+		multiple: false,
+		type: 'image',
+		round: true,
 		onSave: ({ dialog, files }) => {
 			dialog.remove()
 			console.log(files)
-		},
-		onCancel: ({ dialog }) => {
-			dialog.remove()
 		}
 	})
 }

@@ -1,31 +1,30 @@
+import '../plugins/cropper/cropper.min.js'
+
+const $ = (selector) => document.querySelector(selector)
+
+const avatar = $('[name=avatar]')
+const imagePreview = $('[name=crop-preview]')
+const cropButton = $('[name=crop-button]')
+const cropDownload = $('[name=crop-download]')
 
 
+const cropper = new Cropper(avatar, { })
 
+cropButton.addEventListener('click', () => {
+	const canvas = cropper.getCroppedCanvas()
+	const dataUrl = canvas.toDataURL()
 
-const video = document.querySelector('video')
-const url = '/images/avatar.jpg'
-
-navigator.mediaDevices.getUserMedia({ 
-	audio: true, 
-	video: {
-		width: 1080,
-		height: 720,
-		facingMode: 'user'
-	}
-})
-.then(stream => {
-	console.log(stream)
-	video.srcObject = stream
-	video.addEventListener('loadedmetadata', () => {
-		video.play()
-	})
+	imagePreview.src = dataUrl
 })
 
-// button.addEventListener('click', async () => {
-// 	const res = await fetch(url)
-// 	const blob = await res.blob()
+cropDownload.addEventListener('click', () => {
+	const canvas = cropper.getCroppedCanvas()
+	const dataUrl = canvas.toDataURL()
 
-// 	const data = blob.stream()
-// 	console.log(data)
-// })
+	// const dataUrl = imagePreview.src  		// or get from previous image
 
+	const a = document.createElement('a')
+	a.href = dataUrl
+	a.download = 'crop-download.png'
+	a.click()
+})

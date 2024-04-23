@@ -16,7 +16,7 @@ import '../plugins/cropper/cropper.min.js'
 
 
 // elements.imageUploadDialog({
-// 	type: 'file', 						// image | file = if image then preview, else show save button
+// 	// type: 'file', 						// image | file = if image then preview, else show save button
 // 	multiple: true,
 // 	round: false,
 // 	onSave: ({ dialog, files }) => {
@@ -38,7 +38,7 @@ const coverPhotoEditButtonHandler = (evt) => {
 	elements.imageUploadDialog({ 
 		multiple: false,
 		type: 'image',
-		round: true,
+		round: false,
 		onSave: ({ dialog, files }) => {
 			dialog.remove()
 			console.log(files)
@@ -151,9 +151,13 @@ followUnfollowButton.addEventListener('click', followFollowingHandler)
 
 // 			cropper = new Cropper(image, {
 // 				aspectRatio: 1/1,
-// 				background: false
 // 			})
 // 		})
+// 		reader.addEventListener('progress', () => {
+// 			console.log(reader.result)
+// 		})
+
+
 
 // 	})
 

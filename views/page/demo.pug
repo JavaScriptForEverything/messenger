@@ -1,6 +1,6 @@
 extends ../layout
 block script
-	//- script( defer type='module' src='/js/page/demo.js')
+	script( defer type='module' src='/js/page/demo.js')
 	//- style.
 		input[type="search"]::-webkit-search-decoration,
 		input[type="search"]::-webkit-search-cancel-button,
@@ -12,4 +12,11 @@ block script
 block body 
 	div(class='h-screen')
 
-		p(class='roboto-medium') Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.	
+		div(class='w-full')
+			img( name='avatar' src='/images/users/default.jpg' class='w-40 h-40')
+
+			img(name='crop-preview') 
+			br
+			button(name='crop-button' class='border border-slate-400 px-3 py-1.5') Crop
+			button(name='crop-download' class='border border-slate-400 px-3 py-1.5') Download
+

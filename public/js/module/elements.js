@@ -767,11 +767,11 @@ export const imageUploadDialog = ( props = {}) => {
 
 	// if type === 'image' then preview
 
-	const imagePreviewContent = (files) => {
-		// if(!files.length) return
+	const imagePreviewContent = (images) => {
+		// if(!images.length) return
 		dragAndDropContainer.innerHTML = '' 		// empty drag-and-drop content
 
-		const subHtmlString = `
+		const imagePreViewHtmlString = `
 			<div name='image-slider' class='relative flex-1 flex flex-col justify-center items-center text-slate-500 bg-slate-100 
 				border border-slate-200 gap-1 
 			'>
@@ -785,18 +785,18 @@ export const imageUploadDialog = ( props = {}) => {
 						<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14s14-6.2 14-14S23.8 2 16 2m5.4 21L16 17.6L10.6 23L9 21.4l5.4-5.4L9 10.6L10.6 9l5.4 5.4L21.4 9l1.6 1.6l-5.4 5.4l5.4 5.4z"/></svg>
 					</button>
 
-				<img name='slide-preview' src='${files[0].dataUrl}' alt='${files[0].dataUrl}' 
+				<img name='slide-preview' src='${images[0].dataUrl}' alt='${images[0].dataUrl}' 
 					class='w-48 h-48 object-cover border-2 border-white ${round ? 'rounded-full' : ''}'
 				/>
 
-				<div name='slider-navigation-container' class='${files.length > 1 ? 'flex' : 'hidden'} w-full justify-center items-center border border-slate-200
+				<div name='slider-navigation-container' class='${multiple && images.length > 1 ? 'flex' : 'hidden'} w-full justify-center items-center border border-slate-200
 						overflow-scroll
 						h-12
 					'
 				>
-					${files.map( file => (
+					${images.map( image => (
 						`
-						<img name='slide-image' src='${file.dataUrl}' alt='${file.dataUrl}' 
+						<img name='slide-image' src='${image.dataUrl}' alt='${image.dataUrl}' 
 							class='[&.active]:border-blue-400 [&.active]:scale-125 w-8 h-8 object-cover border border-slate-200 cursor-pointer'
 						/>
 						`
@@ -804,33 +804,39 @@ export const imageUploadDialog = ( props = {}) => {
 				}
 				</div>
 
-				<div class='w-full mt-2 mr-2 pb-1 flex gap-2 justify-end items-center'>
+				<div class='w-full mt-2 px-2 pb-1 flex justify-between items-center'>
 					<button name='crop-button' class='
+						text-xs border border-blue-500 text-blue-500/80 px-4 p-1 rounded
+						hover:border-blue-600/90 hover:text-blue-500/90
+						active:border-blue-600 active:text-blue-500
+						disabled:border-slate-300/80 disabled:bg-slate-300/80
+						disabled:text-slate-400
+					'>Crop</button>
+
+					<button name='done-button' class='
 						text-xs border border-blue-500 bg-blue-500/80 text-slate-50 px-4 p-1 rounded
 						hover:border-blue-600/90 hover:bg-blue-500/90
 						active:border-blue-600 active:bg-blue-500
 						disabled:border-slate-300/80 disabled:bg-slate-300/80
 						disabled:text-slate-400
-					'>Crop</button>
+					'>Done</button>
 				</div>
 			</div>
 		`
 
 
 
-		// let subElement = stringToElement(subHtmlString)
-		let subElement = subHtmlString.replace(" , ", '')
-				subElement = stringToElement(subHtmlString)
+		let imagePreviewElement = stringToElement(imagePreViewHtmlString)
 
-		dragAndDropContainer.insertAdjacentElement('afterbegin', subElement)
+		dragAndDropContainer.insertAdjacentElement('afterbegin', imagePreviewElement)
 		const slidePreview = dragAndDropContainer.querySelector('[name=slide-preview]')
 		const sliderNavigationContainer = dragAndDropContainer.querySelector('[name=slider-navigation-container]')
 		const closeButton = dragAndDropContainer.querySelector('[name=close-button]')
 		const cropButton = dragAndDropContainer.querySelector('[name=crop-button]')
+		const doneButton = dragAndDropContainer.querySelector('[name=done-button]')
 
 		const firstSlideImage = dragAndDropContainer.querySelector('[name=slide-image]')
 		firstSlideImage.classList.add('active')
-
 
 		sliderNavigationContainer.addEventListener('click', (evt) => {
 			if(evt.target.tagName !== 'IMG') return
@@ -847,17 +853,79 @@ export const imageUploadDialog = ( props = {}) => {
 		})
 
 
-		cropButton.addEventListener('click', (evt) => {
-			saveHandler()
-			console.log('croped')
-		})
 		closeButton.addEventListener('click', cancelHandler)
+		doneButton.addEventListener('click', saveHandler)
+		cropButton.addEventListener('click', (evt) => {
+			imageCropContent(slidePreview)
+		})
+		// cropButton.click() // auto-click for testing
 
 	}
 
+	const imageCropContent = ({ src, alt }) => {
+		dragAndDropContainer.innerHTML = '' 		// empty drag-and-drop content
+
+		const cropImageHtmlString = `
+			<div name='image-crop-container' class='relative flex-1 flex flex-col justify-center items-center text-slate-500 bg-slate-100 
+				border border-slate-200 gap-1 
+			'>
+
+				<img name='crop-preview' src='${src}' alt='${alt}' 
+					class='w-48 h-48 object-cover border-2 border-white ${round ? 'rounded-full' : ''}'
+				/>
+
+				<div class='w-full mt-2 px-2 pb-1 flex justify-end items-center'>
+					<button name='done-button' class='
+						text-xs border border-blue-500 bg-blue-500/80 text-slate-50 px-4 p-1 rounded
+						hover:border-blue-600/90 hover:bg-blue-500/90
+						active:border-blue-600 active:bg-blue-500
+						disabled:border-slate-300/80 disabled:bg-slate-300/80
+						disabled:text-slate-400
+					'>Done</button>
+				</div>
+			</div>
+		`
+
+
+		const	cropElement = stringToElement(cropImageHtmlString)
+
+		dragAndDropContainer.insertAdjacentElement('afterbegin', cropElement)
+		const selectedImagePreview = dragAndDropContainer.querySelector('[name=crop-preview]')
+		const doneButton = dragAndDropContainer.querySelector('[name=done-button]')
+
+		const cropper = new Cropper(selectedImagePreview, { 
+			aspectRatio: 1/1,
+		})
+
+		const doneButtonHandler = () => {
+			cropCloseHandler() 								// defined bellow
+
+			const canvas = cropper.getCroppedCanvas()
+			const croppedDataUrl = canvas.toDataURL()
+
+			const updatedImages = storeFiles.map( image => {
+				return image.dataUrl === src ?  { ...image, dataUrl: croppedDataUrl } : image
+			})
+			imagePreviewContent(updatedImages)
+			// imagePreviewContent([
+			// 	{ 
+			// 		// dataUrl: '/images/users/default.jpg', 
+			// 		dataUrl: croppedDataUrl
+			// 	},
+			// 	{ dataUrl: '/images/logo.png', },
+			// 	{ dataUrl: '/images/users/coverPhoto.png', },
+			// ])
+		}
+
+		const cropCloseHandler = () => cropElement.remove() 			// hide crop dialog
+		doneButton.addEventListener('click', doneButtonHandler)
+
+	}
+
+	// auto-show-image-previe for testing
 	// imagePreviewContent([
 	// 	{ dataUrl: '/images/users/default.jpg', },
-	// 	{ dataUrl: '/images/logo.png', },
 	// 	{ dataUrl: '/images/users/coverPhoto.png', },
+	// 	{ dataUrl: '/images/logo.png', },
 	// ])
 }

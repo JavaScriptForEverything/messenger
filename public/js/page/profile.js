@@ -15,6 +15,13 @@ import '../plugins/cropper/cropper.min.js'
 // console.log(logedInUser)
 
 
+elements.imageUploadDialog({
+	multiple: true,
+	onSave: ({ dialog, files }) => {
+		console.log(files)
+		// dialog.remove()
+	}
+})
 
 
 const goToMessageButton = $('[name=goto-message]')

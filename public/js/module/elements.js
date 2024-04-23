@@ -614,10 +614,146 @@ elements.imageUploadDialog({
 	}
 })
 */
+// export const imageUploadDialog = ( props = {}) => {
+// 	const { 
+// 		onSave=f=>f, 
+// 		onCancel=f=>f,
+// 		multiple=false,
+// 		type='image'
+// 	} = props
+
+// 	const htmlString = `
+// 		<div name='image-upload-dialog' class='z-[100] flex backdrop-blur-sm h-screen fixed inset-0 justify-center items-center bg-blue-300/20'>
+// 			<div class='w-4/5 sm:w-3/5  md:w-2/5 p-2 bg-slate-50 rounded-md border border-slate-300 shadow-sm'>
+				
+// 				<div  name='drag-and-drop-panel' class='flex-1 flex justify-center items-center 
+// 				 text-slate-500 bg-slate-100
+// 				 '
+// 				>
+// 					<div name='drag-and-drop-container'
+// 						class='min-h-48 bg-slate-50 border border-slate-200
+// 						flex-1 flex flex-col justify-center items-center gap-1'
+// 					>
+// 						<span>
+// 							<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
+// 						</span>
+
+// 						<p name='drop-text' class='text-slate-800 '>
+// 							<span> Drag and drop ${type}s or </span>
+// 							<input type='file' accept=${type === 'image' ? 'image/*' : '*'} multiple id='drag-and-drop-file' hidden />
+// 							<label for='drag-and-drop-file' 
+// 								class='underline decoration-dotted
+// 								hover:text-slate-900 cursor-pointer'
+// 								> Browse </label>
+// 						</p>
+
+// 						<p name='drop-text' class='text-xs'> Supported formats: JPG, JPEG, PNG</p>
+// 						<p name='drop-text' class='text-xs'> File size: 5.5 MB</p>
+// 					</div>
+// 				</div>
+
+// 				<div class='mt-2 flex gap-2 justify-end items-center'>
+// 					<button name='cancel-button' class='
+// 						border border-slate-300/80 bg-slate-300/80 text-slate-600 px-5 py-1 rounded
+// 						hover:border-slate-300 hover:bg-slate-300
+// 						active:border-slate-400/50 active:bg-slate-400/55
+// 					'>Cancel</button>
+
+// 					<button name='save-button' class='
+// 						border border-blue-500 bg-blue-500/80 text-slate-50 px-5 py-1 rounded
+// 						hover:border-blue-600/90 hover:bg-blue-500/90
+// 						active:border-blue-600 active:bg-blue-500
+// 						disabled:border-slate-300/80 disabled:bg-slate-300/80
+// 						disabled:text-slate-400
+// 					'>Save</button>
+// 				</div>
+// 			</div>
+// 		</div>
+// 	`
+
+// 	const element = stringToElement(htmlString)
+// 	document.body.insertAdjacentElement('afterbegin', element)
+
+// 	const dragAndDropContainer = element.querySelector('[name=drag-and-drop-panel]')
+// 	const inputFile = element.querySelector('#drag-and-drop-file')
+// 	const cancelButton = element.querySelector('[name=cancel-button]')
+// 	const saveButton = element.querySelector('[name=save-button]')
+
+// 	let storeFiles = []
+
+// 	saveButton.disabled = true
+
+// 	// --- Drag and Drop ]---
+// 	// NB: both 'dragover' and 'drop' event must preventDefault() else file open into browser
+// 	dragAndDropContainer.addEventListener('dragover', (evt) => {
+// 		evt.preventDefault()
+// 		evt.target.style.borderColor = '#2879e377'
+// 	})
+// 	dragAndDropContainer.addEventListener('dragleave', (evt) => {
+// 		evt.preventDefault()
+// 		const rect = evt.target.getBoundingClientRect()
+// 		if(
+// 			evt.clientX > rect.left + rect.width || 
+// 			evt.clientX < rect.left || 
+// 			evt.clientY > rect.top + rect.height || 
+// 			evt.clientY < rect.top
+// 		) evt.target.removeAttribute('style')
+// 	})
+// 	dragAndDropContainer.addEventListener('drop', (evt) => {
+// 		evt.preventDefault() 		
+// 		evt.target.removeAttribute('style')
+
+// 		const files = [ ...evt.dataTransfer.files ]
+// 		storeFiles= [] 		// clear old files (if have any)
+
+// 		saveButton.disabled = !!storeFiles.length
+
+// 		files.forEach( async (file) => {
+// 			const dataUrl = await readAsDataURL(file, { type })
+// 			storeFiles.push({ 
+// 				name: file.name, 
+// 				size: file.size, 
+// 				type: file.type, 
+// 				dataUrl 
+// 			})
+// 		})
+// 	})
+// 	// ---
+
+// 	inputFile.addEventListener('change', (evt) => {
+// 		const files = [ ...evt.target.files ]
+// 		storeFiles= [] 		// clear old files (if have any)
+
+// 		saveButton.disabled = !!storeFiles.length
+
+// 		files.forEach( async (file) => {
+// 			const dataUrl = await readAsDataURL(file, { type })
+// 			storeFiles.push({ 
+// 				name: file.name, 
+// 				size: file.size, 
+// 				type: file.type, 
+// 				dataUrl 
+// 			})
+// 		})
+// 	})
+// 	saveButton.addEventListener('click', (evt) => {
+// 		// if(!storeFiles.length) return console.log('must ')
+// 		onSave({ dialog: element, files: multiple ? storeFiles : [storeFiles[0]] })
+// 	})
+// 	cancelButton.addEventListener('click', (evt) => {
+// 		onCancel({ dialog: element })
+// 	})
+
+// 	// if(error) {
+// 	// 	onError({ target: element })
+// 	// }
+
+// }
+
 export const imageUploadDialog = ( props = {}) => {
 	const { 
 		onSave=f=>f, 
-		onCancel=f=>f,
+		onCancel,
 		multiple=false,
 		type='image'
 	} = props
@@ -625,56 +761,59 @@ export const imageUploadDialog = ( props = {}) => {
 	const htmlString = `
 		<div name='image-upload-dialog' class='z-[100] flex backdrop-blur-sm h-screen fixed inset-0 justify-center items-center bg-blue-300/20'>
 			<div class='w-4/5 sm:w-3/5  md:w-2/5 p-2 bg-slate-50 rounded-md border border-slate-300 shadow-sm'>
-				
-				<div  name='drag-and-drop-panel' class='flex-1 flex justify-center items-center 
-				 text-slate-500 bg-slate-100
-				 '
-				>
-					<div name='drag-and-drop-container'
-						class='min-h-48 bg-slate-50 border border-slate-200
-						flex-1 flex flex-col justify-center items-center gap-1'
-					>
-						<span>
-							<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
-						</span>
 
-						<p name='drop-text' class='text-slate-800 '>
-							<span> Drag and drop ${type}s or </span>
-							<input type='file' accept=${type === 'image' ? 'image/*' : '*'} multiple id='drag-and-drop-file' hidden />
-							<label for='drag-and-drop-file' 
-								class='underline decoration-dotted
-								hover:text-slate-900 cursor-pointer'
-								> Browse </label>
-						</p>
+				<div name='drag-and-drop-container'>
 
-						<p name='drop-text' class='text-xs'> Supported formats: JPG, JPEG, PNG</p>
-						<p name='drop-text' class='text-xs'> File size: 5.5 MB</p>
+					<div  name='drag-and-drop-content' class='flex-1 flex justify-center items-center text-slate-500 bg-slate-100 ' >
+						<div name='drag-and-drop-container'
+							class='min-h-48 bg-slate-50 border border-slate-200
+							flex-1 flex flex-col justify-center items-center gap-1'
+						>
+							<span>
+								<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
+							</span>
+
+							<p name='drop-text' class='text-slate-800 '>
+								<span> Drag and drop ${type}s or </span>
+								<input type='file' accept=${type === 'image' ? 'image/*' : '*'} multiple id='drag-and-drop-file' hidden />
+								<label for='drag-and-drop-file' 
+									class='underline decoration-dotted
+									hover:text-slate-900 cursor-pointer'
+									> Browse </label>
+							</p>
+
+							<p name='drop-text' class='text-xs'> Supported formats: JPG, JPEG, PNG</p>
+							<p name='drop-text' class='text-xs'> File size: 5.5 MB</p>
+						</div>
+					</div>
+
+					<div class='mt-2 flex gap-2 justify-end items-center'>
+						<button name='cancel-button' class='
+							border border-slate-300/80 bg-slate-300/80 text-slate-600 px-5 py-1 rounded
+							hover:border-slate-300 hover:bg-slate-300
+							active:border-slate-400/50 active:bg-slate-400/55
+						'>Cancel</button>
+
+						<button name='save-button' class='
+							border border-blue-500 bg-blue-500/80 text-slate-50 px-5 py-1 rounded
+							hover:border-blue-600/90 hover:bg-blue-500/90
+							active:border-blue-600 active:bg-blue-500
+							disabled:border-slate-300/80 disabled:bg-slate-300/80
+							disabled:text-slate-400
+						'>Save</button>
 					</div>
 				</div>
 
-				<div class='mt-2 flex gap-2 justify-end items-center'>
-					<button name='cancel-button' class='
-						border border-slate-300/80 bg-slate-300/80 text-slate-600 px-5 py-1 rounded
-						hover:border-slate-300 hover:bg-slate-300
-						active:border-slate-400/50 active:bg-slate-400/55
-					'>Cancel</button>
-
-					<button name='save-button' class='
-						border border-blue-500 bg-blue-500/80 text-slate-50 px-5 py-1 rounded
-						hover:border-blue-600/90 hover:bg-blue-500/90
-						active:border-blue-600 active:bg-blue-500
-						disabled:border-slate-300/80 disabled:bg-slate-300/80
-						disabled:text-slate-400
-					'>Save</button>
-				</div>
-			</div>
+			</div> 
 		</div>
 	`
 
 	const element = stringToElement(htmlString)
 	document.body.insertAdjacentElement('afterbegin', element)
 
-	const dragAndDropContainer = element.querySelector('[name=drag-and-drop-panel]')
+	const dragAndDropContainer = element.querySelector('[name=drag-and-drop-container]')
+
+	const dragAndDropContent = element.querySelector('[name=drag-and-drop-content]')
 	const inputFile = element.querySelector('#drag-and-drop-file')
 	const cancelButton = element.querySelector('[name=cancel-button]')
 	const saveButton = element.querySelector('[name=save-button]')
@@ -685,11 +824,11 @@ export const imageUploadDialog = ( props = {}) => {
 
 	// --- Drag and Drop ]---
 	// NB: both 'dragover' and 'drop' event must preventDefault() else file open into browser
-	dragAndDropContainer.addEventListener('dragover', (evt) => {
+	dragAndDropContent.addEventListener('dragover', (evt) => {
 		evt.preventDefault()
 		evt.target.style.borderColor = '#2879e377'
 	})
-	dragAndDropContainer.addEventListener('dragleave', (evt) => {
+	dragAndDropContent.addEventListener('dragleave', (evt) => {
 		evt.preventDefault()
 		const rect = evt.target.getBoundingClientRect()
 		if(
@@ -699,7 +838,7 @@ export const imageUploadDialog = ( props = {}) => {
 			evt.clientY < rect.top
 		) evt.target.removeAttribute('style')
 	})
-	dragAndDropContainer.addEventListener('drop', (evt) => {
+	dragAndDropContent.addEventListener('drop', (evt) => {
 		evt.preventDefault() 		
 		evt.target.removeAttribute('style')
 
@@ -724,6 +863,7 @@ export const imageUploadDialog = ( props = {}) => {
 		const files = [ ...evt.target.files ]
 		storeFiles= [] 		// clear old files (if have any)
 
+
 		saveButton.disabled = !!storeFiles.length
 
 		files.forEach( async (file) => {
@@ -737,15 +877,13 @@ export const imageUploadDialog = ( props = {}) => {
 		})
 	})
 	saveButton.addEventListener('click', (evt) => {
-		// if(!storeFiles.length) return console.log('must ')
 		onSave({ dialog: element, files: multiple ? storeFiles : [storeFiles[0]] })
+
+		storeFiles= [] 		// clear old files (if have any)
 	})
 	cancelButton.addEventListener('click', (evt) => {
-		onCancel({ dialog: element })
+		if(onCancel instanceof Function) return onCancel({ dialog: element })
+		element.remove()
+		storeFiles= [] 		// clear old files (if have any)
 	})
-
-	// if(error) {
-	// 	onError({ target: element })
-	// }
-
 }

@@ -36,6 +36,12 @@
 		- to save network request + bandwidth
 		- fetch only current requested users, instead of all searched 
 
+- Upload Image:
+	- all drag and drop and browse multiple images
+	- show previes of selected images as carousel
+	- crop selected images in carousel and return updated image lists
+	- imageUploadDialog is fully flexible file uploader, which perform above task dynamically, if add file instead of image, then preview and image-croping will be disabled. 
+
 
 - Send message
 	- 

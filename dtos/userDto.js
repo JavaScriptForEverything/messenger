@@ -72,8 +72,8 @@ exports.filterBodyForUpdate = (body) => {
 		'firstName',
 		'lastName',
 		'username',
-		'avatar',
-		'coverPhoto',
+		// 'avatar', 								// need to delete old photo, so use seperate route
+		// 'coverPhoto',
 
 		// 'email', 								// update seperate route to verify email
 		// 'isActive', 							// only update when user need lock/delete account

@@ -191,3 +191,44 @@ export const filterAttachments = async (search) => {
 		return err
 	}
 }
+
+
+// // PATCH 	/api/users/:id
+// export const updateUserById = async (userId, body) => {
+// 	try {
+// 		const res = await fetch(`/api/users/${userId}`, {
+// 			method: 'PATCH',
+// 			body: JSON.stringify(body),
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 				'Accept': 'application/json',
+// 			}
+// 		})
+// 		if( !res.ok ) throw await res.json()
+
+// 		return await res.json()
+
+// 	} catch (err) {
+// 		return err
+// 	}
+// }
+
+// PATCH 	/api/users/:id/photos
+export const updateUserPhotos = async (userId, body) => {
+	try {
+		const res = await fetch(`/api/users/${userId}/photos`, {
+			method: 'PATCH',
+			body: JSON.stringify(body),
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			}
+		})
+		if( !res.ok ) throw await res.json()
+
+		return await res.json()
+
+	} catch (err) {
+		return err
+	}
+}

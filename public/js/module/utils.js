@@ -1,3 +1,5 @@
+import { Snackbar } from './components/index.js'
+
 // const avatarEl = $('[name=avatar]')
 export const $ = (selector) => document.querySelector( selector )
 
@@ -7,6 +9,13 @@ export const redirectTo = (path, { base='' } = {}) => {
 	location.href = url.href 	
 }
 
+export const showError = (message, reason) => {
+	console.log(message)
+	Snackbar({
+		severity: 'error',
+		message
+	})
+}
 
 // it prevent HTML XSS Attack
 export const encodeHTML = (string) => string
@@ -137,3 +146,5 @@ export const followFollowingHandler = (evt) => {
 		evt.target.textContent = buttonText
 	}
 }
+
+

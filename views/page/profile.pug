@@ -11,7 +11,7 @@ block script
 	- const fullName = `${logedInUser.firstName} ${logedInUser.lastName}`
 	div(class='min-h-screen container mx-auto font-roboto')
 		div(class='relative w-full md:w-3/4 mx-auto border-x border-slate-200 rounded-md')
-			img( src=logedInUser.coverPhoto || '/images/users/coverPhoto.png'
+			img( name='cover-photo' src=logedInUser.coverPhoto || '/images/users/coverPhoto.png'
 				class='h-48 w-full object-cover'
 				)
 			button(name='cover-photo-edit-button'
@@ -28,7 +28,7 @@ block script
 						class='absolute h-20 w-20 -mt-10 overflow-hidden'
 						class='group'
 						)
-						img( 
+						img( name='avatar'
 							src=logedInUser.avatar || '/images/users/default.jpg'
 							class=' rounded-full object-cover border-2 border-slate-50 shadow'
 						)

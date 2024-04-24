@@ -12,7 +12,7 @@ const Jimp = require('jimp')
 	const { error, url } = await handleBase64File(body.avatar, '/users', 'image')
 	const { error, url } = await handleBase64File(body.avatar)
 */
-module.exports.handleBase64File = async (dataUrl, subDir='/users', fileType='image') => {
+module.exports.handleBase64File = async (dataUrl, subDir='/users', fileType='image', aspectRatio='video') => {
 	if(!dataUrl) return { error: 'dataUrl is empty' }
 	const baseDir = '/upload'
 	
@@ -36,14 +36,19 @@ module.exports.handleBase64File = async (dataUrl, subDir='/users', fileType='ima
 		const filePath = path.join(destination, filename)
 		const buffer = Buffer.from(base64, 'base64')
 
-		// Step-4: Resize image before save
-		if(fileType === 'image') {
-			const image = await Jimp.read(buffer)
-			image.resize(150, 150).quality(80).write(filePath)
+		await fsPromises.writeFile(filePath, buffer) 				// Without resize
 
-		} else {
-			await fsPromises.writeFile(filePath, buffer) 				// Without resize
-		}
+		// // Step-4: Resize image before save
+		// if(fileType === 'image') {
+		// 	const imageWidth = aspectRatio === 'video' ? '' : 150
+		// 	const imageHeight = aspectRatio === 'video' ? '' : 150
+
+		// 	const image = await Jimp.read(buffer)
+		// 	image.resize(imageWidth, imageHeight).quality(80).write(filePath)
+
+		// } else {
+		// 	await fsPromises.writeFile(filePath, buffer) 				// Without resize
+		// }
 
 		return {
 			error: '',

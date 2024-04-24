@@ -3,6 +3,7 @@ const { apiFeatures } = require('../utils')
 const { catchAsync, appError } = require('./errorController')
 const User = require('../models/userModel')
 const userDto = require('../dtos/userDto')
+const fileService = require('../services/fileService')
 const slug = require('slug')
 
 // GET /api/users
@@ -102,6 +103,95 @@ exports.updateUserById = catchAsync( async (req, res, next) => {
 		data: user 	
 	})
 })
+
+// PATCH /api/users/:id/photos
+exports.updateUserPhotos = catchAsync( async (req, res, next) => {
+	const userId = req.params.id
+	if( !isValidObjectId(userId) ) return next(appError(`userId: ${userId} is invalid, please provide valid Id`))
+
+	const { avatar, coverPhoto } = req.body
+
+	const filteredBody = {}
+	if(avatar) filteredBody.avatar = avatar
+	if(coverPhoto) filteredBody.coverPhoto = coverPhoto
+
+	// Step-1: file user, and get old image
+	const user = await User.findById(userId).select('avatar coverPhoto')
+	if(!user) return next(appError('user not found', 404))
+
+
+	// Step-2: add update photo: avatar | coverPhoto
+	/* Step-3: Delete old image
+			- make sure take old image into a variable, instead of object property
+				because object properties has value by reference, means they point to same location
+				into memory, so if try to delete image as object property that will delete same image
+
+				Example:
+						const previousCoverPhoto = user.coverPhoto 	// make a copy of old coverPhoto, else object has reference value
+
+						user.coverPhoto = url
+						updatedUser = await user.save() 								// save changes
+
+				(1)	fileService.removeFile(user.coverPhoto, '/users') 		// Because of object reference, it will delete update avatar.
+				(2)	fileService.removeFile(previousCoverPhoto, '/users') 	// (Right Way) remove old image
+	*/ 
+
+	// const updatedUser = await User.findByIdAndUpdate(userId, filteredBody, { new: true })
+	// if(!updatedUser) return next(appError('user update failed'))
+
+	let updatedUser = null
+
+	if(coverPhoto) {
+		const previousCoverPhoto = user.coverPhoto 	// make a copy of old coverPhoto, else object has reference value
+
+		try {
+			const { error, url } = await fileService.handleBase64File(coverPhoto, '/users')
+			if(error) throw new Error(url)
+
+			user.coverPhoto = url
+			updatedUser = await user.save() 								// save changes
+			if(!updatedUser) return next(appError('coverPhoto update failed', 404))
+
+			// fileService.removeFile(user.coverPhoto, '/users') 	// Because of object reference, it will delete update avatar.
+			fileService.removeFile(previousCoverPhoto, '/users') 	// remove old image
+
+		} catch (error) {
+			setTimeout(() => {
+				fileService.removeFile(error.message) 				// if image upload failed
+			}, 1000);
+		}
+	}
+
+	if(avatar) {
+		const previousAvatar = user.avatar 	// make a copy of old avatar, else object has reference value
+
+		try {
+			const { error, url } = await fileService.handleBase64File(avatar, '/users')
+			if(error) throw new Error(url)
+			console.log({ url })
+
+			user.avatar = url
+			updatedUser = await user.save() 								// save changes
+			if(!updatedUser) return next(appError('avatar update failed', 404))
+
+			// fileService.removeFile(user.avatar, '/users') 	// Because of object reference, it will delete update avatar.
+			fileService.removeFile(previousAvatar, '/users') 	// remove old image
+
+
+		} catch (error) {
+			setTimeout(() => {
+				fileService.removeFile(error.message) 				// if image upload failed
+			}, 1000);
+		}
+
+	}
+
+	res.status(200).json({
+		status: 'success',
+		data: updatedUser 	
+	})
+})
+
 
 
 // PATCH /api/users/:id/follow-unfollow + protect

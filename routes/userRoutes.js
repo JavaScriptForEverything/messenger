@@ -19,6 +19,9 @@ const router = Router()
 		.get(userController.getUserById)
 		.patch(userController.updateUserById)
 
+	router.route('/:id/photos')
+		.patch(userController.updateUserPhotos)
+
 	router.route('/:id/follow-unfollow')
 		.patch(authController.protect, userController.toggleFollow)
 

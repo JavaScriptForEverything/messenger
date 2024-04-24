@@ -599,7 +599,7 @@ export const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
 
 
 /*
-elements.imageUploadDialog({
+elements.fileUploadDialog({
 	type: 'file', 						// image | file = if image then preview, else show save button
 	multiple: true,
 	round: false,
@@ -609,7 +609,7 @@ elements.imageUploadDialog({
 	}
 })
 */
-export const imageUploadDialog = ( props = {}) => {
+export const fileUploadDialog = ( props = {}) => {
 	const { 
 		type='image',
 		onSave=f=>f, 
@@ -894,7 +894,7 @@ export const imageUploadDialog = ( props = {}) => {
 		const doneButton = dragAndDropContainer.querySelector('[name=done-button]')
 
 		const cropper = new Cropper(selectedImagePreview, { 
-			aspectRatio: 1/1,
+			aspectRatio : round ? 1/1 : 16/9
 		})
 
 		const doneButtonHandler = () => {

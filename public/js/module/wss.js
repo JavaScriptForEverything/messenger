@@ -103,6 +103,7 @@ export const registerSocketEvents = (socket) => {
 		}
 		if(offerType === OFFER_TYPE.CALL_REJECTED) {
 			ui.rejectCallHandler({ callerUserId, calleeUserId })
+			ui.hideVideoContainer()
 
 			console.log('call rejected', { offerType })
 		}
@@ -110,6 +111,7 @@ export const registerSocketEvents = (socket) => {
 			console.log('call closed')
 			console.log({ offerType })
 			ui.hideVideoContainer()
+
 		}
 		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
 			console.log('callee not found')

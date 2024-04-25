@@ -1,3 +1,15 @@
+problem:
+	. friend list is empty whows even though friends available
+		- instead of empty friend list, use class to toggle between 2 children: empty and friend-list-container
+
+
+problem-2:
+	- can't filter out callerUserId, and calleeUserId on disconnect
+
+problem-3:
+	- whose users exists in busyPeers in backend: to call them send busy, else CALL_AVAILABLE 
+
+
 Problem:
 	. When calling then every users not calling caller or callee can't call each other
 			- Reason: send busy to every body else.

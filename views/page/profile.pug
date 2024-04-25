@@ -20,7 +20,7 @@ block script
 				)
 				<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m14.06 9.02l.92.92L5.92 19H5v-.92zM17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/></svg>
 
-			div(class='flex justify-between items-start gap-2 pb-2  border border-slate-200')
+			div(name='avatar-section' class='flex justify-between items-start gap-2 pb-2  border border-slate-200')
 				div(class='relative flex-1 px-2')
 
 					div(
@@ -72,42 +72,19 @@ block script
 						class='[&.active]:hover:bg-blue-500/95 [&.active]:active:bg-blue-500/80'
 						) follow
 
-		div hi
-		//- div( name='drag-and-drop-panel'
-			class='flex justify-center items-center absolute right-0 bottom-10'
-			class='peer-checked/attachment-icon-button:block'
-			class='min-w-96 text-slate-500 bg-slate-100'
-			)
-			div(name='drag-and-drop-container'
-				class='min-h-48 bg-slate-50 border border-slate-200'
-				class='flex-1 flex flex-col justify-center items-center gap-1'
-				)
-				span
-					<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
-				p(name='drop-text' class='text-slate-800 ') 
-					span Drag and drop files or 
-					input(type='file' multiple id='drag-and-drop-file' hidden)
-					label(for='drag-and-drop-file' 
-						class='underline decoration-dotted'
-						class='hover:text-slate-900 cursor-pointer'
-						class=''
-						) Browse
+			div(name='user-info' class='my-2 border-b border-slate-300 px-3')
+				p(class='text-2xl text-slate-800') Basic Information
 
-				p(name='drop-text' class='text-xs') Supported formats: JPG, JPEG, PNG
-				p(name='drop-text' class='text-xs') File size: 5.5 MB
+				div(name='' class='flex flex-col md:flex-row gap-2 ')
+					div(class='flex-1 border border-blue-50 overflow-auto')
+						pre(class='px-2 text-slate-700') #{JSON.stringify(logedInUser, null, 2)}
 
-			//- div(name='drop-list-container'
-				class='mt-1 bg-slate-50 border border-slate-200 '
-				class='max-h-60 overflow-y-scroll'
-				)
+					//- div(class='flex-1 border border-blue-500')
+						p right
 
-		input(type='file' id='camera-icon-button' hidden accept='image/*')
-		label(for='camera-icon-button' type='button'
-			class='text-slate-500/80 rounded-full'
-			class='hover:bg-slate-50 hover:text-slate-500'
-			class='cursor-pointer peer-checked/camera-icon-button:text-slate-600'
-			)
-			<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4h-3.17L15 2H9L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H4V6h4.05l1.83-2h4.24l1.83 2H20zM12 7a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3a3 3 0 0 1 3-3a3 3 0 0 1 3 3a3 3 0 0 1-3 3"/></svg>
+			//- div(name='change-password' class='flex flex-col md:flex-row gap-2')
+				div(class='flex-1 px-3 border border-red-500')
+					p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-
-	
+				div(class='flex-1 px-3 border border-blue-500')
+					p right

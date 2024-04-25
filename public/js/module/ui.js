@@ -150,11 +150,15 @@ export const acceptCallHandler = ({ callerUserId, calleeUserId }) => {
 	// 2. send webRTC connection request
 
 	console.log(' accepted')
-	hideCallingDialog()
+	hideCallingDialog() 		
 	showVideoContainer()
 
-	// store.setCallStatus('')
-	// console.log('re-set callStatus')
+	/* Step-?: select friend-list based on calleeUserId else callee Side close call 
+	** will failed because `activeUserId` will not be same as `calleeUserId`
+	** which cause the problem.
+	*/ 
+	const { logedInUserId } = store.getState()
+	if( callerUserId === logedInUserId ) showSelectedUser(calleeUserId) // => selectedUserId
 	
 	// wss.sendPreOfferAnswer({ 
 	// 	offerType, 
@@ -173,11 +177,44 @@ export const rejectCallHandler = ({ callerUserId, calleeUserId }) => {
 	hideCallingDialog()
 }
 
-// export const callStatusResetHandler = ({ callStatus }) => {
-// 	// 1. Reset callStatus on both side 
+// home.js: callPanelCallButton()
+export const closeCallHandler = () => {
+	console.log('stop call')
+	const { logedInUserId, activeUserId } = store.getState()
+
+	wss.sendCloseCallSignal({ 
+		callerUserId: logedInUserId, 
+		calleeUserId: activeUserId, 
+		offerType: OFFER_TYPE.CALL_CLOSED 
+	})
+
+	// 3. reset callPanel
+	resetCallHandler()
+	// callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
+	// callPanelCameraButton.classList.remove('called') 					// reset camera style
+	// callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
+	// stopRecordingHandler() 	// reset recording
+}
+const resetCallHandler = () => {
+	audioCallButton.disabled = false
+	videoCallButton.disabled = false
+	rightSideAudioCallButton.disabled = false
+	rightSideVideoCallButton.disabled = false
+	// 
+}
+
+const stopRecordingHandler = () => {
+		console.log('stop recording handler')
 	
-// 	store.setCallStatus(callStatus)
-// }
+		// handle close functionality
+			// 1. stop webRTC call
+			// ...
+
+	callPanelRecordingButton.classList.remove('called') 				// 1. reset active recording button style
+	recordingPanel.classList.add('hidden') 											// 2. hide recording panel
+	recordingPanelPlayPauseButton.classList.add('called') 			// 3. make recording pause state
+}
+
 
 
 // wss.js: on('call-status', )
@@ -383,13 +420,6 @@ const showAllMessagesInUI = async (receiver) => {
 }
 
 
-	// audioCallButton.disabled = true
-	// rightSideAudioCallButton.disabled = true
-	// closeCallHandler() 																// 1. close previous call style 
-
-	// messagesContainer.classList.add('call') 				// show video-container and hide message container
-	// callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
-
 const showVideoContainer = () => {
 	messagesContainer.classList.add('call') 	 				// show message panel instead of userProfile details
 	rightPanelMainBlock.classList.add('active') 			// show videoContainer instead of message container
@@ -438,6 +468,8 @@ export const doShowNotFoundFriends = (isShown=true) => {
 
 // wss.js => const registerSocketEvents = () => {...}
 export const showFriendLists = (friends=[]) => {
+	friendsListContainer.innerHTML = ''
+
 	friends.forEach((friend) => {
 		elements.createFirendList(friendsListContainer, {
 			// --- user details
@@ -642,40 +674,6 @@ export const videoCallHandler = async () => {
 	// callPanel.classList.remove('audio') 							// 4. make video call
 }
 
-
-export const closeCallHandler = () => {
-	console.log('stop call')
-	const { logedInUserId, activeUserId } = store.getState()
-
-	wss.sendCloseCallSignal({ 
-		callerUserId: logedInUserId, 
-		calleeUserId: activeUserId, 
-		offerType: OFFER_TYPE.CALL_CLOSED 
-	})
-
-	//----------[ if success then reset styles ]----------
-	// messagesContainer.classList.remove('call') 				// hide video-container
-
-
-
-	// // 3. reset callPanel
-	// callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
-	// callPanelCameraButton.classList.remove('called') 					// reset camera style
-	// callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
-	// stopRecordingHandler() 	// reset recording
-}
-
-const stopRecordingHandler = () => {
-		console.log('stop recording handler')
-	
-		// handle close functionality
-			// 1. stop webRTC call
-			// ...
-
-	callPanelRecordingButton.classList.remove('called') 				// 1. reset active recording button style
-	recordingPanel.classList.add('hidden') 											// 2. hide recording panel
-	recordingPanelPlayPauseButton.classList.add('called') 			// 3. make recording pause state
-}
 
 
 

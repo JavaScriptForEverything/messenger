@@ -69,13 +69,6 @@ const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-r
 
 
 
-const resetCallHandler = () => {
-	audioCallButton.disabled = false
-	videoCallButton.disabled = false
-	rightSideAudioCallButton.disabled = false
-	rightSideVideoCallButton.disabled = false
-	// 
-}
 
 
 // ----------[ Emoji Picker ]----------
@@ -152,7 +145,6 @@ callPanelCameraButton.addEventListener('click', (evt) => {
 })
 callPanelCallButton.addEventListener('click', () => {
 	ui.closeCallHandler()
-	resetCallHandler()
 })
 callPanelScreenShareButton.addEventListener('click', (evt) => {
 	if(evt.target.classList.contains('called')) {

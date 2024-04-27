@@ -62,68 +62,55 @@ export const registerSocketEvents = (socket) => {
 	})
 
 	socket.on('call-status', ({ callStatus }) => {
-		console.log('call-status: ', { callStatus })
+		// console.log('call-status: ', { callStatus })
 		currentCallStatus = callStatus 						
-		// update local variable, so that when send pre-offer can checked
 	})
 
 	socket.on('pre-offer', ({ callerUserId, calleeUserId, callType }) => {
-		console.log('Step-2: callee-side: handle call request of callee')
+		// console.log('Step-2: callee-side: handle call request of callee')
 
-		// const OFFER_TYPE = constants.offerType
-		// const CALL_STATUS = constants.callStatus
+		const isCalling = currentCallStatus === CALL_STATUS.CALLING 
+		const isEngaged = currentCallStatus === CALL_STATUS.CALL_ENGAGED
+
+		if(isCalling || isEngaged) {
+			sendCallBusySignal({ callerUserId, calleeUserId, callType })
+			return 
+		}
+
 		const { logedInUserId } = store.getState()
 
 		if(calleeUserId === logedInUserId) {
 			ui.handlePreOffer({ callerUserId, calleeUserId, callType })
-			// console.log('sendPreOffer: ', { callerUserId, calleeUserId, callType })
-
 		} 
-		
-		// if(callStatus === CALL_STATUS.CALL_BUSY) {
-		// 	store.setCallStatus( callStatus )
-		// 	// sendPreOfferAnswer({ 
-		// 	// 	callerUserId, 
-		// 	// 	calleeUserId, 
-		// 	// 	offerType: OFFER_TYPE.CALL_UNAVAILABLE, 
-		// 	// 	callStatus: CALL_STATUS.CALL_AVAILABLE,
-		// 	// })
-		// }
-
-		// // console.log({ callerUserId, calleeUserId, callType, callStatus })
 	})
 
 	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType }) => {
-		console.log('Step-4: caller-side: finally handle call answer ')
-		console.log({ callerUserId, calleeUserId, offerType })
+		// console.log('Step-4: caller-side: finally handle call answer ')
 
 		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
-			ui.callerSideAcceptCallHandler({ callerUserId, calleeUserId })
-
-			console.log('call accepted', { offerType })
+			ui.callerSideAcceptCallHandler()
 		}
 		if(offerType === OFFER_TYPE.CALL_REJECTED) {
-			ui.rejectCallHandler({ callerUserId, calleeUserId })
-			ui.hideVideoContainer()
-
-			console.log('call rejected', { offerType })
+			ui.callerSideRejectCallHandler()
 		}
-		if(offerType === OFFER_TYPE.CALL_CLOSED) {
-			console.log('call closed')
-			console.log({ offerType })
-			ui.hideVideoContainer()
 
+		if(offerType === OFFER_TYPE.CALL_CLOSED) {
+			ui.hideVideoContainer()
 		}
 		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
-			console.log('callee not found')
 			ui.calleeNotFoundHandler()
 		}
 		if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
-			console.log('call CALL_UNAVAILABLE')
 			ui.showError('call CALL_UNAVAILABLE')
 			// console.log({ offerType, callStatus })
 		}
 
+	})
+
+	socket.on('call-busy', ({ callerUserId, calleeUserId, callStatus }) => {
+		// console.log('Step-6: caller-side: handle call busy signal')
+		ui.callerSideBusyCallHandler()
+		currentCallStatus = CALL_STATUS.CALL_AVAILABLE
 	})
 
 
@@ -138,21 +125,28 @@ export const sendMessage = ({ type, activeUserId, message }) => {
 
 // ui.js: audioCallHandler
 export const sendPreOffer = ({ callerUserId, calleeUserId, callType }) => { 	
-	console.log('Step-1: caller-side: send-request to callee')
+	// console.log('Step-1: caller-side: send-request to callee')
 	socketIo.emit('pre-offer', { callerUserId, calleeUserId, callType })
 }
 // ui.js: handlePreOffer
 export const sendPreOfferAnswer = ({ callerUserId, calleeUserId, offerType }) => { 	
-	console.log('Step-3: callee-side: send call answer as respost to caller back')
-	// socketIo.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+	// console.log('Step-3: callee-side: send call answer as respost to caller back')
 	socketIo.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType }, (arg) => {
 		ui.calleeSideAcceptCallHandler({ callerUserId })
-
 	})
 }
 
 // ui.js: closeCallHandler
 export const sendCloseCallSignal = ({ callerUserId, calleeUserId, offerType }) => {
 	socketIo.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType }) 
+}
+
+// wss.js: on('pre-offer', {...})
+export const sendCallBusySignal = ({ callerUserId, calleeUserId, callType }) => { 	
+	// console.log('Step-5: callee-side: send call busy signal')
+	socketIo.emit('call-busy', { callerUserId, calleeUserId, callType }, () => {
+
+		console.log('Step-5.1: callee-side: on response')
+	})
 }
 

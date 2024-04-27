@@ -114,10 +114,11 @@ module.exports = (io) => (socket) => {
 		// 	// callStatus:  isUserGettingCalled ? CALL_STATUS.CALL_BUSY : CALL_STATUS.CALLING,
 		// })
 
-		// // Step-4.2: tell others that, caller and callee is busy
-		// io.except(calleeUserId).except(callerUserId).emit('call-status', { 
-		// 	callStatus: CALL_STATUS.CALL_BUSY,
-		// })
+		// Step-4.2: 
+		io
+			.to(calleeUserId)
+			.to(callerUserId)
+			.emit('call-status', { callStatus: CALL_STATUS.CALLING, })
 
 
 	})
@@ -148,29 +149,14 @@ module.exports = (io) => (socket) => {
 			socket
 				.to(callerUserId)
 				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
-
 			if(cb) cb('invoke from server-side')
-			// console.log({ callerUserId, calleeUserId, offerType })
 
 
-			// io
-			// 	.to(calleeUserId)
-			// 	.to(callerUserId)
-			// 	.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
-			// io
-			// 	.to(calleeUserId)
-			// 	.to(callerUserId)
-			// 	.emit('call-status', { callStatus: CALL_STATUS.CALL_ENGAGED })
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('call-status', { callStatus: CALL_STATUS.CALL_ENGAGED })
 
-
-			// io
-			// 	.except(callerUserId)
-			// 	.except(calleeUserId)
-			// 	.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
-			// io
-			// 	.except(calleeUserId)
-			// 	.except(callerUserId)
-			// 	.emit('call-status', { callStatus: CALL_STATUS.CALL_BUSY })
 		}
 
 		if( offerType === OFFER_TYPE.CALL_REJECTED ) {
@@ -179,11 +165,10 @@ module.exports = (io) => (socket) => {
 				.to(callerUserId)
 				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
 
-			// io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
-
-			// busyPeers = busyPeers
-			// 	.filter( userId => userId !== callerUserId)
-			// 	.filter( userId => userId !== calleeUserId)
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
 
 		}
 
@@ -193,19 +178,42 @@ module.exports = (io) => (socket) => {
 				.to(callerUserId)
 				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
 
-			// io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
-
-			// busyPeers = busyPeers
-			// 	.filter( userId => userId !== callerUserId)
-			// 	.filter( userId => userId !== calleeUserId)
-
-			// console.log('CALL_CLOSED', busyPeers)
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
 		}
 
 
 	})
 
 
+	socket.on('call-busy', ({ callerUserId, calleeUserId, callType }, cb) => {
+		if( !isUserExists(calleeUserId) ) {
+			socket.emit('pre-offer-answer', {  							// tell only caller him-self
+				callerUserId,
+				calleeUserId,
+				callType,
+				offerType: OFFER_TYPE.CALLEE_NOT_FOUND, 
+			})
+			return
+		}
+
+		io
+			.to(callerUserId)
+			.emit('call-busy', { 
+				callerUserId, 
+				calleeUserId, 
+				callStatus: CALL_STATUS.CALL_BUSY
+			})
+
+			cb()
+	})
+
+	socket.on('disconnecting', () => {
+
+		// io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
+	})
 
 
 	socket.on('disconnect', () => {
@@ -214,36 +222,10 @@ module.exports = (io) => (socket) => {
 		// console.log(connectedPeers)
 
 		// Step-2: Filter out inactive peers from room
-		io.emit('user-joinded', { 
-			rooms: connectedPeers
-			// rooms: Array.from(socket.rooms)
-		})
+		io.emit('user-joinded', { rooms: connectedPeers })
 
 
-		// // Step-3: send call close signal only to callee on disconnect
-		// const peer = getPeer(socket.id)
-		// console.log(peer)
-
-		// io
-		// 	// .to(socket.id) 			// only send to callee
-		// 	.emit('pre-offer-answer', { offerType: OFFER_TYPE.CALL_CLOSED })
-		// // io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
-
-
-		// // reset call-status on user close windows senerio
-		// io.emit('call-status', { 
-		// 	callStatus: CALL_STATUS.CALL_AVAILABLE,
-		// })
-
-
-		// const peer = getPeer(socket.id)
-		// // busyPeers = busyPeers.filter( userId => userId !== peer.userId )
-		// busyPeers = busyPeers.filter( userId => {
-		// 	console.log( connectedPeers.includes({ socketId: socket.id, userId }) )
-		// 	// return connectedPeers.includes({ socketId: socket.id, userId }) 
-		// })
-
-		// console.log('disconnect-busyPears: ', busyPeers)
+		// io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
 	})
 }
 

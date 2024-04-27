@@ -86,6 +86,9 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 
 // wss.js
 export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) => {
+	/* if callStatus busy or calling =>
+			1. send pre-offer-answer: { offerType: CALL_UNAVAILABLE }
+	*/ 
 
 	const { currentCallStatus } = store.getState()
 	if(currentCallStatus === CALL_STATUS.CALL_ENGAGED) {
@@ -148,7 +151,7 @@ export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
 }
 
 // wss.js: on('pre-offer-answer', ...)
-export const callerSideAcceptCallHandler = ({ callerUserId, calleeUserId }) => {
+export const callerSideAcceptCallHandler = () => {
 	console.log('caller-side: accept call handler')
 	// 1. hide call dialog from both side
 	// 2. tell callStatus busy to others
@@ -163,14 +166,31 @@ export const callerSideAcceptCallHandler = ({ callerUserId, calleeUserId }) => {
 }
 
 // wss.js: on('pre-offer-answer', ...)
-export const rejectCallHandler = ({ callerUserId, calleeUserId }) => {
+export const callerSideRejectCallHandler = () => {
 	// 1. hide call dialog from both side
 	// 2. tell callStatus available to everyone
 	// 3. make both side's call button enabled
-
-	console.log('rejected')
+	console.log('caller-side: rejected')
 	hideCallingDialog()
+	hideVideoContainer()
 }
+
+const calleeSideRejectCallHandler = () => {
+	console.log('callee-side: rejected')
+
+	const { activeUserId, logedInUserId } = store.getState()
+	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
+
+	wss.sendPreOfferAnswer({ 
+		callerUserId: logedInUserId,
+		calleeUserId: activeUserId, 
+		offerType: OFFER_TYPE.CALL_REJECTED, 
+	})
+	hideCallingDialog() 	// hide others if exists
+	showVideoContainer()
+}
+
+
 
 // home.js: callPanelCallButton()
 export const closeCallHandler = () => {
@@ -189,6 +209,8 @@ export const closeCallHandler = () => {
 	// callPanelCameraButton.classList.remove('called') 					// reset camera style
 	// callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
 	// stopRecordingHandler() 	// reset recording
+
+
 }
 const resetCallHandler = () => {
 	audioCallButton.disabled = false
@@ -559,11 +581,11 @@ export const filterMessageByAttachmentType = async (type='text') => {
 
 
 // ----------[ call ]----------
-// const callerRejectCallHandler = () => {
-// 	// console.log('reject call handler')
-// 	// evt.target.remove()
-// }
 
+export const callerSideBusyCallHandler = () => {
+	hideCallingDialog()
+	elements.calleeBusyCallDialog()
+}
 
 // force user to stop audio call if already in video call 
 export const audioCallHandler = async () => {
@@ -576,8 +598,15 @@ export const audioCallHandler = async () => {
 	const { activeUserId, logedInUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-	if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
 
+	const isCalling = wss.currentCallStatus === CALL_STATUS.CALLING 
+	const isEngaged = wss.currentCallStatus === CALL_STATUS.CALL_ENGAGED
+	const isAvailable = wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE 
+
+	if( isCalling || isEngaged) return
+
+
+	if( isAvailable ) {
 		wss.sendPreOffer({ 
 			callerUserId: logedInUserId,
 			calleeUserId: activeUserId, 
@@ -585,29 +614,8 @@ export const audioCallHandler = async () => {
 		})
 
 		const isSuccess = await elements.outGoingCallDialog()
-		if(!isSuccess) {
-			hideCallingDialog() 	// hide others if exists
-			wss.sendPreOfferAnswer({ 
-				callerUserId: logedInUserId,
-				calleeUserId: activeUserId, 
-				offerType: OFFER_TYPE.CALL_REJECTED, 
-			})
-			showVideoContainer()
-		}
+		if(!isSuccess) calleeSideRejectCallHandler()
 	}
-
-
-	if( wss.currentCallStatus === CALL_STATUS.CALL_BUSY ) {
-		console.log('callee busy')
-
-		const { rooms, activeUserId } = store.getState()
-
-		const isUserActive = rooms.find( room => room.userId === activeUserId )
-
-		if(isUserActive) calleeBusyHandler()
-		else calleeNotFoundHandler()
-	}
-
 
 	// audioCallButton.disabled = true
 	// rightSideAudioCallButton.disabled = true
@@ -650,10 +658,7 @@ export const videoCallHandler = async () => {
 
 
 	if( wss.currentCallStatus === CALL_STATUS.CALL_BUSY ) {
-		console.log('callee busy')
-
 		const { rooms, activeUserId } = store.getState()
-
 		const isUserActive = rooms.find( room => room.userId === activeUserId )
 
 		if(isUserActive) calleeBusyHandler()
@@ -672,25 +677,6 @@ export const videoCallHandler = async () => {
 
 
 
-// const getLogedInUser = async () => {
-// 	try {
-// 		const res = await fetch('/api/users', {
-// 			method: 'GET',
-// 			headers: {
-// 				'content-type': 'application/json'
-// 			}
-// 		})
-
-// 		if(!res.ok) throw await res.json()
-
-// 		const { status, data } = await res.json()
-// 		console.log(data)
-
-// 	} catch (err) {
-// 		console.log(err)		
-// 	}
-// }
-// getLogedInUser()
 
 leftPanelAvatar.style.cursor = 'pointer'
 leftPanelAvatar.addEventListener('click', async (evt) => {

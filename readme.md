@@ -55,6 +55,17 @@
 		- Handle `Dran & Drop` file upload: handle via `WebRTC`: Peer-to-Peer file sharing
 
 
+- Calling
+	- 
+	- Show incomming-call dialog
+	- Show outgoing-call dialog
+	- Show user not-found call dialog
+	- Show callee-busy call dialog
+	- accept call button
+	- reject call button
+
+
+
 #### Routes
 ```
 GET 	/ 												: 

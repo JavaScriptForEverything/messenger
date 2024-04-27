@@ -1,38 +1,7 @@
-
-Bug fixed:
-	. search-people reset input value on searchPeople blur, so that after blur new value for search works
-	. show/hide friendList and FriendsNotfound container
-	. change selected friendList user.id => user._id 	: else it shows undefined
-
-
-
-
-. instead of re-send response request via seperate event, use 3rd callback function
-
-
-problem:
-	. friend list is empty whows even though friends available
-		- instead of empty friend list, use class to toggle between 2 children: empty and friend-list-container
-
-
-problem-2:
-	- can't filter out callerUserId, and calleeUserId on disconnect
-
-problem-3:
-	- whose users exists in busyPeers in backend: to call them send busy, else CALL_AVAILABLE 
-
-
 Problem:
-	. When calling then every users not calling caller or callee can't call each other
-			- Reason: send busy to every body else.
-			- Solution: instead of send every body busy, send which users are busy by object, and filter those user when try to call
-					const busyUsers = [
-						{
-							userId,
-							socketId,
-							callStatus: 'BUSY'
-						}
-					]
+	. can't close call if call accepted and without closing navigating to /profile page
+
+
 		
 
 - handle image optimization
@@ -47,10 +16,6 @@ handle audio/video call
 	 		. add progress bar in bottom,
 	 		. show file-upload progress on file uploading type
 
-	. /profile page
-			. image upload: cropped
-					. avatar
-					. coverPhoto
 
 
 Loading:
@@ -63,43 +28,16 @@ Scripts:
 
 task:
 	. Try to apply apiFeatures on every route.
-
 	. disable every button on click for api request and enable back of response: success or failed
-
-	. on click user list, add ?userId=user.id, and then select that user on page refresh in UI
-		instead of friends[0] 
-	. handle text + image and File only via WebRTC
+	. File sharing only via WebRTC
 	
 
 - Only return required fileds from database by .select({...})
 - handle population failed senerio on messages
 
-
-musicData = [
-	{
-		name: 'song-name',
-		url: 'songurl.mp3',
-		artist: 'artist name',
-		cover: 'song cover photo: shows as rotating disk'
-	}
-]
-
-
-
-
----
-We can add content in 2 ways:
-	1. From Server-Side at first + Client-Side newly added (without page reload)
-	2. Only From Client-Side
-
-	- If SEO required then Method-1 is mandatory
-	- But here our message and friend list no need any SEO related task so client-side is easier way
----
-
 . add logout popup in top-left user's avatar icon click handler
 
 
-. add audio duration and date dynamically
 . add tick mark to your audio message
 . add active indicator in left panel list item
 . hide the scroll bar or style scroll bar too, but don't disable scrolling completely, mouse scroll must be available

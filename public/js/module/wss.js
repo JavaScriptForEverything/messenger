@@ -68,7 +68,7 @@ export const registerSocketEvents = (socket) => {
 	})
 
 	socket.on('pre-offer', ({ callerUserId, calleeUserId, callType }) => {
-		console.log('Step-2: reply send to caller')
+		console.log('Step-2: callee-side: handle call request of callee')
 
 		// const OFFER_TYPE = constants.offerType
 		// const CALL_STATUS = constants.callStatus
@@ -94,10 +94,11 @@ export const registerSocketEvents = (socket) => {
 	})
 
 	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType }) => {
-		console.log('Step-4: reply comes back to caller')
+		console.log('Step-4: caller-side: finally handle call answer ')
+		console.log({ callerUserId, calleeUserId, offerType })
 
 		if(offerType === OFFER_TYPE.CALL_ACCEPTED) {
-			ui.acceptCallHandler({ callerUserId, calleeUserId })
+			ui.callerSideAcceptCallHandler({ callerUserId, calleeUserId })
 
 			console.log('call accepted', { offerType })
 		}
@@ -137,13 +138,17 @@ export const sendMessage = ({ type, activeUserId, message }) => {
 
 // ui.js: audioCallHandler
 export const sendPreOffer = ({ callerUserId, calleeUserId, callType }) => { 	
-	console.log('Step-1: from callee')
+	console.log('Step-1: caller-side: send-request to callee')
 	socketIo.emit('pre-offer', { callerUserId, calleeUserId, callType })
 }
 // ui.js: handlePreOffer
-export const sendPreOfferAnswer = ({ callStatus, ...payload }) => { 		// { callerUserId, calleeUserId, offerType, callStatus }
-	console.log('Step-3: reply from caller')
-	socketIo.emit('pre-offer-answer', { callStatus, ...payload })
+export const sendPreOfferAnswer = ({ callerUserId, calleeUserId, offerType }) => { 	
+	console.log('Step-3: callee-side: send call answer as respost to caller back')
+	// socketIo.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+	socketIo.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType }, (arg) => {
+		ui.calleeSideAcceptCallHandler({ callerUserId })
+
+	})
 }
 
 // ui.js: closeCallHandler

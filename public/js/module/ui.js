@@ -85,7 +85,7 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 }
 
 // wss.js
-export const handlePreOffer = async ({ callerUserId, calleeUserId, callType, callStatus }) => {
+export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) => {
 
 	const { currentCallStatus } = store.getState()
 	if(currentCallStatus === CALL_STATUS.CALL_ENGAGED) {
@@ -94,32 +94,24 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType, cal
 	}
 
 	const type = callType.toLowerCase().startsWith('audio') ? 'audio' : 'video'
-	console.log({ callType })
-	console.log({ type })
+
 
 	try {
 		const isSucceed = await elements.incommingCallDialog({ type })
 
 		if(isSucceed) {
 			wss.sendPreOfferAnswer({ 
-				callerUserId: calleeUserId,
-				calleeUserId: callerUserId,
+				callerUserId,
+				calleeUserId,
 				offerType: OFFER_TYPE.CALL_ACCEPTED, 
-				// callStatus: CALL_STATUS.CALL_ENGAGED,
-				callStatus,
-
 			})
-			// console.log(callType, activeUserId)
-			// now callee is busy
-			hideCallingDialog()
+			// if call accepted only then update callee-side: see inside wss.sendPreOfferAnswer function
 
 		} else {
 			wss.sendPreOfferAnswer({ 
 				callerUserId: calleeUserId,
 				calleeUserId: callerUserId,
 				offerType: OFFER_TYPE.CALL_REJECTED, 
-				// callStatus: CALL_STATUS.CALL_AVAILABLE,
-				callStatus,
 			})
 			hideCallingDialog()
 			console.log('rejected')
@@ -130,8 +122,6 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType, cal
 			callerUserId: calleeUserId,
 			calleeUserId: callerUserId,
 			offerType: OFFER_TYPE.CALL_UNAVAILABLE, 
-			// callStatus: CALL_STATUS.CALL_AVAILABLE,
-			callStatus,
 		})
 		console.log('handle error: ', error)
 	}
@@ -142,29 +132,34 @@ export const hideCallingDialog = () => {
 	if(callerCallingDialog) callerCallingDialog.remove()
 }
 
+export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
+	console.log('callee-side: accept call handler')
+	hideCallingDialog()
+	showVideoContainer()
+
+	/* Step-1: select friend-list based on callerUserId else callee Side close call 
+	** will failed because `activeUserId` will not be same as `calleeUserId`
+	** which cause the problem.
+
+	** Step-2: if already selected friendlist: then no need extra http request
+	*/ 
+	const { activeUserId } = store.getState()
+	if(activeUserId !== callerUserId ) showSelectedUser(callerUserId) // => selectedUserId
+}
+
 // wss.js: on('pre-offer-answer', ...)
-export const acceptCallHandler = ({ callerUserId, calleeUserId }) => {
+export const callerSideAcceptCallHandler = ({ callerUserId, calleeUserId }) => {
+	console.log('caller-side: accept call handler')
 	// 1. hide call dialog from both side
 	// 2. tell callStatus busy to others
 	// 3. make both side's call button disabled
 	// 2. send webRTC connection request
 
-	console.log(' accepted')
+	console.log('accepteCallHandler')
 	hideCallingDialog() 		
 	showVideoContainer()
 
-	/* Step-?: select friend-list based on calleeUserId else callee Side close call 
-	** will failed because `activeUserId` will not be same as `calleeUserId`
-	** which cause the problem.
-	*/ 
-	const { logedInUserId } = store.getState()
-	if( callerUserId === logedInUserId ) showSelectedUser(calleeUserId) // => selectedUserId
 	
-	// wss.sendPreOfferAnswer({ 
-	// 	offerType, 
-	// 	activeUserId, 
-	// 	callStatus 
-	// }) 
 }
 
 // wss.js: on('pre-offer-answer', ...)
@@ -420,7 +415,7 @@ const showAllMessagesInUI = async (receiver) => {
 }
 
 
-const showVideoContainer = () => {
+export const showVideoContainer = () => {
 	messagesContainer.classList.add('call') 	 				// show message panel instead of userProfile details
 	rightPanelMainBlock.classList.add('active') 			// show videoContainer instead of message container
 

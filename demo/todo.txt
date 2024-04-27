@@ -1,3 +1,7 @@
+
+. instead of re-send response request via seperate event, use 3rd callback function
+
+
 problem:
 	. friend list is empty whows even though friends available
 		- instead of empty friend list, use class to toggle between 2 children: empty and friend-list-container

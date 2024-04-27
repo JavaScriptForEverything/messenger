@@ -7,9 +7,14 @@
 #### Project Design 	[/public/images/project_design](https://github.com/JavaScriptForEverything/messenger/tree/master/public/images/project_design)
 
 
+| Web View            	| Mobile View            |
+| ---------------------- | ---------------------- |
+| ![web-view](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/page/web/home-page.png) | ![mobile-view](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/page/mobile/home-page-with-left-panel.png) | 
+
+
+
 | Caller Side            | Callee Side            |
 | ---------------------- | ---------------------- |
-
 
 
 

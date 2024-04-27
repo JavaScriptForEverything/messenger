@@ -12,12 +12,13 @@ import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
 // console.log(middleTopAvatar, middleTopUsername)
 const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
 const leftPannelSlideButtonInputCheckbox = $('#left-side-checkbox')
-const friendsNotFound = $('[name=friends-not-found]') 	
+// const friendsNotFound = $('[name=friends-not-found]') 	
+const leftMainContainer = $('[name=left-main]')
 const friendsListContainer = $('[name=friends-list-container]') 	
 // const messageContainer = $('[name=message-container]') 	
 const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
 
-const attachmentButtonInput = $('#attachment-icon-button')
+// const attachmentButtonInput = $('#attachment-icon-button')
 const sendMessageForm = $('form[name=middle-bottom]')
 const writeMessageInput = $('[name=write-message-input]') 	
 const cameraIconButtonInput = $('#camera-icon-button')
@@ -269,6 +270,7 @@ const hideSearchModal = (modalSelector) => (evt) => {
 
 	if(leftSide || rightSide || topSide || bottomSide) {
 		modalSelector.classList.add('hidden')
+		searchPeopleInput.value = '' 		// reset-searh value on blur
 	}
 }
 
@@ -356,9 +358,11 @@ const selectedUserHandler = (user) => {
 	const avatarBadge = selectedUserListContainer.querySelector('[name=avatar-badge]')
 	const name = selectedUserListContainer.querySelector('[name=username]')
 	
-	store.setActiveUserId(user.id)
+	if(!user._id) return showError(` user._id = ${user._id} error`)
 	
-	selectedUserListContainer.id = user.id
+	store.setActiveUserId(user._id)
+	
+	selectedUserListContainer.id = user._id
 	avatarImg.src = user.avatar
 	avatarBadge.classList.toggle('active', user.isOnline) 	// if user active then make true
 	name.textContent = user.fullName
@@ -479,9 +483,10 @@ export const showError = (message, reason) => {
 	})
 }
 
-export const doShowNotFoundFriends = (isShown=true) => {
-	if(!isShown) friendsNotFound.classList.toggle('hidden')
-}
+export const showFriendsNotFoundUI = () => leftMainContainer.classList.remove('active')
+export const showFriendsListContainerUI = () => leftMainContainer.classList.add('active')
+	
+
 
 // wss.js => const registerSocketEvents = () => {...}
 export const showFriendLists = (friends=[]) => {

@@ -42,16 +42,13 @@ export const registerSocketEvents = (socket) => {
 
 		const { data: friends, message } = await getFilteredUsers()
 		if(message) {
-			ui.doShowNotFoundFriends()	
 			ui.showError(message)
+			ui.showFriendsNotFoundUI()
 			return
 		}
 
-		// update UI
-		ui.doShowNotFoundFriends(false)	
+		ui.showFriendsListContainerUI()
 		ui.showFriendLists(friends)
-		// console.log(friends)
-
 	})
 
 	socket.on('typing', ({ activeUserId }) => {

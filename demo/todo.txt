@@ -1,4 +1,12 @@
 
+Bug fixed:
+	. search-people reset input value on searchPeople blur, so that after blur new value for search works
+	. show/hide friendList and FriendsNotfound container
+	. change selected friendList user.id => user._id 	: else it shows undefined
+
+
+
+
 . instead of re-send response request via seperate event, use 3rd callback function
 
 

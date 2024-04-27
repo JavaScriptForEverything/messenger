@@ -68,17 +68,20 @@ block script
 					
 					//- To show searched useres dynamically inside this div
 					div( name='search-friends-modal'
-						class='hidden w-full max-h-96 bg-slate-100 border border-slate-300 shadow'
+						class='hidden w-full max-h-80 bg-slate-100 border border-slate-300 shadow'
 						class='absolute top-0 left-0 z-10 rounded-md'
 						class='overflow-y-scroll pt-12 '
 					)
 
 
-				div(name='left-main' id='chats-container' class='h-full divide-y border border-slate-300 overflow-x-auto  bg-slate-50 rounded')
-					div(name='friends-not-found' class='h-full grid place-items-center') 
+				//- toggle .active class to show/hide empty or friend list
+				div(name='left-main' id='chats-container' class='h-full divide-y border border-slate-300 overflow-x-auto  bg-slate-50 rounded'
+					class='group active'
+					)
+					div(name='friends-not-found' class='h-full grid place-items-center group-[&.active]:hidden') 
 						p(class='text-slate-500 lowercase') friend list is empty
 
-					div(name='friends-list-container')
+					div(name='friends-list-container' class='hidden group-[&.active]:block')
 
 					//- Container will be populated by client-side
 						//- if list-container has

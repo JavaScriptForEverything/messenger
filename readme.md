@@ -11,6 +11,7 @@
 - file upload
 	- upload file as base64 dataUrl 
 	- resize image via `jimp` package
+	- crop image via `cropperjs` package
 	- send image as `stream` instead of whole file at once.
 
 - API Features
@@ -43,7 +44,7 @@
 	- imageUploadDialog is fully flexible file uploader, which perform above task dynamically, if add file instead of image, then preview and image-croping will be disabled. 
 
 
-- Send message
+- Instant message via `Socket.io`
 	- 
 	- send text message + emoji text 
 	- send image as message + optimize image in backend
@@ -55,8 +56,9 @@
 		- Handle `Dran & Drop` file upload: handle via `WebRTC`: Peer-to-Peer file sharing
 
 
-- Calling
+- Calling Features via `WebRTC`
 	- 
+	- Audio Call | Video Call
 	- Show incomming-call dialog
 	- Show outgoing-call dialog
 	- Show user not-found call dialog

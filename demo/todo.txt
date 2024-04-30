@@ -1,5 +1,11 @@
+
+- handle call via webRTC
+- handle video-recording
+- handle share-files
+
 Problem:
 	. can't close call if call accepted and without closing navigating to /profile page
+
 
 
 		

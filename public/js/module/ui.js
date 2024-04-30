@@ -65,7 +65,16 @@ export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
 		titleP.classList.add('hidden') 		// hide typing... indicator from top
 	}, [1000])
 }
+
+
+// wss.js: socket.on('message', ({ ... }) => {})
 export const receiveMessage = ({ type, activeUserId, message }) => {
+
+	// Add incomming-message-sound:
+	const audio = document.createElement('audio')
+	audio.src = '/music/message/tab-tone.mp3'
+	audio.play()
+
 	// console.log(message)
 
 	// show text or image message

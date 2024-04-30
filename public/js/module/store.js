@@ -11,7 +11,9 @@ const store = {
 	logedInUser: null,
 	logedInUserId: null,
 	activeUserId: null,
-	rooms: [{}]
+	rooms: [{}],
+	localStream: null,
+	remoteStream: null
 }
 
 export const getState = () => store
@@ -22,5 +24,7 @@ export const setLogedInUser = (logedInUser) => {
 export const setActiveUserId = (activeUserId) => store.activeUserId = activeUserId
 export const setRooms = (rooms) => store.rooms = rooms
 
+export const setLocalStream = (stream) => store.localStream = stream
+export const setRemoteStream = (stream) => store.remoteStream = stream
 
 

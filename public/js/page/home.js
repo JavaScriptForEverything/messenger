@@ -7,6 +7,7 @@ import * as wss from '../module/wss.js' 		// ui imported in wss so UI is availab
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
 import * as elements from '../module/elements.js'
+import * as webRTC from '../module/webRTC.js'
 
 /*----------[ Note ]----------
 	Only handle initial scripts in this file, and all the modification
@@ -20,7 +21,7 @@ import * as elements from '../module/elements.js'
 
 const socket = io('/')
 wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
-// webRTCHandler.getLocalPreview()
+// webRTC.getLocalPreview()
 
 
 // let timer = null

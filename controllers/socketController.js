@@ -126,6 +126,19 @@ module.exports = (io) => (socket) => {
 
 	socket.on('pre-offer-answer', ({ callerUserId, calleeUserId, offerType }, cb) => {
 
+		// don't check callee Exists, so that can be used on tab refresh to close call
+		if( offerType === OFFER_TYPE.CALL_CLOSED ) {
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
+
+			io
+				.to(calleeUserId)
+				.to(callerUserId)
+				.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
+		}
+
 		/* Step-1: tell caller him self: callee not found
 		** if in front-side not select active friend by calleeUserId, then 
 		** close call from callee side will failed, because calleeUserId will missing when send
@@ -172,17 +185,6 @@ module.exports = (io) => (socket) => {
 
 		}
 
-		if( offerType === OFFER_TYPE.CALL_CLOSED ) {
-			io
-				.to(calleeUserId)
-				.to(callerUserId)
-				.emit('pre-offer-answer', { callerUserId, calleeUserId, offerType })
-
-			io
-				.to(calleeUserId)
-				.to(callerUserId)
-				.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
-		}
 
 
 	})
@@ -210,13 +212,30 @@ module.exports = (io) => (socket) => {
 			cb()
 	})
 
-	socket.on('disconnecting', () => {
+	// payload = { calleeUserId, signalType, offer/answer/candidate }
+	socket.on('webrtc', (payload) => {
+		if( !isUserExists(payload.calleeUserId) ) {
+			console.log(payload)
+			socket.emit('webrtc-error', payload)
+			return
+		}
 
-		// io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
+		const { userId } = getPeer(socket.id)
+		io
+			.to(payload.calleeUserId)
+			.emit('webrtc', { ...payload, calleeUserId: userId })
 	})
 
 
+
 	socket.on('disconnect', () => {
+
+		// Step-0: call before remove active peer from connectedPeers
+		const peer = getPeer(socket.id)
+		io.emit('close-connection', { callerUserId: peer?.userId })
+		// socket.broadcast.emit('close-connection', { callerUserId: peer?.userId })
+
+
 		// Step-1: Reset connectedPeers
 		connectedPeers = connectedPeers.filter(({ socketId }) => socketId !== socket.id )
 		// console.log(connectedPeers)
@@ -225,7 +244,6 @@ module.exports = (io) => (socket) => {
 		io.emit('user-joinded', { rooms: connectedPeers })
 
 
-		// io.emit('call-status', { callStatus: CALL_STATUS.CALL_AVAILABLE })
 	})
 }
 

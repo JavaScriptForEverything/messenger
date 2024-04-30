@@ -4,7 +4,7 @@ export const CALL_TYPE = {
 	VIDEO_CALL 		: 'VIDEO-CALL',
 	MESSAGE_CALL 	: 'MESSAGE-CALL',
 }
-export const OFFER_TYPE = {
+export const OFFER_TYPE = { 								// PRE_OFFER_TYPE
 	CALL_ACCEPTED 	: 'CALL_ACCEPTED',
 	CALL_REJECTED 	: 'CALL_REJECTED',
 	CALL_CLOSED 		: 'CALL_CLOSED',
@@ -18,4 +18,11 @@ export const CALL_STATUS = { 											// make same callStatus as constants.js 
 	CALL_BUSY: 'CALL_BUSY',
 	CALL_AVAILABLE: 'CALL_AVAILABLE',
 	CALL_UNAVAILABLE: 'CALL_UNAVAILABLE',
+}
+
+
+export const WEB_RTC_SIGNAL = {
+	OFFER: 'OFFER',
+	ANSWER: 'ANSWER',
+	ICE_CANDIDATE: 'ICE_CANDIDATE'
 }

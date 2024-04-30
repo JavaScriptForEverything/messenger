@@ -1,7 +1,8 @@
 import * as ui from './ui.js'
 import * as store from './store.js'
-import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
-import { getFilteredUsers } from './http.js'
+import * as http from './http.js'
+import * as webRTC from './webRTC.js'
+import { CALL_STATUS, OFFER_TYPE, WEB_RTC_SIGNAL } from '../module/constants.js'
 
 /* Global Variables 	
 		. io
@@ -40,7 +41,7 @@ export const registerSocketEvents = (socket) => {
 
 		store.setRooms(rooms)
 
-		const { data: friends, message } = await getFilteredUsers()
+		const { data: friends, message } = await http.getFilteredUsers()
 		if(message) {
 			ui.showError(message)
 			ui.showFriendsNotFoundUI()
@@ -110,6 +111,55 @@ export const registerSocketEvents = (socket) => {
 		currentCallStatus = CALL_STATUS.CALL_AVAILABLE
 	})
 
+	socket.on('close-connection', ({ callerUserId }) => {
+		const { activeUserId } = store.getState()
+
+		if(callerUserId === activeUserId ) {
+			console.log({ callerUserId, activeUserId })
+			ui.closeCallHandler()
+			ui.hideCallingDialog()
+		}
+	})
+
+	socket.on('webrtc', (payload) => {
+		// payload = { calleeUserId, signalType, offer/answer/candidate }
+
+		// switch(payload.signalType) {
+		// 	case WEB_RTC_SIGNAL.OFFER: 
+		// 		console.log('handle offer')
+		// 		webRTC.handleWebRTCOfferAndSendAnswer(payload)
+		// 		break
+
+		// 	case WEB_RTC_SIGNAL.ANSWER: 
+		// 		console.log('handle answer')
+		// 		webRTC.handleWebRTCAnswer(payload)
+		// 		break
+
+		// 	case WEB_RTC_SIGNAL.ICE_CANDIDATE:
+		// 		console.log('handle icecandidate')
+		// 		webRTC.handleIceCandidate(payload)
+		// 		break
+		// }
+
+		if(payload.signalType === WEB_RTC_SIGNAL.OFFER) {
+			console.log('handle offer')
+
+			webRTC.handleWebRTCOfferAndSendAnswer({
+				...payload,
+				calleeUserId: store.getState().logedInUserId
+			})
+		}
+		if(payload.signalType === WEB_RTC_SIGNAL.ANSWER) {
+			console.log('handle answer')
+			webRTC.handleWebRTCAnswer(payload)
+		}
+		if(payload.signalType === WEB_RTC_SIGNAL.ICE_CANDIDATE) {
+			console.log('handle icecandidate')
+			webRTC.handleIceCandidate(payload)
+		}
+
+	})
+
 
 }
 
@@ -145,5 +195,16 @@ export const sendCallBusySignal = ({ callerUserId, calleeUserId, callType }) => 
 
 		console.log('Step-5.1: callee-side: on response')
 	})
+}
+
+
+export const sendOffer = ({ calleeUserId, signalType, offer }) => {
+	socketIo.emit('webrtc', { calleeUserId, signalType, offer })
+}
+export const sendAnswer = ({ calleeUserId, signalType, answer }) => {
+	socketIo.emit('webrtc', { calleeUserId, signalType, answer })
+}
+export const sendIceCandedate = ({ calleeUserId, signalType, candidate }) => {
+	socketIo.emit('webrtc', { calleeUserId, signalType, candidate })
 }
 

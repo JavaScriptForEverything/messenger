@@ -3,6 +3,7 @@ import { $, redirectTo, readAsDataURL, followFollowingHandler } from './utils.js
 import * as elements from '../module/elements.js'
 import * as http from './http.js'
 import * as wss from './wss.js'
+import * as webRTC from './webRTC.js'
 import * as store from './store.js'
 import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
 
@@ -158,6 +159,8 @@ export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
 	*/ 
 	const { activeUserId } = store.getState()
 	if(activeUserId !== callerUserId ) showSelectedUser(callerUserId) // => selectedUserId
+
+	// webRTC.createPeerConnection()
 }
 
 // wss.js: on('pre-offer-answer', ...)
@@ -172,7 +175,9 @@ export const callerSideAcceptCallHandler = () => {
 	hideCallingDialog() 		
 	showVideoContainer()
 
-	
+
+	// webRTC.createPeerConnection()
+	// webRTC.sendWebRTCOffer() // WebRTC
 }
 
 // wss.js: on('pre-offer-answer', ...)
@@ -975,3 +980,21 @@ searchMessageInput.addEventListener('input', async (evt) => {
 
 
 
+
+// ----------[ video ]----------
+const yourVideo = $('[name=your-video')
+const theirVideo = $('[name=their-video')
+
+export const updateLocalStream = (stream) => {
+	yourVideo.src = undefined 				// 1. must remove src (if has)
+	yourVideo.srcObject = stream 			// 2. add readable stream
+	yourVideo.autoplay = true 				// 3. make sure plays continusly
+	yourVideo.addEventListener('metadataloaded', () => yourVideo.play() ) // 4. when video ready only play then
+}
+
+export const updateRemoteStream = (stream) => {
+	theirVideo.src = undefined 				// 1. must remove src (if has)
+	theirVideo.srcObject = stream 		// 2. add readable stream
+	theirVideo.autoplay = true 				// 3. make sure plays continusly
+	theirVideo.addEventListener('metadataloaded', () => theirVideo.play() ) // 4. when video ready only play then
+}

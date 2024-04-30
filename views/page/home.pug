@@ -204,8 +204,11 @@ block script
 
 						div(name='video-container' class='hidden group-[&.call]:block mb-2 ')
 							div(name='their-video-container' class=' border border-slate-200 max-h-80 aspect-video mx-auto relative')
-								video(name='their-video' src='/music/video2.mp4' muted class='h-full')
-								video(name='your-video' src='/music/video.mp4' muted class='w-32 aspect-video absolute top-0 left-0')
+								video(name='their-video' src='/music/video2.mp4' muted class='h-full w-full object-cover')
+								video(name='your-video' src='/music/video.mp4' muted 
+									class='w-32 aspect-video absolute top-0 left-0'
+									class='object-cover'
+									)
 
 
 								div(name='recording-panel' class='hidden absolute right-3 top-3 bg-slate-700/60 text-slate-50 px-3 py-1.5 rounded-md gap-2 items-center')

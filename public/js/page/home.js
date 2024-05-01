@@ -130,23 +130,30 @@ rightSideVideoCallButton.addEventListener('click', (evt) => {
 
 
 callPanelMicrophoneButton.addEventListener('click', (evt) => {
+	// console.log('microphone')
+
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
+		webRTC.toggleMute(true)
 	} else {
 		evt.target.classList.add('called')
+		webRTC.toggleMute(false)
 	}
 })
 callPanelCameraButton.addEventListener('click', (evt) => {
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
+		webRTC.toggleCamera(true)
 	} else {
 		evt.target.classList.add('called')
+		webRTC.toggleCamera(false)
 	}
 })
 callPanelCallButton.addEventListener('click', () => {
 	ui.closeCallHandler()
 })
 callPanelScreenShareButton.addEventListener('click', (evt) => {
+	console.log('screenShare')
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
 	} else {
@@ -154,6 +161,8 @@ callPanelScreenShareButton.addEventListener('click', (evt) => {
 	}
 })
 callPanelRecordingButton.addEventListener('click', (evt) => {
+	console.log('recording')
+
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
 		ui.stopRecordingHandler()

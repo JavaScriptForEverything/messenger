@@ -268,3 +268,13 @@ export const closeHandler = async () => {
 	}
 	
 }
+
+
+export const toggleMute = (isEnabled = true) => {
+	const { localStream } = store.getState()
+	localStream.getAudioTracks().forEach( track => track.enabled = isEnabled )
+}
+export const toggleCamera = (isEnabled = true) => {
+	const { localStream } = store.getState()
+	localStream.getVideoTracks().forEach( track => track.enabled = isEnabled )
+}

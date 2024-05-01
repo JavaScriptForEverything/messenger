@@ -212,20 +212,32 @@ module.exports = (io) => (socket) => {
 			cb()
 	})
 
-	// payload = { calleeUserId, signalType, offer/answer/candidate }
-	socket.on('webrtc', (payload) => {
-		if( !isUserExists(payload.calleeUserId) ) {
-			console.log(payload)
-			socket.emit('webrtc-error', payload)
+	socket.on('webrtc-offer', ({ callerUserId, calleeUserId, offer }) => {
+		if( !isUserExists(calleeUserId) ) {
+			socket.emit('webrtc-error', { message: 'callee not found' })
 			return
 		}
 
-		const { userId } = getPeer(socket.id)
-		io
-			.to(payload.calleeUserId)
-			.emit('webrtc', { ...payload, calleeUserId: userId })
+		io.to(calleeUserId).emit('webrtc-offer', { callerUserId, offer })
 	})
 
+	socket.on('webrtc-answer', ({ callerUserId, calleeUserId, answer }) => {
+		if( !isUserExists(calleeUserId) ) {
+			socket.emit('webrtc-error', { message: 'callee not found' })
+			return
+		}
+
+		io.to(calleeUserId).emit('webrtc-answer', { callerUserId, answer })
+	})
+
+	socket.on('webrtc-candidate', ({ callerUserId, calleeUserId, candidate }) => {
+		if( !isUserExists(calleeUserId) ) {
+			socket.emit('webrtc-error', { message: 'callee not found' })
+			return
+		}
+
+		io.to(calleeUserId).emit('webrtc-candidate', { callerUserId, candidate })
+	})
 
 
 	socket.on('disconnect', () => {

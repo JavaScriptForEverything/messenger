@@ -118,48 +118,19 @@ export const registerSocketEvents = (socket) => {
 			console.log({ callerUserId, activeUserId })
 			ui.closeCallHandler()
 			ui.hideCallingDialog()
+			webRTC.closeHandler()
 		}
 	})
 
-	socket.on('webrtc', (payload) => {
-		// payload = { calleeUserId, signalType, offer/answer/candidate }
-
-		// switch(payload.signalType) {
-		// 	case WEB_RTC_SIGNAL.OFFER: 
-		// 		console.log('handle offer')
-		// 		webRTC.handleWebRTCOfferAndSendAnswer(payload)
-		// 		break
-
-		// 	case WEB_RTC_SIGNAL.ANSWER: 
-		// 		console.log('handle answer')
-		// 		webRTC.handleWebRTCAnswer(payload)
-		// 		break
-
-		// 	case WEB_RTC_SIGNAL.ICE_CANDIDATE:
-		// 		console.log('handle icecandidate')
-		// 		webRTC.handleIceCandidate(payload)
-		// 		break
-		// }
-
-		if(payload.signalType === WEB_RTC_SIGNAL.OFFER) {
-			console.log('handle offer')
-
-			webRTC.handleWebRTCOfferAndSendAnswer({
-				...payload,
-				calleeUserId: store.getState().logedInUserId
-			})
-		}
-		if(payload.signalType === WEB_RTC_SIGNAL.ANSWER) {
-			console.log('handle answer')
-			webRTC.handleWebRTCAnswer(payload)
-		}
-		if(payload.signalType === WEB_RTC_SIGNAL.ICE_CANDIDATE) {
-			console.log('handle icecandidate')
-			webRTC.handleIceCandidate(payload)
-		}
-
+	socket.on('webrtc-offer', ({ offer, callerUserId }) => {
+		webRTC.handleWebRTCOfferAndSendAnswer({ offer, callerUserId })
 	})
-
+	socket.on('webrtc-answer', ({ callerUserId, answer }) => {
+		webRTC.handleWebRTCAnswer({ callerUserId, answer })
+	})
+	socket.on('webrtc-candidate', ({ callerUserId, candidate }) => {
+		webRTC.handleIceCandidate({ candidate })
+	})
 
 }
 
@@ -198,13 +169,15 @@ export const sendCallBusySignal = ({ callerUserId, calleeUserId, callType }) => 
 }
 
 
-export const sendOffer = ({ calleeUserId, signalType, offer }) => {
-	socketIo.emit('webrtc', { calleeUserId, signalType, offer })
+export const sendOffer = ({ callerUserId, calleeUserId, offer }) => {
+	socketIo.emit('webrtc-offer', { callerUserId, calleeUserId, offer })
 }
-export const sendAnswer = ({ calleeUserId, signalType, answer }) => {
-	socketIo.emit('webrtc', { calleeUserId, signalType, answer })
+
+export const sendAnswer = ({ callerUserId, calleeUserId, answer }) => {
+	socketIo.emit('webrtc-answer', {  callerUserId, calleeUserId, answer })
 }
-export const sendIceCandedate = ({ calleeUserId, signalType, candidate }) => {
-	socketIo.emit('webrtc', { calleeUserId, signalType, candidate })
+export const sendIceCandedate = ({ callerUserId, calleeUserId, candidate }) => {
+	console.log({ callerUserId, calleeUserId, candidate })
+	socketIo.emit('webrtc-candidate', { callerUserId, calleeUserId, candidate })
 }
 

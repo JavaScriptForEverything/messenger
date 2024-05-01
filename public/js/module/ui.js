@@ -146,11 +146,15 @@ export const hideCallingDialog = () => {
 	if(callerCallingDialog) callerCallingDialog.remove()
 }
 
-export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
-	console.log('callee-side: accept call handler')
+// webRTC.js: connectionstatechange event handler
+export const previewStream = () => {
+	// only preview when peer connection established
 	hideCallingDialog()
 	showVideoContainer()
+}
 
+export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
+	console.log('callee-side: accept call handler')
 	/* Step-1: select friend-list based on callerUserId else callee Side close call 
 	** will failed because `activeUserId` will not be same as `calleeUserId`
 	** which cause the problem.
@@ -160,7 +164,10 @@ export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
 	const { activeUserId } = store.getState()
 	if(activeUserId !== callerUserId ) showSelectedUser(callerUserId) // => selectedUserId
 
-	// webRTC.createPeerConnection()
+	webRTC.createPeerConnection()
+	// hideCallingDialog()
+	// showVideoContainer()
+
 }
 
 // wss.js: on('pre-offer-answer', ...)
@@ -171,13 +178,14 @@ export const callerSideAcceptCallHandler = () => {
 	// 3. make both side's call button disabled
 	// 2. send webRTC connection request
 
-	console.log('accepteCallHandler')
-	hideCallingDialog() 		
-	showVideoContainer()
 
 
-	// webRTC.createPeerConnection()
-	// webRTC.sendWebRTCOffer() // WebRTC
+	webRTC.createPeerConnection()
+	webRTC.sendWebRTCOffer() // WebRTC
+
+	// hideCallingDialog() 		
+	// showVideoContainer()
+
 }
 
 // wss.js: on('pre-offer-answer', ...)
@@ -220,6 +228,8 @@ export const closeCallHandler = () => {
 
 	// 3. reset callPanel
 	resetCallHandler()
+	webRTC.peerConnection?.close() 		// close webRTC connection
+
 	// callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
 	// callPanelCameraButton.classList.remove('called') 					// reset camera style
 	// callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style

@@ -13,7 +13,7 @@ export const getLocalPreview = async ({ connectionType='video' } = {}) => {
 
 	} catch (err) {
 		ui.showError(err.message)
-		console.log(err)		
+		// console.log(err)		
 	}
 }
 
@@ -128,7 +128,7 @@ export const createPeerConnection = () => {
 
 	// WebRTC: step-5: send icecandidate from both side, because this function will be called in both side
 	peerConnection.addEventListener('icecandidate', (evt) => {
-		console.log('WebRTC: both-side: step-5: send to other peer, and handle too')
+		// console.log('WebRTC: both-side: step-5: send to other peer, and handle too')
 
 		const { logedInUserId, activeUserId } = store.getState()
 
@@ -143,11 +143,11 @@ export const createPeerConnection = () => {
 
 	// WebRTC: step-7: when icecandidate === Session exchanged between peers, trigger for every state change
 	peerConnection.addEventListener('connectionstatechange', (evt) => {
-		console.log('WebRTC: both-side: step-7: connection established')
+		// console.log('WebRTC: both-side: step-7: connection established')
 		if(peerConnection.connectionState === 'connected') {
 			// show video in ui
 
-			ui.previewStream()
+			ui.previewVideo()
 		}
 	})
 
@@ -162,7 +162,7 @@ export const createPeerConnection = () => {
 // WebRTC: step-1: create offer and send from caller-side to callee
 export const sendWebRTCOffer = async () => {
 	if(!peerConnection) return
-	console.log('WebRTC: caller-side: step-1: send-offer')
+	// console.log('WebRTC: caller-side: step-1: send-offer')
 
 	try {
 		const offer = await peerConnection.createOffer() 		 	// 1. create offer
@@ -179,14 +179,14 @@ export const sendWebRTCOffer = async () => {
 
 	} catch (err) {
 		ui.showError(`send offer failed: ${err.message}`)
-		console.log(err)
+		// console.log(err)
 	}
 }
 
 // WebRTC: step-2: get offer and send answer caller-side back
 export const handleWebRTCOfferAndSendAnswer = async ({ callerUserId, offer }) => {
 	if(!peerConnection) return
-	console.log('WebRTC: callee-side: step-2: send-answer')
+	// console.log('WebRTC: callee-side: step-2: send-answer')
 
 	try {
 		await peerConnection.setRemoteDescription(offer) 			// 1. get offer and set into remote description 
@@ -201,21 +201,21 @@ export const handleWebRTCOfferAndSendAnswer = async ({ callerUserId, offer }) =>
 
 	} catch (err) {
 		ui.showError(`send answer failed: ${err.message}`)
-		console.log(err)
+		// console.log(err)
 	}
 }
 
 // WebRTC: step-3: get answer back from callee-side
 export const handleWebRTCAnswer = async ({ answer }) => {
 	if(!peerConnection) return
-	console.log('WebRTC: caller-side: step-3: get-answer-back')
+	// console.log('WebRTC: caller-side: step-3: get-answer-back')
 	
 	try {
 		await peerConnection.setRemoteDescription(answer)
 		
 	} catch (err) {
 		ui.showError(`handle answer failed: ${err.message}`)
-		console.log(err)
+		// console.log(err)
 	}
 }
 
@@ -223,29 +223,32 @@ export const handleWebRTCAnswer = async ({ answer }) => {
 // WebRTC: step-6: get candidate back 
 export const handleIceCandidate = async ({ candidate }) => {
 	if(!peerConnection) return
-	console.log('WebRTC: caller-side: step-6: get-answer-back')
+	// console.log('WebRTC: caller-side: step-6: get-answer-back')
 
 	try {
 		await peerConnection.addIceCandidate(candidate)
 		
 	} catch (err) {
 		ui.showError(`handle icecandidate failed: ${err.message}`)
-		console.log(err)
+		// console.log(err)
 	}
 }
 
 
 export const closeHandler = async () => {
 	if(!peerConnection) return
-	console.log('WebRTC: close handler')
+	// console.log('WebRTC: close handler')
+
+	const { localStream } = store.getState()
 
 	try {
-		await peerConnection.close()
+		await peerConnection.close() 		// close webRTC connection
 		peerConnection = null
+		localStream.getTracks().forEach( track => track.stop()) 	// turn off WebCam
 		
 	} catch (err) {
 		ui.showError(`webRTC close failed: ${err.message}`)
-		console.log(err)
+		// console.log(err)
 	}
 	
 }

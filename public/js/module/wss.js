@@ -94,6 +94,10 @@ export const registerSocketEvents = (socket) => {
 
 		if(offerType === OFFER_TYPE.CALL_CLOSED) {
 			ui.hideVideoContainer()
+			// console.log('pre-offer-answer', 'close call handler')
+
+			webRTC.closeHandler() 	// close webcam + close tunnel
+
 		}
 		if(offerType === OFFER_TYPE.CALLEE_NOT_FOUND) {
 			ui.calleeNotFoundHandler()
@@ -115,7 +119,7 @@ export const registerSocketEvents = (socket) => {
 		const { activeUserId } = store.getState()
 
 		if(callerUserId === activeUserId ) {
-			console.log({ callerUserId, activeUserId })
+			// console.log({ callerUserId, activeUserId })
 			ui.closeCallHandler()
 			ui.hideCallingDialog()
 			webRTC.closeHandler()
@@ -164,7 +168,7 @@ export const sendCallBusySignal = ({ callerUserId, calleeUserId, callType }) => 
 	// console.log('Step-5: callee-side: send call busy signal')
 	socketIo.emit('call-busy', { callerUserId, calleeUserId, callType }, () => {
 
-		console.log('Step-5.1: callee-side: on response')
+		// console.log('Step-5.1: callee-side: on response')
 	})
 }
 
@@ -172,12 +176,10 @@ export const sendCallBusySignal = ({ callerUserId, calleeUserId, callType }) => 
 export const sendOffer = ({ callerUserId, calleeUserId, offer }) => {
 	socketIo.emit('webrtc-offer', { callerUserId, calleeUserId, offer })
 }
-
 export const sendAnswer = ({ callerUserId, calleeUserId, answer }) => {
 	socketIo.emit('webrtc-answer', {  callerUserId, calleeUserId, answer })
 }
 export const sendIceCandedate = ({ callerUserId, calleeUserId, candidate }) => {
-	console.log({ callerUserId, calleeUserId, candidate })
 	socketIo.emit('webrtc-candidate', { callerUserId, calleeUserId, candidate })
 }
 

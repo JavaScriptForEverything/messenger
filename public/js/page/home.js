@@ -21,7 +21,6 @@ import * as webRTC from '../module/webRTC.js'
 
 const socket = io('/')
 wss.registerSocketEvents(socket) 	// Handling all WebSocket events in wss.js file
-webRTC.getLocalPreview()
 
 
 // let timer = null

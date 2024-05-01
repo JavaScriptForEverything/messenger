@@ -103,7 +103,7 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 
 	const { currentCallStatus } = store.getState()
 	if(currentCallStatus === CALL_STATUS.CALL_ENGAGED) {
-		console.log('all ready in call engaged')
+		// console.log('all ready in call engaged')
 		return showError('user is already in called')
 	}
 
@@ -111,6 +111,8 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 
 
 	try {
+		webRTC.getLocalPreview() 		// callee-side
+
 		const isSucceed = await elements.incommingCallDialog({ type })
 
 		if(isSucceed) {
@@ -128,7 +130,7 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 				offerType: OFFER_TYPE.CALL_REJECTED, 
 			})
 			hideCallingDialog()
-			console.log('rejected')
+			// console.log('rejected')
 		}
 
 	} catch (error) {
@@ -137,7 +139,7 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 			calleeUserId: callerUserId,
 			offerType: OFFER_TYPE.CALL_UNAVAILABLE, 
 		})
-		console.log('handle error: ', error)
+		// console.log('handle error: ', error)
 	}
 }
 
@@ -147,14 +149,14 @@ export const hideCallingDialog = () => {
 }
 
 // webRTC.js: connectionstatechange event handler
-export const previewStream = () => {
+export const previewVideo = () => {
 	// only preview when peer connection established
 	hideCallingDialog()
 	showVideoContainer()
 }
 
 export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
-	console.log('callee-side: accept call handler')
+	// console.log('callee-side: accept call handler')
 	/* Step-1: select friend-list based on callerUserId else callee Side close call 
 	** will failed because `activeUserId` will not be same as `calleeUserId`
 	** which cause the problem.
@@ -165,14 +167,11 @@ export const calleeSideAcceptCallHandler = ({ callerUserId }) => {
 	if(activeUserId !== callerUserId ) showSelectedUser(callerUserId) // => selectedUserId
 
 	webRTC.createPeerConnection()
-	// hideCallingDialog()
-	// showVideoContainer()
-
 }
 
 // wss.js: on('pre-offer-answer', ...)
 export const callerSideAcceptCallHandler = () => {
-	console.log('caller-side: accept call handler')
+	// console.log('caller-side: accept call handler')
 	// 1. hide call dialog from both side
 	// 2. tell callStatus busy to others
 	// 3. make both side's call button disabled
@@ -182,10 +181,6 @@ export const callerSideAcceptCallHandler = () => {
 
 	webRTC.createPeerConnection()
 	webRTC.sendWebRTCOffer() // WebRTC
-
-	// hideCallingDialog() 		
-	// showVideoContainer()
-
 }
 
 // wss.js: on('pre-offer-answer', ...)
@@ -193,13 +188,13 @@ export const callerSideRejectCallHandler = () => {
 	// 1. hide call dialog from both side
 	// 2. tell callStatus available to everyone
 	// 3. make both side's call button enabled
-	console.log('caller-side: rejected')
+	// console.log('caller-side: rejected')
 	hideCallingDialog()
 	hideVideoContainer()
 }
 
 const calleeSideRejectCallHandler = () => {
-	console.log('callee-side: rejected')
+	// console.log('callee-side: rejected')
 
 	const { activeUserId, logedInUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
@@ -209,16 +204,17 @@ const calleeSideRejectCallHandler = () => {
 		calleeUserId: activeUserId, 
 		offerType: OFFER_TYPE.CALL_REJECTED, 
 	})
-	hideCallingDialog() 	// hide others if exists
-	showVideoContainer()
+	// hideCallingDialog() 	// hide others if exists
+	// showVideoContainer()
+	previewVideo()
 }
 
 
 
 // home.js: callPanelCallButton()
 export const closeCallHandler = () => {
-	console.log('stop call')
-	const { logedInUserId, activeUserId } = store.getState()
+	// console.log('stop call')
+	const { logedInUserId, activeUserId, localStream } = store.getState()
 
 	wss.sendCloseCallSignal({ 
 		callerUserId: logedInUserId, 
@@ -227,8 +223,7 @@ export const closeCallHandler = () => {
 	})
 
 	// 3. reset callPanel
-	resetCallHandler()
-	webRTC.peerConnection?.close() 		// close webRTC connection
+	resetCallHandler() 								// Reset UI
 
 	// callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
 	// callPanelCameraButton.classList.remove('called') 					// reset camera style
@@ -246,7 +241,7 @@ const resetCallHandler = () => {
 }
 
 const stopRecordingHandler = () => {
-		console.log('stop recording handler')
+		// console.log('stop recording handler')
 	
 		// handle close functionality
 			// 1. stop webRTC call
@@ -500,7 +495,7 @@ export const hideVideoContainer = () => {
 
 
 export const showError = (message, reason) => {
-	console.log(message)
+	// console.log(message)
 	Snackbar({
 		severity: 'error',
 		message
@@ -636,6 +631,7 @@ export const audioCallHandler = async () => {
 
 
 	if( isAvailable ) {
+		webRTC.getLocalPreview() 		// caller-side
 		wss.sendPreOffer({ 
 			callerUserId: logedInUserId,
 			calleeUserId: activeUserId, 
@@ -644,6 +640,7 @@ export const audioCallHandler = async () => {
 
 		const isSuccess = await elements.outGoingCallDialog()
 		if(!isSuccess) calleeSideRejectCallHandler()
+
 	}
 
 	// audioCallButton.disabled = true

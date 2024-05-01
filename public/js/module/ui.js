@@ -53,6 +53,10 @@ let controller = null
 
 
 
+export const turnOffWebCam = () => {
+	const { localStream } = store.getState()
+	localStream?.getTracks().forEach( track => track.stop()) 	// turn off WebCam
+}
 
 // ----------[ Other user Side ]----------
 export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
@@ -130,7 +134,7 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 				offerType: OFFER_TYPE.CALL_REJECTED, 
 			})
 			hideCallingDialog()
-			// console.log('rejected')
+			turnOffWebCam()
 		}
 
 	} catch (error) {
@@ -191,6 +195,7 @@ export const callerSideRejectCallHandler = () => {
 	// console.log('caller-side: rejected')
 	hideCallingDialog()
 	hideVideoContainer()
+	turnOffWebCam()
 }
 
 const calleeSideRejectCallHandler = () => {
@@ -471,6 +476,9 @@ export const showVideoContainer = () => {
 	// disable videoCallButtons
 	videoCallButton.disabled = true										// disable videoCallButton: in middle-top
 	rightSideVideoCallButton.disabled = true 					// disable videoCallButton: in right-main
+
+	const { callType } = store.getState()
+	callPanel.classList.toggle('audio', callType !== CALL_TYPE.VIDEO_CALL) 		// 4. only show 3rd call button, others will be hidden
 }
 export const hideVideoContainer = () => {
 	messagesContainer.classList.remove('call') 	 			// hide message panel, show userProfile details back
@@ -622,33 +630,29 @@ export const audioCallHandler = async () => {
 	const { activeUserId, logedInUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-
 	const isCalling = wss.currentCallStatus === CALL_STATUS.CALLING 
 	const isEngaged = wss.currentCallStatus === CALL_STATUS.CALL_ENGAGED
 	const isAvailable = wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE 
-
 	if( isCalling || isEngaged) return
 
 
 	if( isAvailable ) {
+		const callType = CALL_TYPE.AUDIO_CALL 
+		store.setCallType(callType)
+
 		webRTC.getLocalPreview() 		// caller-side
 		wss.sendPreOffer({ 
 			callerUserId: logedInUserId,
 			calleeUserId: activeUserId, 
-			callType: CALL_TYPE.AUDIO_CALL, 
+			callType
 		})
+
+
 
 		const isSuccess = await elements.outGoingCallDialog()
 		if(!isSuccess) calleeSideRejectCallHandler()
 
 	}
-
-	// audioCallButton.disabled = true
-	// rightSideAudioCallButton.disabled = true
-	// closeCallHandler() 																// 1. close previous call style 
-
-	// messagesContainer.classList.add('call') 				// show video-container and hide message container
-	// callPanel.classList.add('audio') 									// 4. only show 3rd call button, others will be hidden
 }
 
 
@@ -661,25 +665,37 @@ export const videoCallHandler = async () => {
 	const { activeUserId, logedInUserId } = store.getState()
 	if(!activeUserId) return showError(`activeUserId error: ${activeUserId}`)
 
-	if( wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE ) {
+	const isCalling = wss.currentCallStatus === CALL_STATUS.CALLING 
+	const isEngaged = wss.currentCallStatus === CALL_STATUS.CALL_ENGAGED
+	const isAvailable = wss.currentCallStatus === CALL_STATUS.CALL_AVAILABLE 
+	if( isCalling || isEngaged) return
 
+	if( isAvailable) {
+		const callType = CALL_TYPE.VIDEO_CALL
+		store.setCallType(callType)
+
+		webRTC.getLocalPreview() 		// caller-side
 		wss.sendPreOffer({ 
 			callerUserId: logedInUserId,
 			calleeUserId: activeUserId, 
-			callType: CALL_TYPE.VIDEO_CALL, 
+			callType
 		})
 
 		const isSuccess = await elements.outGoingCallDialog()
-		if(!isSuccess) {
-			hideCallingDialog() 	// hide others if exists
-			wss.sendPreOfferAnswer({ 
-				callerUserId: logedInUserId,
-				calleeUserId: activeUserId, 
-				offerType: OFFER_TYPE.CALL_REJECTED, 
-			})
+		if(!isSuccess) calleeSideRejectCallHandler()
 
-			showVideoContainer()
-		}
+		// callPanel.classList.remove('audio') 		// show all buttons of video call
+
+		// if(!isSuccess) {
+		// 	hideCallingDialog() 	// hide others if exists
+		// 	wss.sendPreOfferAnswer({ 
+		// 		callerUserId: logedInUserId,
+		// 		calleeUserId: activeUserId, 
+		// 		offerType: OFFER_TYPE.CALL_REJECTED, 
+		// 	})
+
+		// 	showVideoContainer()
+		// }
 	}
 
 
@@ -703,27 +719,13 @@ export const videoCallHandler = async () => {
 
 
 
-
+// ----------[ Logout ]----------
 leftPanelAvatar.style.cursor = 'pointer'
 leftPanelAvatar.addEventListener('click', async (evt) => {
-	// const img = evt.target
-	// console.log(img)
-
 	const { status, message } = await http.logout()
 	if(status === 'success') return redirectTo('/login')
 	
-	Snackbar({
-		severity: 'error', 											// success | info | warning | error
-		message,
-		// position: 'top-1 right-1' 						// tailwind class
-		// variant: 'filled', 									// text | contained | filled
-		// showSeverity: false,
-		// action: true,
-		// autoClose: true,
-		// closeTime: 20000,
-		// title: 'Testing'
-	})
-	
+	showError(message)
 })
 
 

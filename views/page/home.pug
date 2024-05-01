@@ -197,15 +197,19 @@ block script
 				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 border border-slate-300 rounded')
 
 					//- if has .call class then hide text-message-container and show video-container else oposite
-					div(name='message-container' class='group px-3 py-1.5 text-slate-700')
+					div(name='message-container' 
+						class='group px-3 py-1.5 text-slate-700'
+						class=''
+					)
 
 						div(name='text-message-container' class='block group-[&.call]:hidden')
 							//- message container : fill via client-side
 
 						div(name='video-container' class='hidden group-[&.call]:block mb-2 ')
-							div(name='their-video-container' class=' border border-slate-200 max-h-80 aspect-video mx-auto relative')
-								video(name='their-video' src='/music/video2.mp4' class='h-full w-full object-cover')
-								video(name='your-video' src='/music/video.mp4' muted 
+							div(name='their-video-container' class='bg-blue-300 border border-slate-200 max-h-80 aspect-video mx-auto relative')
+								//- video(name='their-video' src='/music/video2.mp4' class='h-full w-full object-cover')
+								video(name='their-video' src='' class='h-full w-full object-cover')
+								video(name='your-video' src='' muted 
 									class='w-32 aspect-video absolute top-0 left-0'
 									class='object-cover'
 									)

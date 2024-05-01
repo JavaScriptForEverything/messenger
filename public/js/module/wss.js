@@ -66,6 +66,7 @@ export const registerSocketEvents = (socket) => {
 
 	socket.on('pre-offer', ({ callerUserId, calleeUserId, callType }) => {
 		// console.log('Step-2: callee-side: handle call request of callee')
+		store.setCallType(callType) 	// callee-side
 
 		const isCalling = currentCallStatus === CALL_STATUS.CALLING 
 		const isEngaged = currentCallStatus === CALL_STATUS.CALL_ENGAGED
@@ -148,6 +149,7 @@ export const sendMessage = ({ type, activeUserId, message }) => {
 // ui.js: audioCallHandler
 export const sendPreOffer = ({ callerUserId, calleeUserId, callType }) => { 	
 	// console.log('Step-1: caller-side: send-request to callee')
+	// store.setCallType(callType) 	// caller-side
 	socketIo.emit('pre-offer', { callerUserId, calleeUserId, callType })
 }
 // ui.js: handlePreOffer

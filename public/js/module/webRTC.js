@@ -1,11 +1,26 @@
 import * as ui from './ui.js'
 import * as store from './store.js'
 import * as wss from './wss.js'
+import { CALL_TYPE } from './constants.js'
 
 export let peerConnection = null
 
-export const getLocalPreview = async ({ connectionType='video' } = {}) => {
-	const options = connectionType === 'audio' ? { audio: true } : { audio: true, video: true }
+/* 
+	caller-side:
+		. ui.js: audioCallHandler()
+		. ui.js: videoCallHandler()
+
+	callee-side:
+		. ui.js: handlePreOffer()
+
+*/ 
+export const getLocalPreview = async () => {
+	const { callType } = store.getState()
+
+	const options = callType === CALL_TYPE.VIDEO_CALL 
+		? { audio: true, video: true }
+		: { audio: true } 
+
 	try {
 		const stream = await navigator.mediaDevices.getUserMedia( options )
 		store.setLocalStream(stream)
@@ -239,12 +254,13 @@ export const closeHandler = async () => {
 	if(!peerConnection) return
 	// console.log('WebRTC: close handler')
 
-	const { localStream } = store.getState()
+	// const { localStream } = store.getState()
 
 	try {
 		await peerConnection.close() 		// close webRTC connection
 		peerConnection = null
-		localStream.getTracks().forEach( track => track.stop()) 	// turn off WebCam
+		// localStream.getTracks().forEach( track => track.stop()) 	// turn off WebCam
+		ui.turnOffWebCam()
 		
 	} catch (err) {
 		ui.showError(`webRTC close failed: ${err.message}`)

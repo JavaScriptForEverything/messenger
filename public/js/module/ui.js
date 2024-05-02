@@ -16,7 +16,9 @@ const leftPannelSlideButtonInputCheckbox = $('#left-side-checkbox')
 // const friendsNotFound = $('[name=friends-not-found]') 	
 const leftMainContainer = $('[name=left-main]')
 const friendsListContainer = $('[name=friends-list-container]') 	
-const messageContainer = $('[name=message-container]') 	
+const middleMainContainer = $('[name=middle-main]')
+const chatContainer = $('[name=chat-container]') 	
+// const messageContainer = $('[name=message-container]') 	
 // const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
 
 // const attachmentButtonInput = $('#attachment-icon-button')
@@ -83,19 +85,36 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 	// console.log(message)
 
 	// show text or image message
-	if(type === 'text' || type === 'image') return elements.createTheirMessage(messagesContainer, { 
-		type: message.type,
-		message: message.message,
-		avatar: message.sender.avatar
-	})
+	if(type === 'text' || type === 'image') {
+		elements.createTheirMessage(messagesContainer, { 
+			type: message.type,
+			message: message.message,
+			avatar: message.sender.avatar
+		})
+		elements.createTheirMessage(chatContainer, { 
+			type: message.type,
+			message: message.message,
+			avatar: message.sender.avatar
+		})
+		return 
+	}
 
 	// show audio message
-	if(type === 'audio') return elements.createTheirAudio(messagesContainer, { 
-		avatar: message.sender.avatar,
-		audioUrl: message.message,
-		audioDuration: message.duration,
-		createdAt: message.createdAt,
-	})
+	if(type === 'audio') {
+		elements.createTheirAudio(messagesContainer, { 
+			avatar: message.sender.avatar,
+			audioUrl: message.message,
+			audioDuration: message.duration,
+			createdAt: message.createdAt,
+		})
+		elements.createTheirAudio(chatContainer, { 
+			avatar: message.sender.avatar,
+			audioUrl: message.message,
+			audioDuration: message.duration,
+			createdAt: message.createdAt,
+		})
+		return 
+	}
 
 }
 
@@ -467,9 +486,19 @@ const addMessage = (messageDoc) => {
 				audioDuration: messageDoc.duration,
 				createdAt: messageDoc.createdAt
 			})
+			elements.createYourAudio(chatContainer, { 
+				avatar: logedInUser.avatar,
+				audioUrl: messageDoc.message,
+				audioDuration: messageDoc.duration,
+				createdAt: messageDoc.createdAt
+			})
 
 		} else {
 			elements.createYourMessage(messagesContainer, { 
+				type: messageDoc.type,
+				message: messageDoc.message 
+			})
+			elements.createYourMessage(chatContainer, { 
 				type: messageDoc.type,
 				message: messageDoc.message 
 			})
@@ -484,9 +513,20 @@ const addMessage = (messageDoc) => {
 				audioDuration: messageDoc.duration,
 				createdAt: messageDoc.createdAt
 			})
+			elements.createTheirAudio(chatContainer, { 
+				avatar: logedInUser.avatar,
+				audioUrl: messageDoc.message,
+				audioDuration: messageDoc.duration,
+				createdAt: messageDoc.createdAt
+			})
 
 		} else {
 			elements.createTheirMessage(messagesContainer, { 
+				type: messageDoc.type,
+				message: messageDoc.message,
+				avatar: messageDoc.sender.avatar
+			})
+			elements.createTheirMessage(chatContainer, { 
 				type: messageDoc.type,
 				message: messageDoc.message,
 				avatar: messageDoc.sender.avatar
@@ -500,6 +540,7 @@ const addMessage = (messageDoc) => {
 // hide message in UI for testing video call
 const showAllMessagesInUI = async (receiver) => {
 	messagesContainer.innerHTML = '' 		// empty container before add new items
+	chatContainer.innerHTML = '' 				// do same thing with messageContainer
 
 	const payload = {
 		sender: logedInUser._id,
@@ -516,7 +557,6 @@ const showAllMessagesInUI = async (receiver) => {
 	})
 }
 
-const middleMainContainer = $('[name=middle-main]')
 
 export const showVideoContainer = () => {
 	middleMainContainer.classList.add('call') 	 			// show videoContainer on top of messageContainer
@@ -637,6 +677,12 @@ export const showAudio = async (blob, audio, audioDuration) => {
 			audioDuration,
 			createdAt: messageDoc.createdAt
 		})
+		elements.createYourAudio(chatContainer, { 
+			avatar: logedInUser.avatar,
+			audioUrl: dataUrl,
+			audioDuration,
+			createdAt: messageDoc.createdAt
+		})
 
 
 	} catch (err) {
@@ -652,6 +698,7 @@ export const filterMessageByAttachmentType = async (type='text') => {
 		if(error) return showError( error )
 
 		messagesContainer.innerHTML = '' 		// empty container before add new items
+		chatContainer.innerHTML = '' 		// empty container before add new items
 
 		if(!messages.length) return showError(`no more messages of ${type}`)
 
@@ -820,6 +867,10 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 		type: messageDoc.type, 
 		message: messageDoc.message
 	})
+	elements.createYourMessage(chatContainer, { 
+		type: messageDoc.type, 
+		message: messageDoc.message
+	})
 	writeMessageInput.value = '' 	// reset
 
 	wss.sendMessage({ type: 'text', activeUserId, message: messageDoc })
@@ -849,6 +900,10 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 		// console.log(messageDoc)
 
 		elements.createYourMessage(messagesContainer, { 
+			type: 'image', 
+			message: messageDoc.message,
+		})
+		elements.createYourMessage(chatContainer, { 
 			type: 'image', 
 			message: messageDoc.message,
 		})
@@ -1028,6 +1083,7 @@ searchMessageInput.addEventListener('input', async (evt) => {
 		const { data: messages } = await res.json()
 
 		messagesContainer.innerHTML = '' 		// empty container before add new items
+		chatContainer.innerHTML = '' 		// empty container before add new items
 
 		messages.forEach(messageDoc => {
 			// console.log(messageDoc)

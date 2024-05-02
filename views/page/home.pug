@@ -415,10 +415,12 @@ block script
 				hr(class='my-1 border-spacing-x-0.5 border-slate-100')
 
 				//- add .active class to toggle child div container
-				div(name='right-main' class='group p-2 flex-1 overflow-x-auto text-slate-700 border border-slate-300 bg-slate-50 rounded')
+				div(name='right-main' 
+					class='p-2 flex-1 overflow-x-auto text-slate-700 border border-slate-300 bg-slate-50 rounded'
+					class='group '
+				)
 					//- child one
-					div(name='chat-container' class='hidden group-[&.active]:block border border-red-300')
-						p chat message: confitrue later
+					div(name='chat-container' class='hidden group-[&.active]:block ')
 
 					//- child two
 					div(name='call-container' class='block group-[&.active]:hidden ')

@@ -156,8 +156,10 @@ callPanelScreenShareButton.addEventListener('click', (evt) => {
 	console.log('screenShare')
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
+		webRTC.turnOffScreenShare()
 	} else {
 		evt.target.classList.add('called')
+		webRTC.turnOnScreenShare()
 	}
 })
 callPanelRecordingButton.addEventListener('click', (evt) => {

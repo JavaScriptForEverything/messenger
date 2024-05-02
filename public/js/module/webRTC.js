@@ -278,3 +278,72 @@ export const toggleCamera = (isEnabled = true) => {
 	const { localStream } = store.getState()
 	localStream.getVideoTracks().forEach( track => track.enabled = isEnabled )
 }
+
+
+// home.js: callPanelScreenShareButton.addEventListener('click', (evt) => {...})
+export const turnOnScreenShare = async () => {
+	if(!peerConnection) return
+
+	const options = {
+		video: true
+	}
+
+	try {
+		// Step-1: Get Display Stream
+		const screenShareStream = await navigator.mediaDevices.getDisplayMedia(options)
+
+		// Step-2:
+		const screenShareVideoTrack = screenShareStream.getVideoTracks()[0]
+
+		const senders = peerConnection.getSenders()
+		const sender = senders.find( sender => sender.track.kind === screenShareVideoTrack.kind )
+		if(!sender) throw new Error('sender not found')
+		sender.replaceTrack(screenShareVideoTrack)
+
+		// Step-3: change camera to screenShare
+		ui.updateLocalStream( screenShareStream )
+		store.setScreenShareScream( screenShareStream )
+
+		// Step-4: stop camera stream
+		// store.getState().localStream.getTracks().forEach( track => track.stop() )
+
+
+	} catch (err) {
+		ui.showError(`screenShare failed: ${err.message}`)
+		// console.log(err)
+	}
+}
+
+// home.js: callPanelScreenShareButton.addEventListener('click', (evt) => {...})
+export const turnOffScreenShare = async () => {
+	if(!peerConnection) return
+
+	const options = {
+		video: true
+	}
+
+	try {
+		// Step-1: Get webCam Stream from store
+		const { localStream } = store.getState()
+
+		// Step-2:
+		const localVideoTrack = localStream.getVideoTracks()[0]
+
+		const senders = peerConnection.getSenders()
+		const sender = senders.find( sender => sender.track.kind === localVideoTrack.kind )
+		if(!sender) throw new Error('sender not found')
+		sender.replaceTrack(localVideoTrack)
+
+		// Step-3: change back to camera from screenShare
+		ui.updateLocalStream( localStream )
+
+		// Step-4: stop screenShare stream
+		store.getState().screenShareStream.getTracks().forEach( track => track.stop() )
+		// store.setScreenShareScream( null )
+
+
+	} catch (err) {
+		ui.showError(`screenShare failed: ${err.message}`)
+		// console.log(err)
+	}
+}

@@ -14,6 +14,7 @@ const store = {
 	rooms: [{}],
 	localStream: null,
 	remoteStream: null,
+	screenShareStream: null,
 	callType: CALL_TYPE.AUDIO_CALL
 }
 
@@ -25,8 +26,9 @@ export const setLogedInUser = (logedInUser) => {
 export const setActiveUserId = (activeUserId) => store.activeUserId = activeUserId
 export const setRooms = (rooms) => store.rooms = rooms
 
+export const setCallType = (callType) => store.callType = callType
 export const setLocalStream = (stream) => store.localStream = stream
 export const setRemoteStream = (stream) => store.remoteStream = stream
-export const setCallType = (callType) => store.callType = callType
+export const setScreenShareScream = (stream) => store.screenShareStream = stream
 
 

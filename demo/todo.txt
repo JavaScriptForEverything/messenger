@@ -2,10 +2,18 @@
 - handle call via webRTC
 - handle video-recording
 - handle share-files
+- add  video-call full-screen mode
 
 Problem:
 	. can't close call if call accepted and without closing navigating to /profile page
 
+Problem:
+	. call recording stopped when switching webCam <==> screenShare
+	Reason:
+		. handling recording based on [ recorder.state === 'inactive' ] inside start call handler
+
+	solution:
+		. use onstop event instead of [ recorder.state === 'inactive' ]
 
 
 		

@@ -36,9 +36,9 @@ const rightSideVideoCallButton = $('[name=right-side] [name=video-call-button]')
 const messagesContainer = $('[name=message-container]') 	
 const callPanel = $('[name=call-panel]') 	
 
-const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
-const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
-const callPanelScreenShareButton = $('[name=call-panel] [name=flip-camera]') 	
+// const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
+// const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
+// const callPanelScreenShareButton = $('[name=call-panel] [name=flip-camera]') 	
 const callPanelRecordingButton = $('[name=call-panel] [name=recording]') 	
 
 const recordingPanel = $('[name=recording-panel]') 	
@@ -499,27 +499,27 @@ const addMessage = (messageDoc) => {
 
 // hide message in UI for testing video call
 const showAllMessagesInUI = async (receiver) => {
-	// textMessagesContainer.innerHTML = '' 		// empty container before add new items
+	textMessagesContainer.innerHTML = '' 		// empty container before add new items
 
-	// const payload = {
-	// 	sender: logedInUser._id,
-	// 	receiver
-	// }
+	const payload = {
+		sender: logedInUser._id,
+		receiver
+	}
 	
-	// const { data:messages, message:errorMessage } = await http.getAllChatMessages(payload)
-	// if(errorMessage) return showError(errorMessage)
+	const { data:messages, message:errorMessage } = await http.getAllChatMessages(payload)
+	if(errorMessage) return showError(errorMessage)
 
-	// messages.forEach(messageDoc => {
-	// 	// console.log(messageDoc)
-	// 	// show error alert for not populated senerio
-	// 	addMessage(messageDoc)
-	// })
+	messages.forEach(messageDoc => {
+		// console.log(messageDoc)
+		// show error alert for not populated senerio
+		addMessage(messageDoc)
+	})
 }
 
 
 export const showVideoContainer = () => {
 	messagesContainer.classList.add('call') 	 				// show message panel instead of userProfile details
-	rightPanelMainBlock.classList.add('active') 			// show videoContainer instead of message container
+	// rightPanelMainBlock.classList.add('active') 			// show videoContainer instead of message container
 
 	// disable audioCallButtons
 	audioCallButton.disabled = true 									// disable audioCallButton: in middle-top

@@ -194,7 +194,10 @@ block script
 
 
 				hr(class='my-1 border-spacing-x-0.5 border-slate-100')
-				div(name='middle-main' class='flex-1 overflow-x-auto bg-slate-50 border border-slate-300 rounded')
+				div(name='middle-main' 
+					class='flex-1 overflow-y-auto bg-slate-50 border border-slate-300 rounded'
+					class='relative'
+					)
 
 					//- if has .call class then hide text-message-container and show video-container else oposite
 					div(name='message-container' 
@@ -202,10 +205,9 @@ block script
 						class=''
 					)
 
-						div(name='text-message-container' class='block group-[&.call]:hidden')
-							//- message container : fill via client-side
-
-						div(name='video-container' class='hidden group-[&.call]:block mb-2 ')
+						div(name='video-container' class='hidden group-[&.call]:block mb-2 '
+							class='absolute top-0 left-0 right-0 '
+							)
 							div(name='their-video-container' class='bg-blue-300 border border-slate-200 max-h-80 aspect-video mx-auto relative')
 								//- video(name='their-video' src='/music/video2.mp4' class='h-full w-full object-cover')
 								video(name='their-video' src='' class='h-full w-full object-cover')
@@ -339,6 +341,9 @@ block script
 													div(class='mb-0.5 flex justify-between items-center px-4 font-light text-xs text-slate-800')
 														span 0.30
 														span 3.45 pm
+
+						div(name='text-message-container' class='block group-[&.call]:hidden')
+							//- message container : fill via client-side
 
 						
 

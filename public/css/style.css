@@ -614,6 +614,10 @@ video {
   inset: 0px;
 }
 
+.inset-full {
+  inset: 100%;
+}
+
 .-left-0 {
   left: -0px;
 }
@@ -858,6 +862,10 @@ video {
 
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mb-96 {
+  margin-bottom: 24rem;
 }
 
 .block {
@@ -1259,6 +1267,10 @@ video {
 
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
 }
 
 .overflow-y-scroll {

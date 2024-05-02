@@ -16,8 +16,8 @@ const leftPannelSlideButtonInputCheckbox = $('#left-side-checkbox')
 // const friendsNotFound = $('[name=friends-not-found]') 	
 const leftMainContainer = $('[name=left-main]')
 const friendsListContainer = $('[name=friends-list-container]') 	
-// const messageContainer = $('[name=message-container]') 	
-const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
+const messageContainer = $('[name=message-container]') 	
+// const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
 
 // const attachmentButtonInput = $('#attachment-icon-button')
 const sendMessageForm = $('form[name=middle-bottom]')
@@ -83,14 +83,14 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 	// console.log(message)
 
 	// show text or image message
-	if(type === 'text' || type === 'image') return elements.createTheirMessage(textMessagesContainer, { 
+	if(type === 'text' || type === 'image') return elements.createTheirMessage(messagesContainer, { 
 		type: message.type,
 		message: message.message,
 		avatar: message.sender.avatar
 	})
 
 	// show audio message
-	if(type === 'audio') return elements.createTheirAudio(textMessagesContainer, { 
+	if(type === 'audio') return elements.createTheirAudio(messagesContainer, { 
 		avatar: message.sender.avatar,
 		audioUrl: message.message,
 		audioDuration: message.duration,
@@ -461,7 +461,7 @@ const addMessage = (messageDoc) => {
 	if(messageDoc.sender.id === logedInUser._id) {
 
 		if(messageDoc.type === 'audio') {
-			elements.createYourAudio(textMessagesContainer, { 
+			elements.createYourAudio(messagesContainer, { 
 				avatar: logedInUser.avatar,
 				audioUrl: messageDoc.message,
 				audioDuration: messageDoc.duration,
@@ -469,7 +469,7 @@ const addMessage = (messageDoc) => {
 			})
 
 		} else {
-			elements.createYourMessage(textMessagesContainer, { 
+			elements.createYourMessage(messagesContainer, { 
 				type: messageDoc.type,
 				message: messageDoc.message 
 			})
@@ -478,7 +478,7 @@ const addMessage = (messageDoc) => {
 
 	} else {
 		if(messageDoc.type === 'audio') {
-			elements.createTheirAudio(textMessagesContainer, { 
+			elements.createTheirAudio(messagesContainer, { 
 				avatar: logedInUser.avatar,
 				audioUrl: messageDoc.message,
 				audioDuration: messageDoc.duration,
@@ -486,7 +486,7 @@ const addMessage = (messageDoc) => {
 			})
 
 		} else {
-			elements.createTheirMessage(textMessagesContainer, { 
+			elements.createTheirMessage(messagesContainer, { 
 				type: messageDoc.type,
 				message: messageDoc.message,
 				avatar: messageDoc.sender.avatar
@@ -499,7 +499,7 @@ const addMessage = (messageDoc) => {
 
 // hide message in UI for testing video call
 const showAllMessagesInUI = async (receiver) => {
-	textMessagesContainer.innerHTML = '' 		// empty container before add new items
+	messagesContainer.innerHTML = '' 		// empty container before add new items
 
 	const payload = {
 		sender: logedInUser._id,
@@ -516,10 +516,11 @@ const showAllMessagesInUI = async (receiver) => {
 	})
 }
 
+const middleMainContainer = $('[name=middle-main]')
 
 export const showVideoContainer = () => {
-	messagesContainer.classList.add('call') 	 				// show message panel instead of userProfile details
-	// rightPanelMainBlock.classList.add('active') 			// show videoContainer instead of message container
+	middleMainContainer.classList.add('call') 	 			// show videoContainer on top of messageContainer
+	rightPanelMainBlock.classList.add('active') 			// show messageContainer in right panel, instead of user Profile details
 
 	// disable audioCallButtons
 	audioCallButton.disabled = true 									// disable audioCallButton: in middle-top
@@ -533,8 +534,8 @@ export const showVideoContainer = () => {
 	callPanel.classList.toggle('audio', callType !== CALL_TYPE.VIDEO_CALL) 		// 4. only show 3rd call button, others will be hidden
 }
 export const hideVideoContainer = () => {
-	messagesContainer.classList.remove('call') 	 			// hide message panel, show userProfile details back
-	rightPanelMainBlock.classList.remove('active') 		// hide videoContainer, and show message container back
+	middleMainContainer.classList.remove('call') 	 		// hide videoContainer only show messageContainer
+	rightPanelMainBlock.classList.remove('active') 		// hide messageContainer in right panel, and show user Profile details back
 
 	// enable audioCallButton
 	audioCallButton.disabled = false 									// enable audioCallButton: in middle-top
@@ -630,7 +631,7 @@ export const showAudio = async (blob, audio, audioDuration) => {
 		wss.sendMessage({ type: 'audio', activeUserId, message: messageDoc })
 
 		// Step-4: Show Audio in sender: user himself
-		elements.createYourAudio(textMessagesContainer, { 
+		elements.createYourAudio(messagesContainer, { 
 			avatar: logedInUser.avatar,
 			audioUrl: dataUrl,
 			audioDuration,
@@ -650,7 +651,7 @@ export const filterMessageByAttachmentType = async (type='text') => {
 		const { error, data:messages } = await http.filterAttachments(type)
 		if(error) return showError( error )
 
-		textMessagesContainer.innerHTML = '' 		// empty container before add new items
+		messagesContainer.innerHTML = '' 		// empty container before add new items
 
 		if(!messages.length) return showError(`no more messages of ${type}`)
 
@@ -815,7 +816,7 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	const { data:messageDoc, message } = await http.createMessage(payload)
 	if(message) return showError(message)
 
-	elements.createYourMessage(textMessagesContainer, { 
+	elements.createYourMessage(messagesContainer, { 
 		type: messageDoc.type, 
 		message: messageDoc.message
 	})
@@ -847,7 +848,7 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 
 		// console.log(messageDoc)
 
-		elements.createYourMessage(textMessagesContainer, { 
+		elements.createYourMessage(messagesContainer, { 
 			type: 'image', 
 			message: messageDoc.message,
 		})
@@ -1026,7 +1027,7 @@ searchMessageInput.addEventListener('input', async (evt) => {
 
 		const { data: messages } = await res.json()
 
-		textMessagesContainer.innerHTML = '' 		// empty container before add new items
+		messagesContainer.innerHTML = '' 		// empty container before add new items
 
 		messages.forEach(messageDoc => {
 			// console.log(messageDoc)

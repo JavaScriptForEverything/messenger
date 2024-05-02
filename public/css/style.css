@@ -762,6 +762,34 @@ video {
   grid-column: span 10 / span 10;
 }
 
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
+.col-span-9 {
+  grid-column: span 9 / span 9;
+}
+
+.row-span-3 {
+  grid-row: span 3 / span 3;
+}
+
+.row-span-9 {
+  grid-row: span 9 / span 9;
+}
+
+.row-span-12 {
+  grid-row: span 12 / span 12;
+}
+
+.row-span-6 {
+  grid-row: span 6 / span 6;
+}
+
+.row-span-8 {
+  grid-row: span 8 / span 8;
+}
+
 .m-auto {
   margin: auto;
 }
@@ -868,6 +896,10 @@ video {
   margin-bottom: 24rem;
 }
 
+.mt-auto {
+  margin-top: auto;
+}
+
 .block {
   display: block;
 }
@@ -958,6 +990,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-\[80\%\] {
+  height: 80%;
 }
 
 .max-h-60 {
@@ -1177,8 +1213,24 @@ video {
           appearance: none;
 }
 
+.grid-flow-row {
+  grid-auto-flow: row;
+}
+
+.grid-flow-col {
+  grid-auto-flow: column;
+}
+
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.grid-rows-12 {
+  grid-template-rows: repeat(12, minmax(0, 1fr));
 }
 
 .flex-col {
@@ -1469,6 +1521,11 @@ video {
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
+.border-orange-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(249 115 22 / var(--tw-border-opacity));
+}
+
 .bg-blue-100\/80 {
   background-color: rgb(219 234 254 / 0.8);
 }
@@ -1609,6 +1666,11 @@ video {
 
 .fill-white {
   fill: #fff;
+}
+
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .object-cover {
@@ -2742,6 +2804,18 @@ video {
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
+.group.call .group-\[\&\.call\]\:row-span-6 {
+  grid-row: span 6 / span 6;
+}
+
+.group.call .group-\[\&\.call\]\:row-span-12 {
+  grid-row: span 12 / span 12;
+}
+
+.group.call .group-\[\&\.call\]\:row-span-4 {
+  grid-row: span 4 / span 4;
+}
+
 .group.active .group-\[\&\.active\]\:block {
   display: block;
 }
@@ -2835,6 +2909,10 @@ video {
     position: static;
   }
 
+  .md\:row-span-12 {
+    grid-row: span 12 / span 12;
+  }
+
   .md\:ml-0 {
     margin-left: 0px;
   }
@@ -2857,6 +2935,10 @@ video {
 
   .md\:flex-row {
     flex-direction: row;
+  }
+
+  .group.call .group-\[\&\.call\]\:md\:hidden {
+    display: none;
   }
 }
 

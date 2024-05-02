@@ -1,8 +1,8 @@
 
-- handle call via webRTC
-- handle video-recording
 - handle share-files
-- add  video-call full-screen mode
+
+- on new message: update friendsList latest message, instanly, without page refresh
+
 
 Problem:
 	. can't close call if call accepted and without closing navigating to /profile page

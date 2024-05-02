@@ -163,13 +163,15 @@ callPanelScreenShareButton.addEventListener('click', (evt) => {
 	}
 })
 callPanelRecordingButton.addEventListener('click', (evt) => {
-	console.log('recording')
+	// console.log('recording')
 
 	if(evt.target.classList.contains('called')) {
+		ui.stopCallRecordingHandler() 															// if failed, then will not remove called class
 		evt.target.classList.remove('called')
-		ui.stopRecordingHandler()
 
 	} else {
+		ui.startCallRecording()
+
 		evt.target.classList.add('called') 													// 1. active recording button style
 		recordingPanel.classList.remove('hidden') 									// 2.1. To show recording panel remove: hidden
 		recordingPanel.classList.add('flex') 												// 2.2. then add flex, [ because that is flex container]
@@ -185,7 +187,7 @@ recordingPanelPlayPauseButton.addEventListener('click', (evt) => {
 	}
 })
 
-recordingPanelStopRecordingButton.addEventListener('click', ui.stopRecordingHandler)
+recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecordingHandler)
 
 
 // -----

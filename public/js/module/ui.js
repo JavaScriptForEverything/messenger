@@ -229,11 +229,10 @@ export const closeCallHandler = () => {
 
 	// 3. reset callPanel
 	resetCallHandler() 								// Reset UI
-
 	// callPanelMicrophoneButton.classList.remove('called') 		// reset microphone  style
 	// callPanelCameraButton.classList.remove('called') 					// reset camera style
 	// callPanelScreenShareButton.classList.remove('called') 	// reset screenShare style
-	// stopRecordingHandler() 	// reset recording
+	stopCallRecordingHandler() 	// reset recording
 
 
 }
@@ -245,16 +244,69 @@ const resetCallHandler = () => {
 	// 
 }
 
-const stopRecordingHandler = () => {
-		// console.log('stop recording handler')
-	
-		// handle close functionality
-			// 1. stop webRTC call
-			// ...
+// ----------[ Call Recording ]----------
+const stream = new MediaStream()
+let callRecorder = new MediaRecorder(stream) 	// instead of null, put empty stream, for code completion
+let audioExt = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'webm' : 'webm'
+let chunks = []
 
+// home.js: callPanelRecordingButton.addEventListener('click', (evt) => {...})
+export const startCallRecording = () => {
+	const { localStream, screenShareStream } = store.getState()
+	if(!localStream) return showError(`webcam not active: because localStream is empty`)
+
+	const recorderOptions = {
+		mimetype: `video/${audioExt};codecs=vp9,opus` 
+	}
+	
+	const activeStream = screenShareStream ? screenShareStream : localStream
+	callRecorder = new MediaRecorder(activeStream, recorderOptions)
+	callRecorder.start()
+
+	callRecorder.addEventListener('dataavailable', (evt) => {
+		chunks.push( evt.data )
+
+		// handle: stopRecording : trigger after `callRecorder.stop()` invoked
+		if( callRecorder.state === 'inactive' ) {
+			const blob = new Blob(chunks, { type: `video/${audioExt}` })
+			chunks = []
+
+			// Step-? : make downloading file
+			const dataUrl = URL.createObjectURL(blob)
+			const a = document.createElement('a')
+			a.href = dataUrl
+			a.download = `video.${audioExt}`
+			a.style.display = 'none'
+
+			document.body.appendChild(a)
+			a.click()
+
+			setTimeout(() => {
+				document.body.removeChild(a)
+				URL.revokeObjectURL(dataUrl)
+			}, 100)
+
+			// Step-? : reset active state of call Recording UI
+			stopCallRecordingHandler() 	
+		}
+	})
+}
+
+
+// home.js: callPanelRecordingButton.addEventListener('click', (evt) => {...})
+// home.js: recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecordingHandler)
+// ui.js: closeCallHandler
+// ui.js: hideVideoContainer = () => {...}
+export const stopCallRecordingHandler = () => {
+		// console.log('stop recording handler')
 	callPanelRecordingButton.classList.remove('called') 				// 1. reset active recording button style
 	recordingPanel.classList.add('hidden') 											// 2. hide recording panel
 	recordingPanelPlayPauseButton.classList.add('called') 			// 3. make recording pause state
+
+	if(!callRecorder) return
+	const isRecording = callRecorder.state === 'recording'
+	const isPaused = callRecorder.state === 'paused'
+	if( isRecording || isPaused ) callRecorder.stop() 					// 4. Stop MediaRecorder to fire save call
 }
 
 
@@ -491,6 +543,9 @@ export const hideVideoContainer = () => {
 	// enable videoCallButtons
 	videoCallButton.disabled = false									// enable videoCallButton: in middle-top
 	rightSideVideoCallButton.disabled = false 				// enable videoCallButton: in right-main
+
+	// Reset call recordingPanel active state
+	stopCallRecordingHandler() 												// 
 }
 // const showRightMessagePanel = () => {
 // 	rightPanelMainBlock.classList.add('active') 		

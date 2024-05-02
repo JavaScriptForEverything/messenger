@@ -3,7 +3,7 @@ import * as store from './store.js'
 import * as wss from './wss.js'
 import { CALL_TYPE } from './constants.js'
 
-export let peerConnection = null
+export let peerConnection = null 		// used to close peer connection on other place
 
 /* 
 	caller-side:
@@ -285,7 +285,8 @@ export const turnOnScreenShare = async () => {
 	if(!peerConnection) return
 
 	const options = {
-		video: true
+		// audio: true,
+		video: true,
 	}
 
 	try {
@@ -304,8 +305,11 @@ export const turnOnScreenShare = async () => {
 		ui.updateLocalStream( screenShareStream )
 		store.setScreenShareScream( screenShareStream )
 
-		// Step-4: stop camera stream
+		/* Step-4: stop camera stream: 
+		** Problem: if I do bellow steps then when switch back to webCam, then peer not got localSteam any more
+		*/
 		// store.getState().localStream.getTracks().forEach( track => track.stop() )
+		// store.setLocalStream(null)
 
 
 	} catch (err) {
@@ -317,10 +321,6 @@ export const turnOnScreenShare = async () => {
 // home.js: callPanelScreenShareButton.addEventListener('click', (evt) => {...})
 export const turnOffScreenShare = async () => {
 	if(!peerConnection) return
-
-	const options = {
-		video: true
-	}
 
 	try {
 		// Step-1: Get webCam Stream from store
@@ -339,7 +339,7 @@ export const turnOffScreenShare = async () => {
 
 		// Step-4: stop screenShare stream
 		store.getState().screenShareStream.getTracks().forEach( track => track.stop() )
-		// store.setScreenShareScream( null )
+		store.setScreenShareScream( null )
 
 
 	} catch (err) {

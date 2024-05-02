@@ -11,7 +11,7 @@ let chunks = []
 let currentTime = 0;
 let audioDuration = 0;
 
-
+// audio Message recording
 export const startRecording = async (audio) => {
 	stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 	audio.srcObject = stream
@@ -31,7 +31,8 @@ export const startRecording = async (audio) => {
 
 		// trigger after `recorder.stop()` invoked
 		if( recorder.state === 'inactive' ) {
-			const blob = new Blob(chunks, { type: `audio/${audioExt}`, bitsPerSecond: 128000 })
+			// const blob = new Blob(chunks, { type: `audio/${audioExt}`, bitsPerSecond: 128000 })
+			const blob = new Blob(chunks, { type: `audio/${audioExt}` })
 			chunks = []
 			ui.showAudio(blob, audio, audioDuration)
 		}

@@ -193,48 +193,21 @@ export const createPeerConnection = () => {
 			// console.log('datachannel error, so close datachannel ')
 			ui.disableDragAndDropFileSharing()
 		})
-		// channel.addEventListener('message', ({ data }) => {
-		// 	const payload = JSON.parse( data )
-		// 	console.log(payload)
-		// })
-
-		// handle small file in one go
-		// channel.addEventListener('message', ({ data }) => {
-		// 	// convert arrayBuffer to file back
-		// 	const blob = new Blob([ data ])
-		// 	// console.log(blob)
-
-		// 	downloadBlob(blob, 'image.jpeg')
-		// })
-
-		// // handle large file as chnuks 
-		// let chunks = []
-		// channel.addEventListener('message', ({ data }) => {
-			
-		// 	if( data.toString() === 'done') {
-		// 		const blob = new Blob(chunks)
-		// 		chunks = []
-		// 		console.log(blob)
-		// 		// downloadBlob(blob, 'image.jpeg')
-		// 	} else {
-		// 		chunks.push( data )
-		// 		console.log({ chunk: data })
-		// 	}
-		// })
 
 		let chunks = []
 		channel.addEventListener('message', ({ data }) => {
 
-			if( data.toString() === 'done') {
-				const blob = new Blob(chunks )
-
-				chunks = [] 	// empty chunk after got blob 
-				downloadBlob(blob)
+			if( data instanceof Blob ) {
+				chunks.push( data )
 
 			} else {
-				chunks.push( data )
-				console.log({ data })
+				const { name, type } = JSON.parse(data)
+
+				const blob = new Blob(chunks, { type } )
+				chunks = [] 	// empty chunk after got blob 
+				downloadBlob(blob, name)
 			}
+
 		})
 
 	})

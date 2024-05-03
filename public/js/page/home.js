@@ -247,10 +247,11 @@ const showDragItemsInUI = (fileArray) => {
 				webRTC.sendFileByDataChannel(chunk)
 			}
 
-			webRTC.sendFileByDataChannel('done')
+			webRTC.sendFileByDataChannel(JSON.stringify({
+				name: file.name,
+				type: file.type,
+			}))
 
-		// webRTC.sendFileByDataChannel(buffer)
-		// console.log({ file, buffer })
 
 		} catch (err) {
 			console.log('file.arrayBuffer() failed')	

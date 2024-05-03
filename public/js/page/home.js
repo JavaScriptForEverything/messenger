@@ -271,6 +271,17 @@ attachmentsViewAllButton.addEventListener('click', (evt) => {
 })
 
 
+const attachmentsButtonsContainer = $('[name=attachments-buttons-container]')
+const attachmentsButtons = Array.from( attachmentsButtonsContainer.children )
+
+attachmentsButtonsContainer.addEventListener( 'click', (evt) => {
+	if(evt.target.tagName !== 'BUTTON') return
+
+	attachmentsButtons.forEach( button => {
+		button.classList.toggle('active', button.name === evt.target.name)
+	})
+})
+
 
 
 

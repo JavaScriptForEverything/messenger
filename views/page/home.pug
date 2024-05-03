@@ -493,18 +493,31 @@ block script
 						div(name='attachments-container' class='my-4 ')
 							p(class='font-medium text-slate-600') Attachments
 
-							div(name='attachments-container' class='text-xs my-2 grid grid-cols-4 gap-2')
-								button(name='filter-image' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
-									span(class='text-blue-500') Image
+							//- if any of child has .active class with be active style
+							div( name='attachments-buttons-container' class='text-xs my-2 grid grid-cols-4 gap-2')
+								button(
+									name='filter-image' 
+									class='w-14 h-14  bg-blue-100/80 text-blue-500 grid place-items-center rounded-lg '
+									class='[&.active]:bg-blue-400 [&.active]:text-slate-50'
+								) Image
 
-								button(name='filter-audio' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
-									span(class='text-blue-500') Audio
+								button(
+									name='filter-audio' 
+									class='w-14 h-14  bg-blue-100/80 text-blue-500 grid place-items-center rounded-lg'
+									class='[&.active]:bg-blue-400 [&.active]:text-slate-50'
+								) Audio
 
-								button(name='filter-video' class='w-14 h-14  bg-blue-100/80 grid place-items-center rounded-lg')
-									span(class='text-blue-500') Video
+								button(
+									name='filter-video' 
+									class='w-14 h-14  bg-blue-100/80 text-blue-500 grid place-items-center rounded-lg'
+									class='[&.active]:bg-blue-400 [&.active]:text-slate-50'
+								) Video
 
-								button(name='filter-file' class='w-14 h-14 bg-blue-100/80 grid place-items-center rounded-lg')
-									span(class='text-blue-500') File
+								button(
+									name='filter-file' 
+									class='w-14 h-14 bg-blue-100/80 text-blue-500 grid place-items-center rounded-lg'
+									class='[&.active]:bg-blue-400 [&.active]:text-slate-50'
+								) File
 
 
 							p(name='view-all' class='text-center mt-4')

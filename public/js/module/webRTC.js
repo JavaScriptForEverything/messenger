@@ -3,7 +3,11 @@ import * as store from './store.js'
 import * as wss from './wss.js'
 import { CALL_TYPE } from './constants.js'
 
-export let peerConnection = null 		// used to close peer connection on other place
+// export let peerConnection = null 		// used to close peer connection on other place
+// let dataChannel = null
+
+export let peerConnection = new RTCPeerConnection()
+let dataChannel = peerConnection.createDataChannel('file-sharing')
 
 /* 
 	caller-side:
@@ -167,11 +171,93 @@ export const createPeerConnection = () => {
 	})
 
 
-	// const remoteStream = new MediaStream()
-	// peerConnection.addEventListener('track', (evt) => {
-	// 	remoteStream.addTrack(evt.track)
-	// })
+	// WebRTC: Step-8: dataChannel Step-1: create dataChannel instance
+	dataChannel = peerConnection.createDataChannel('file-sharing')
+
+
+	// WebRTC: Step-10: dataChannel Step-3: listen on datachannel event
+	peerConnection.addEventListener('datachannel', ({ channel }) => {
+		channel.addEventListener('open', () => {
+			// console.log('ready to share file via datachannel ')
+
+			// allow drag-and-drop-file-shareing
+			ui.activeDragAndDropFileSharing()
+		})
+		channel.addEventListener('close', () => {
+			// console.log('datachannel closed')
+
+			// disable drag-and-drop-file-shareing
+			ui.disableDragAndDropFileSharing()
+		})
+		channel.addEventListener('error', () => {
+			// console.log('datachannel error, so close datachannel ')
+			ui.disableDragAndDropFileSharing()
+		})
+		// channel.addEventListener('message', ({ data }) => {
+		// 	const payload = JSON.parse( data )
+		// 	console.log(payload)
+		// })
+
+		// handle small file in one go
+		// channel.addEventListener('message', ({ data }) => {
+		// 	// convert arrayBuffer to file back
+		// 	const blob = new Blob([ data ])
+		// 	// console.log(blob)
+
+		// 	downloadBlob(blob, 'image.jpeg')
+		// })
+
+		// // handle large file as chnuks 
+		// let chunks = []
+		// channel.addEventListener('message', ({ data }) => {
+			
+		// 	if( data.toString() === 'done') {
+		// 		const blob = new Blob(chunks)
+		// 		chunks = []
+		// 		console.log(blob)
+		// 		// downloadBlob(blob, 'image.jpeg')
+		// 	} else {
+		// 		chunks.push( data )
+		// 		console.log({ chunk: data })
+		// 	}
+		// })
+
+		let chunks = []
+		channel.addEventListener('message', ({ data }) => {
+
+			if( data.toString() === 'done') {
+				const blob = new Blob(chunks )
+
+				chunks = [] 	// empty chunk after got blob 
+				downloadBlob(blob)
+
+			} else {
+				chunks.push( data )
+				console.log({ data })
+			}
+		})
+
+	})
+	const downloadBlob = (blob, name='file.jpeg') => {
+		// console.log(blob, name)
+
+		const dataUrl = URL.createObjectURL( blob )
+		const a = document.createElement('a')
+		a.href = dataUrl
+		a.download = name
+
+		a.style.display = 'none'
+		document.body.appendChild(a)
+		a.click()
+
+		setTimeout(() => {
+			document.body.removeChild(a)
+			URL.revokeObjectURL(dataUrl)
+		}, 100);
+
+	}
 }
+
 
 
 // WebRTC: step-1: create offer and send from caller-side to callee
@@ -346,4 +432,15 @@ export const turnOffScreenShare = async () => {
 		ui.showError(`screenShare failed: ${err.message}`)
 		// console.log(err)
 	}
+}
+
+
+
+
+// WebRTC: Step-9: dataChannel Step-2: Send data via dataChannel
+export const sendFileByDataChannel = (payload) => {
+	if(!dataChannel) return
+
+	dataChannel.send(payload)
+	// payload can be: string | Blob | arrayBuffer | TypedArray | DataView
 }

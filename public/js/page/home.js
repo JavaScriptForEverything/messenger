@@ -213,11 +213,53 @@ const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 const showDragItemsInUI = (fileArray) => {
 	// Step-1: show Files in UI
-	fileArray.forEach( file => {
-		dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
-			fileName: file.name,
-			fileSize: getReadableFileSizeString(file.size),
-		}))
+
+	// send small-file in one go
+	// fileArray.forEach( async (file) => {
+	// 	try {
+			
+	// 	const buffer = await file.arrayBuffer()
+	// 	webRTC.sendFileByDataChannel(buffer)
+	// 	console.log({ file, buffer })
+
+	// 	} catch (err) {
+	// 		console.log('file.arrayBuffer() failed')	
+	// 	}
+
+	// 	dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
+	// 		fileName: file.name,
+	// 		fileSize: getReadableFileSizeString(file.size),
+	// 	}))
+	// })
+
+	// handle large file by chunks
+	fileArray.forEach( async (file) => {
+		try {
+			
+			let buffer = await file.arrayBuffer()
+
+			const chunkSize = 1024 * 16 		// => 16Kb is supprted by all browser
+
+			while(buffer.byteLength) {
+				const chunk = buffer.slice(0, chunkSize)
+				buffer = buffer.slice(chunkSize, buffer.byteLength)
+
+				webRTC.sendFileByDataChannel(chunk)
+			}
+
+			webRTC.sendFileByDataChannel('done')
+
+		// webRTC.sendFileByDataChannel(buffer)
+		// console.log({ file, buffer })
+
+		} catch (err) {
+			console.log('file.arrayBuffer() failed')	
+		}
+
+		// dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
+		// 	fileName: file.name,
+		// 	fileSize: getReadableFileSizeString(file.size),
+		// }))
 	})
 
 	// Step-2: handle fileUpload here
@@ -228,6 +270,13 @@ const showDragItemsInUI = (fileArray) => {
 	// 	dropListContainer.innerHTML = '' 						// empty list items
 	// 	attachmentInputCheckbox.checked = false 		// hide the 'drag-and-drop-panel'
 	// }, 3000);
+
+
+	// const payload = JSON.stringify({
+	// 	name: 'riajul',
+	// 	email: 'riajul@gmail.com'
+	// })
+	// webRTC.sendFileByDataChannel(payload)
 }
 
 dragAndDropContainer.addEventListener('dragover', (evt) => {

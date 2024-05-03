@@ -584,8 +584,6 @@ export const showVideoContainer = () => {
 	const { callType } = store.getState()
 	callPanel.classList.toggle('audio', callType !== CALL_TYPE.VIDEO_CALL) 		// 4. only show 3rd call button, others will be hidden
 
-	// allow drag-and-drop-file-shareing
-	activeDragAndDropFileSharing()
 }
 export const hideVideoContainer = () => {
 	middleMainContainer.classList.remove('call') 	 		// hide videoContainer only show messageContainer
@@ -602,8 +600,6 @@ export const hideVideoContainer = () => {
 	// Reset call recordingPanel active state
 	stopCallRecordingHandler() 												// 
 
-	// disable drag-and-drop-file-shareing
-	disableDragAndDropFileSharing()
 }
 
 

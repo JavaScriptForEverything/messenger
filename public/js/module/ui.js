@@ -46,6 +46,7 @@ const callPanelRecordingButton = $('[name=call-panel] [name=recording]')
 const recordingPanel = $('[name=recording-panel]') 	
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 const rightPanelMainBlock = $('[name=right-main]')
+const dragAndDropPanel = $('[name=drag-and-drop-panel]')
 
 let timer = 0
 let controller = null
@@ -453,7 +454,7 @@ const selectedUserHandler = (user) => {
 	const avatarBadge = selectedUserListContainer.querySelector('[name=avatar-badge]')
 	const name = selectedUserListContainer.querySelector('[name=username]')
 	
-	if(!user._id) return showError(` user._id = ${user._id} error`)
+	if(!user) return showError(` user._id = ${user?._id} error`)
 	
 	store.setActiveUserId(user._id)
 	
@@ -558,6 +559,16 @@ const showAllMessagesInUI = async (receiver) => {
 }
 
 
+
+// => showVideoContainer()
+export const activeDragAndDropFileSharing = () => {
+	dragAndDropPanel.classList.remove('disabled')
+}
+// => hideVideoContainer()
+export const disableDragAndDropFileSharing = () => {
+	dragAndDropPanel.classList.add('disabled')
+}
+
 export const showVideoContainer = () => {
 	middleMainContainer.classList.add('call') 	 			// show videoContainer on top of messageContainer
 	rightPanelMainBlock.classList.add('active') 			// show messageContainer in right panel, instead of user Profile details
@@ -572,6 +583,9 @@ export const showVideoContainer = () => {
 
 	const { callType } = store.getState()
 	callPanel.classList.toggle('audio', callType !== CALL_TYPE.VIDEO_CALL) 		// 4. only show 3rd call button, others will be hidden
+
+	// allow drag-and-drop-file-shareing
+	activeDragAndDropFileSharing()
 }
 export const hideVideoContainer = () => {
 	middleMainContainer.classList.remove('call') 	 		// hide videoContainer only show messageContainer
@@ -587,15 +601,10 @@ export const hideVideoContainer = () => {
 
 	// Reset call recordingPanel active state
 	stopCallRecordingHandler() 												// 
+
+	// disable drag-and-drop-file-shareing
+	disableDragAndDropFileSharing()
 }
-// const showRightMessagePanel = () => {
-// 	rightPanelMainBlock.classList.add('active') 		
-// }
-// export const hideRightMessagePanel = () => {
-// 	rightPanelMainBlock.classList.remove('active') 		
-// }
-
-
 
 
 export const showError = (message, reason) => {

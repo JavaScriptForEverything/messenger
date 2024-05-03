@@ -335,24 +335,31 @@ block script
 							)
 							<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="none" stroke="currentColor" d="m13.5 7.5l-5.757 5.757a4.243 4.243 0 0 1-6-6l5.929-5.929a2.828 2.828 0 0 1 4 4l-5.758 5.758a1.414 1.414 0 0 1-2-2L9.5 3.5"/></svg>
 
-						div( name='drag-and-drop-panel'
+						div( name='drag-and-drop-panel' 
 							class='flex justify-center items-center absolute right-0 bottom-10'
 							class='hidden peer-checked/attachment-icon-button:block'
-							class='w-96 text-slate-500 bg-slate-100'
+							class='w-96 text-slate-500 bg-slate-100 z-10'
+							class='group disabled '
 							)
 							div(name='drag-and-drop-container'
 								class='h-48 bg-slate-50 border border-slate-200'
 								class='flex-1 flex flex-col justify-center items-center gap-1'
+								class='group-[&.disabled]:border-red-300'
+								class='group-[&.disabled]:cursor-not-allowed'
 								)
+								div(class='hidden group-[&.disabled]:block absolute top-0 left-0 right-0 bg-red-400 text-white')
+									p(class='p-2 text-center') only allowed when you are in audio/video call 
+
 								span
 									<svg class='w-8 h-8' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4c0-2.05 1.53-3.76 3.56-3.97l1.07-.11l.5-.95A5.469 5.469 0 0 1 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5l1.53.11A2.98 2.98 0 0 1 22 15c0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"/></svg>
+
 								p(name='drop-text' class='text-slate-800 ') 
-									span Drag and drop files or 
-									input(type='file' multiple id='drag-and-drop-file' hidden)
+									span(class='group-[&.disabled]:text-slate-500') Drag and drop files or 
+									input(type='file' multiple id='drag-and-drop-file' hidden )
 									label(for='drag-and-drop-file' 
 										class='underline decoration-dotted'
 										class='hover:text-slate-900 cursor-pointer'
-										class=''
+										class='group-[&.disabled]:pointer-events-none group-[&.disabled]:text-slate-500'
 										) Browse
 
 								p(name='drop-text' class='text-xs') Supported formats: JPG, JPEG, PNG
@@ -362,6 +369,8 @@ block script
 								class='mt-1 bg-slate-50 border border-slate-200 '
 								class='max-h-60 overflow-y-scroll'
 								)
+
+
 
 						input(type='file' id='camera-icon-button' hidden accept='image/*')
 						label(for='camera-icon-button' type='button'

@@ -40,22 +40,22 @@ const rightSideAudioCallButton = $('[name=right-side] [name=audio-call-button]')
 const rightSideVideoCallButton = $('[name=right-side] [name=video-call-button]') 	
 
 // attachments buttons
+const attachmentsButtonsContainer = $('[name=attachments-buttons-container]')
 const attachmentsFilterImageButton = $('[name=attachments-container] [name=filter-image]') 	
 const attachmentsFilterAudioButton = $('[name=attachments-container] [name=filter-audio]') 	
 const attachmentsFilterVideoButton = $('[name=attachments-container] [name=filter-video]') 	
 const attachmentsFilterFileButton = $('[name=attachments-container] [name=filter-file]') 	
 const attachmentsViewAllButton = $('[name=attachments-container] [name=view-all]') 	
 
-
 const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
 const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
 const callPanelCallButton = $('[name=call-panel] [name=call]') 	
 const callPanelScreenShareButton = $('[name=call-panel] [name=flip-camera]') 	
 const callPanelRecordingButton = $('[name=call-panel] [name=recording]') 	
-
 const recordingPanel = $('[name=recording-panel]') 	
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
+
 
 
 /* Toggle video-container
@@ -197,10 +197,19 @@ recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecording
 
 
 //----------[ Drag-and-Drop File Upload ]----------
+const dragAndDropPanel = $('[name=drag-and-drop-panel]')
 const dragAndDropContainer = $('[name=drag-and-drop-container]')
 const dropListContainer = $('[name=drop-list-container]')
 const dragAndDropFileInput = $('[id=drag-and-drop-file]')
 const attachmentInputCheckbox = $('[id=attachment-icon-button]')
+
+
+
+/* if drag-and-dro-panel have .disabled class then don't allow upload
+**	1. disable file browser by css: pointer-events-none  or by html/js: disabled=true attribute
+**	2. disable drag-and-drop by return false from drop event handler.
+**	3. change corsor style show that visual effect of allowed/not-allowed
+*/
 
 const showDragItemsInUI = (fileArray) => {
 	// Step-1: show Files in UI
@@ -212,20 +221,26 @@ const showDragItemsInUI = (fileArray) => {
 	})
 
 	// Step-2: handle fileUpload here
-	ui.showError('file uploads handle via webRTC')
+	// ui.showError('file uploads handle via webRTC')
 
-
-	// Step-3: reset
-	setTimeout(() => {
-		dropListContainer.innerHTML = '' 						// empty list items
-		attachmentInputCheckbox.checked = false 		// hide the 'drag-and-drop-panel'
-		
-	}, 3000);
+	// // Step-3: reset
+	// setTimeout(() => {
+	// 	dropListContainer.innerHTML = '' 						// empty list items
+	// 	attachmentInputCheckbox.checked = false 		// hide the 'drag-and-drop-panel'
+	// }, 3000);
 }
 
 dragAndDropContainer.addEventListener('dragover', (evt) => {
 	evt.preventDefault()
+
+	// 2. disable drag-and-drop by return false from drop event handler.
+	if( dragAndDropPanel.classList.contains('disabled') ) {
+		evt.dataTransfer.dropEffect = 'none'
+		return false
+	}
+
 	evt.target.style.borderColor = '#2879e377'
+	evt.dataTransfer.dropEffect = "copy";
 })
 dragAndDropContainer.addEventListener('dragleave', (evt) => {
 	const rect = evt.target.getBoundingClientRect()
@@ -242,6 +257,11 @@ dragAndDropContainer.addEventListener('dragleave', (evt) => {
 dragAndDropContainer.addEventListener('drop', (evt) => {
 	evt.preventDefault()
 	evt.target.removeAttribute('style')
+
+	// 2. disable drag-and-drop by return false from drop event handler.
+	if( dragAndDropPanel.classList.contains('disabled') ) {
+		return false
+	}
 
 	const fileArray = [...evt.dataTransfer.files]
 	showDragItemsInUI(fileArray)
@@ -271,9 +291,7 @@ attachmentsViewAllButton.addEventListener('click', (evt) => {
 })
 
 
-const attachmentsButtonsContainer = $('[name=attachments-buttons-container]')
 const attachmentsButtons = Array.from( attachmentsButtonsContainer.children )
-
 attachmentsButtonsContainer.addEventListener( 'click', (evt) => {
 	if(evt.target.tagName !== 'BUTTON') return
 

@@ -570,6 +570,7 @@ export const outGoingCallDialog = () => new Promise((resolve, reject) => {
 	})
 })
 
+// home.js: showDragItemsInUI()
 export const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
 	const htmlString =`
 		<div name='drop-list' class='flex items-center gap-1 px-2 py-1 border border-slate-200'>
@@ -581,7 +582,8 @@ export const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
 				<span class=''> ( ${fileSize} ) </span>
 			</p>
 			<button name='close-button' class='p-0.5 border active:border-slate-300 rounded-full hover:text-slate-600 hover:scale-110'>
-				<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/></svg>
+				<svg name='close' class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/></svg>
+				<svg name='tick' class='hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.75 8.75l3.5 3.5l7-7.5"/></svg>
 			</button>
 		</div>
 	` 

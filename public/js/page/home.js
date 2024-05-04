@@ -2,11 +2,12 @@
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 import { createPicker } from '../plugins/picmo/index.js';
 // import WaveSurfer from '../plugins/wavesurfer/index.js'
-import { $, getReadableFileSizeString } from '../module/utils.js'
+import { $, getReadableFileSizeString, showError } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 import * as ui from '../module/ui.js'
 import * as recording from '../module/recording.js'
 import * as elements from '../module/elements.js'
+import * as store from '../module/store.js'
 import * as webRTC from '../module/webRTC.js'
 
 /*----------[ Note ]----------
@@ -55,6 +56,14 @@ const callPanelRecordingButton = $('[name=call-panel] [name=recording]')
 const recordingPanel = $('[name=recording-panel]') 	
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 const recordingPanelStopRecordingButton = $('[name=recording-panel] [name=stop-recording]') 	
+
+const dragAndDropPanel = $('[name=drag-and-drop-panel]')
+const dragAndDropContainer = $('[name=drag-and-drop-container]')
+const dropListContainer = $('[name=drop-list-container]')
+const dragAndDropFileInput = $('[id=drag-and-drop-file]')
+const attachmentInputCheckbox = $('[id=attachment-icon-button]')
+
+
 
 
 
@@ -197,14 +206,6 @@ recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecording
 
 
 //----------[ Drag-and-Drop File Upload ]----------
-const dragAndDropPanel = $('[name=drag-and-drop-panel]')
-const dragAndDropContainer = $('[name=drag-and-drop-container]')
-const dropListContainer = $('[name=drop-list-container]')
-const dragAndDropFileInput = $('[id=drag-and-drop-file]')
-const attachmentInputCheckbox = $('[id=attachment-icon-button]')
-
-
-
 /* if drag-and-dro-panel have .disabled class then don't allow upload
 **	1. disable file browser by css: pointer-events-none  or by html/js: disabled=true attribute
 **	2. disable drag-and-drop by return false from drop event handler.
@@ -212,72 +213,50 @@ const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 */
 
 const showDragItemsInUI = (fileArray) => {
-	// Step-1: show Files in UI
-
-	// send small-file in one go
-	// fileArray.forEach( async (file) => {
-	// 	try {
-			
-	// 	const buffer = await file.arrayBuffer()
-	// 	webRTC.sendFileByDataChannel(buffer)
-	// 	console.log({ file, buffer })
-
-	// 	} catch (err) {
-	// 		console.log('file.arrayBuffer() failed')	
-	// 	}
-
-	// 	dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
-	// 		fileName: file.name,
-	// 		fileSize: getReadableFileSizeString(file.size),
-	// 	}))
-	// })
-
-	// handle large file by chunks
 	fileArray.forEach( async (file) => {
+
+		const maxFileSize = 2*1024*1024*1024 		// => 2 GB
+		if(file.size > maxFileSize) {
+			showError('max file-size: 2 GB')
+			return
+		} 
+
+
 		try {
-			
-			let buffer = await file.arrayBuffer()
+			const stream = file.stream()
+			const reader = stream.getReader()
 
-			const chunkSize = 1024 * 16 		// => 16Kb is supprted by all browser
+			const handleReading = (done, value) => {
+				if(done) {
+					webRTC.sendFileByDataChannel(JSON.stringify({ done: true, name: file.name, type: file.type }))
+					store.setIsDownloading(false)
+					ui.removeDragAndDropDownloadingIndicator()
+					return
+				}
 
-			while(buffer.byteLength) {
-				const chunk = buffer.slice(0, chunkSize)
-				buffer = buffer.slice(chunkSize, buffer.byteLength)
+				webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
+				store.setIsDownloading(true) 							// no use for now
+				ui.addDragAndDropDownloadingIndicator() 	// 
 
-				webRTC.sendFileByDataChannel(chunk)
+				reader.read().then( ({ done, value }) => {
+					handleReading(done, value)
+				})
 			}
 
-			webRTC.sendFileByDataChannel(JSON.stringify({
-				name: file.name,
-				type: file.type,
-			}))
+			reader.read().then( ({ done, value }) => {
+				handleReading(done, value)
+			})
 
+
+			dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
+				fileName: file.name,
+				fileSize: getReadableFileSizeString(file.size),
+			}))
 
 		} catch (err) {
 			console.log('file.arrayBuffer() failed')	
 		}
-
-		// dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
-		// 	fileName: file.name,
-		// 	fileSize: getReadableFileSizeString(file.size),
-		// }))
 	})
-
-	// Step-2: handle fileUpload here
-	// ui.showError('file uploads handle via webRTC')
-
-	// // Step-3: reset
-	// setTimeout(() => {
-	// 	dropListContainer.innerHTML = '' 						// empty list items
-	// 	attachmentInputCheckbox.checked = false 		// hide the 'drag-and-drop-panel'
-	// }, 3000);
-
-
-	// const payload = JSON.stringify({
-	// 	name: 'riajul',
-	// 	email: 'riajul@gmail.com'
-	// })
-	// webRTC.sendFileByDataChannel(payload)
 }
 
 dragAndDropContainer.addEventListener('dragover', (evt) => {

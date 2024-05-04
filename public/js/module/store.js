@@ -15,7 +15,8 @@ const store = {
 	localStream: null,
 	remoteStream: null,
 	screenShareStream: null,
-	callType: CALL_TYPE.AUDIO_CALL
+	callType: CALL_TYPE.AUDIO_CALL,
+	isDownloading: false
 }
 
 export const getState = () => store
@@ -30,5 +31,6 @@ export const setCallType = (callType) => store.callType = callType
 export const setLocalStream = (stream) => store.localStream = stream
 export const setRemoteStream = (stream) => store.remoteStream = stream
 export const setScreenShareScream = (stream) => store.screenShareStream = stream
+export const setIsDownloading = (boolean) => store.isDownloading = boolean
 
 

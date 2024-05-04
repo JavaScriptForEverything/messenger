@@ -47,6 +47,7 @@ const recordingPanel = $('[name=recording-panel]')
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
 const rightPanelMainBlock = $('[name=right-main]')
 const dragAndDropPanel = $('[name=drag-and-drop-panel]')
+const dragAndDropDownloadingIndicator = $('[name=drag-and-drop-downloading-indicator]')
 
 let timer = 0
 let controller = null
@@ -564,9 +565,23 @@ const showAllMessagesInUI = async (receiver) => {
 export const activeDragAndDropFileSharing = () => {
 	dragAndDropPanel.classList.remove('disabled')
 }
+// activeDragAndDropFileSharing()
 // => hideVideoContainer()
 export const disableDragAndDropFileSharing = () => {
 	dragAndDropPanel.classList.add('disabled')
+}
+
+// webRTC.js: peerConnection.addEventListener('datachannel', {...})
+export const addDragAndDropDownloadingIndicator = () => {
+	if( !dragAndDropDownloadingIndicator.classList.contains('active') ) {
+		dragAndDropDownloadingIndicator.classList.add('active')	
+	}
+}
+// webRTC.js: peerConnection.addEventListener('datachannel', {...})
+export const removeDragAndDropDownloadingIndicator = () => {
+	if( dragAndDropDownloadingIndicator.classList.contains('active') ) {
+		dragAndDropDownloadingIndicator.classList.remove('active')	
+	}
 }
 
 export const showVideoContainer = () => {

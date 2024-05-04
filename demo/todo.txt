@@ -1,9 +1,9 @@
 
-- handle share-files
+- File upload show progress bar
+	. 
 
 - on new message: update friendsList latest message, instanly, without page refresh
 
-- add attachment buttons selected style
 
 Error-message dialog:
 	- add auto-close after 5sec

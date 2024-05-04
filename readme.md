@@ -61,21 +61,19 @@
 	- imageUploadDialog is fully flexible file uploader, which perform above task dynamically, if add file instead of image, then preview and image-croping will be disabled. 
 
 
-- Instant message via `Socket.io`
-	- 
-	- send text message + emoji text 
-	- send image as message + optimize image in backend
-	- Allow to capture audio via microphone
+
+### WebSocket | `socket.io`
+- send text message + emoji text 
+- send image as message + optimize image in backend
+- Allow to capture audio via microphone
 		- show audio recording in UI, 
 		- Send audio to backend as message and shows those messages in UI
 		- Show audio in `Wavefrom` format instead of simple audio 
 		- Show latest message in friendList message : text | image | audio 
-		- Handle `Dran & Drop` file upload: handle via `WebRTC`: Peer-to-Peer file sharing
 
 
-- Calling Features via `WebRTC`
-	- 
-	- Audio Call | Video Call
+### WebRTC
+- Audio Call | Video Call
 	- Show incomming-call dialog
 	- Show outgoing-call dialog
 	- Show user not-found call dialog
@@ -83,6 +81,11 @@
 	- accept call button
 	- reject call button
 
+- File upload By `WebRTC` `datachannel`
+	- Upload Large file upto 2 GB 
+	- handle file upload via `service worker` which not block main `thread`
+	- file upload is `peer-to-peer` via WebRTC DataChannel secure tunnel
+	- Handle `Dran & Drop` file upload + Browse button to open `File Manager`
 
 
 #### Routes

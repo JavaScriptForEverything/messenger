@@ -3,11 +3,18 @@ import * as store from './store.js'
 import * as wss from './wss.js'
 import { CALL_TYPE } from './constants.js'
 
+// // comes from streamSaver cdn attached to layout.pug file
+// const streamSaver = window.streamSaver
+
+
+
 // export let peerConnection = null 		// used to close peer connection on other place
 // let dataChannel = null
 
 export let peerConnection = new RTCPeerConnection()
 let dataChannel = peerConnection.createDataChannel('file-sharing')
+
+const worker = new Worker('/worker.js')
 
 /* 
 	caller-side:
@@ -194,41 +201,45 @@ export const createPeerConnection = () => {
 			ui.disableDragAndDropFileSharing()
 		})
 
-		let chunks = []
-		channel.addEventListener('message', ({ data }) => {
+		// let chunks = []
+		// channel.addEventListener('message', ({ data }) => {
 
-			if( data instanceof Blob ) {
-				chunks.push( data )
+		// 	if( data instanceof Blob ) {
+		// 		chunks.push( data )
+		// 		ui.addDragAndDropDownloadingIndicator()
 
-			} else {
-				const { name, type } = JSON.parse(data)
+		// 	} else {
+		// 		const { name, type } = JSON.parse(data)
 
-				const blob = new Blob(chunks, { type } )
-				chunks = [] 	// empty chunk after got blob 
-				downloadBlob(blob, name)
-			}
+		// 		const blob = new Blob(chunks, { type } )
+		// 		chunks = [] 	// empty chunk after got blob 
+		// 		downloadBlob(blob, name)
 
-		})
+		// 		ui.removeDragAndDropDownloadingIndicator()
+		// 	}
 
+		// })
+
+		channel.addEventListener('message', handleFileComesByDataChannel)
 	})
-	const downloadBlob = (blob, name='file.jpeg') => {
-		// console.log(blob, name)
+	// const downloadBlob = (blob, name='file.jpeg') => {
+	// 	// console.log(blob, name)
 
-		const dataUrl = URL.createObjectURL( blob )
-		const a = document.createElement('a')
-		a.href = dataUrl
-		a.download = name
+	// 	const dataUrl = URL.createObjectURL( blob )
+	// 	const a = document.createElement('a')
+	// 	a.href = dataUrl
+	// 	a.download = name
 
-		a.style.display = 'none'
-		document.body.appendChild(a)
-		a.click()
+	// 	a.style.display = 'none'
+	// 	document.body.appendChild(a)
+	// 	a.click()
 
-		setTimeout(() => {
-			document.body.removeChild(a)
-			URL.revokeObjectURL(dataUrl)
-		}, 100);
+	// 	setTimeout(() => {
+	// 		document.body.removeChild(a)
+	// 		URL.revokeObjectURL(dataUrl)
+	// 	}, 100);
 
-	}
+	// }
 }
 
 
@@ -416,4 +427,64 @@ export const sendFileByDataChannel = (payload) => {
 
 	dataChannel.send(payload)
 	// payload can be: string | Blob | arrayBuffer | TypedArray | DataView
+}
+
+const handleFileComesByDataChannel = ({ data }) => {
+	if( data.toString().includes('done') ) {
+		
+		const { name, type } = JSON.parse(data)
+		// downloadFile(name)
+		downloadFromBlob(name)
+
+	}	else {
+		worker.postMessage(data)
+		store.setIsDownloading(true)
+		ui.addDragAndDropDownloadingIndicator()
+	}
+}
+
+// const downloadFile = (name) => {
+// 	worker.postMessage('download') 		// to create blob in /worker.js file
+
+// 	worker.addEventListener('message', (evt) => {
+// 		const blob = evt.data 					// workder send blob 
+// 		const stream = blob.stream()
+
+// 		/* streamSaver is a package in front-end side to read large file as chunk by chunk
+// 				// no need write manually download code, createWriteStream will automatically do that 
+// 		*/
+// 		const writeStream = streamSaver.createWriteStream( name ) 	// comes from argument
+// 		stream.pipeTo(writeStream)
+// 		store.setIsDownloading(true)
+// 		ui.removeDragAndDropDownloadingIndicator()
+// 	})
+	
+// }
+
+const downloadFromBlob = (name) => {
+	worker.postMessage('download') 		// to create blob in /worker.js file
+
+	worker.addEventListener('message', (evt) => {
+		const blob = evt.data 					// workder send blob 
+
+		const dataUrl = URL.createObjectURL( blob )
+		const a = document.createElement('a')
+		a.href = dataUrl
+		a.download = name
+		a.style.display = 'none'
+		document.body.appendChild(a)
+		a.click()
+
+		ui.removeDragAndDropDownloadingIndicator()
+
+		setTimeout(() => {
+			document.body.removeChild(a)
+			URL.revokeObjectURL(dataUrl)
+		}, 100);
+	})
+	
+
+
+
+
 }

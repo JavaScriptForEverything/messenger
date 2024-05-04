@@ -347,6 +347,11 @@ block script
 								class='group-[&.disabled]:border-red-300'
 								class='group-[&.disabled]:cursor-not-allowed'
 								)
+
+								//- add .active class to show downloading text
+								div(name='drag-and-drop-downloading-indicator' class='hidden [&.active]:block absolute top-0 left-0 right-0 animate-pulse text-slate-500 ')
+									p(class='p-2 text-center') downloading...
+
 								div(class='hidden group-[&.disabled]:block absolute top-0 left-0 right-0 bg-red-400 text-white')
 									p(class='p-2 text-center') only allowed when you are in audio/video call 
 
@@ -362,8 +367,8 @@ block script
 										class='group-[&.disabled]:pointer-events-none group-[&.disabled]:text-slate-500'
 										) Browse
 
-								p(name='drop-text' class='text-xs') Supported formats: JPG, JPEG, PNG
-								p(name='drop-text' class='text-xs') File size: 5.5 MB
+								//- p(name='drop-text' class='text-xs') Supported formats: JPG, JPEG, PNG, ... all type
+								p(name='drop-text' class='text-xs') File size: 2 GB (max)
 
 							div(name='drop-list-container'
 								class='mt-1 bg-slate-50 border border-slate-200 '

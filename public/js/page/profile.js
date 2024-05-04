@@ -2,13 +2,14 @@ import { $, followFollowingHandler, redirectTo, showError } from '../module/util
 import * as elements from '../module/elements.js'
 import * as http from '../module/http.js'
 import * as store from '../module/store.js'
-// import * as ui from '../module/ui.js'
 import '../plugins/cropper/cropper.min.js' 			// Cropper class will be available
 
 /* Global Variables
 		. logedInUser
 		. profileUser
 */
+
+// console.log(profileUser)
 
 store.setLogedInUser(logedInUser)
 
@@ -92,7 +93,13 @@ const goToMessageButtonHandler = (evt) => {
 coverPhotoEditButton.addEventListener('click', coverPhotoEditButtonHandler)
 avatarEditButton.addEventListener('click', avatarEditButtonHandler)
 goToMessageButton.addEventListener('click', goToMessageButtonHandler)
-followUnfollowButton.addEventListener('click', followFollowingHandler)
+followUnfollowButton.addEventListener('click', async (evt) => {
+	// call http
+	const { message, data } = await http.toggleFollow(profileUser._id)
+	if(message) return showError(message)
+	// console.log(data)
+	followFollowingHandler(evt)
+})
 
 
 

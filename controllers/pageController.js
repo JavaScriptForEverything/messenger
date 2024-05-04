@@ -47,18 +47,35 @@ exports.home = async (req, res, next) => {
 // GET /user/:id   	: Other users profile
 exports.profile = async (req, res, next) => {
 	try {
-		const userId = req.params.id || req.userId 	// comes from authController.protect middleware
-		let filter = isValidObjectId(userId) ? { _id: userId } : { username: userId }
-		const logedInUser = await User.findOne( filter )
+		const logedInUserId = req.userId 	
+		let logedInUserFilter = isValidObjectId(logedInUserId) ? { _id: logedInUserId } : { username: logedInUserId }
+		const logedInUser = await User.findOne( logedInUserFilter )
+		if(!logedInUser) return new Error(`logedInUser not found`)
 
-		const filteredUser = userDto.filterUser(logedInUser._doc)
+		const profileUserId = req.params.id || req.userId 	// comes from authController.protect middleware
+		let profileUserFilter = isValidObjectId(profileUserId) ? { _id: profileUserId } : { username: profileUserId }
+		const profileUser = await User.findOne( profileUserFilter )
+		if(!profileUser) return new Error(`profileUser not found`)
+
+
+		// const userId = req.params.id || req.userId 	// comes from authController.protect middleware
+		// let filter = isValidObjectId(userId) ? { _id: userId } : { username: userId }
+		// const logedInUser = await User.findOne( filter )
+
+		// const filteredLogedInUser = userDto.filterUser(logedInUser._doc)
+		// const filteredProfileUser = userDto.filterUser(profileUser._doc)
+
 		const payload = {
-			title: `Profile | ${logedInUser.firstName} ${logedInUser.lastName}`,
-			logedInUser: filteredUser,
-			logedInUserJs: JSON.stringify( filteredUser )
-			// profileUser,
-			// profileUserJs: JSON.stringify(profileUser),
-			// timeSince
+			title: `Profile | ${profileUser.firstName} ${profileUser.lastName}`,
+			logedInUser,
+			logedInUserJs: JSON.stringify( logedInUser ),
+			profileUser,
+			profileUserJs: JSON.stringify( profileUser ),
+
+			// logedInUser: filteredLogedInUser,
+			// logedInUserJs: JSON.stringify( filteredLogedInUser ),
+			// profileUser: filteredProfileUser,
+			// profileUserJs: JSON.stringify( filteredProfileUser ),
 		}
 
 		res.render('./page/profile', payload)

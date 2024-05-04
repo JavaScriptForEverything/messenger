@@ -7,11 +7,12 @@ block script
 	//- To prevent XSS attack on inline script
 	script(nonce=cspNonce).
 		const logedInUser = !{logedInUserJs} 		// pass logedInUser to client-side too
+		const profileUser = !{profileUserJs} 		// pass profileUser to client-side too
 
-	- const fullName = `${logedInUser.firstName} ${logedInUser.lastName}`
+	- const fullName = `${profileUser.firstName} ${profileUser.lastName}`
 	div(class='min-h-screen container mx-auto font-roboto')
 		div(class='relative w-full md:w-3/4 mx-auto border-x border-slate-200 rounded-md')
-			img( name='cover-photo' src=logedInUser.coverPhoto || '/images/users/coverPhoto.png'
+			img( name='cover-photo' src=profileUser.coverPhoto || '/images/users/coverPhoto.png'
 				class='h-48 w-full object-cover'
 				)
 			button(name='cover-photo-edit-button'
@@ -29,7 +30,7 @@ block script
 						class='group'
 						)
 						img( name='avatar'
-							src=logedInUser.avatar || '/images/users/default.jpg'
+							src=profileUser.avatar || '/images/users/default.jpg'
 							class=' rounded-full object-cover border-2 border-slate-50 shadow'
 						)
 						button(name='avatar-edit-button'
@@ -42,7 +43,7 @@ block script
 
 					div(class='pt-10 flex flex-col gap-0.5 text-slate-500')
 						p(class='text-slate-700 font-semibold capitalize') #{fullName}
-						p(class='') @#{logedInUser.username || fullName.replace(' ', '')}
+						p(class='') @#{profileUser.username || fullName.replace(' ', '')}
 
 						div(class='flex gap-2 items-center')
 							p
@@ -52,7 +53,10 @@ block script
 								span(class='text-slate-900') 2 
 								a(href='#') followers
 
-				div(class='flex gap-2 pr-2 pt-2')
+				div(
+					class=`${logedInUser._id.toString() === profileUser._id.toString() ? 'hidden' : 'flex'}`
+					class='gap-2 pr-2 pt-2'
+				)
 					//- if has .active class then toggle style
 					button( name='goto-message'
 						class='text-blue-500'
@@ -70,14 +74,15 @@ block script
 						class='hover:text-blue-600 hover:border-blue-600 active:bg-blue-100'
 						class='[&.active]:bg-blue-500 [&.active]:text-slate-50'
 						class='[&.active]:hover:bg-blue-500/95 [&.active]:active:bg-blue-500/80'
-						) follow
-
+						class=profileUser.followers.includes( logedInUser._id ) ? 'active' : ''
+					)= profileUser.followers.includes( logedInUser._id ) ? 'following' : 'follow'
+					
 			div(name='user-info' class='my-2 border-b border-slate-300 px-3')
 				p(class='text-2xl text-slate-800') Basic Information
 
 				div(name='' class='flex flex-col md:flex-row gap-2 ')
 					div(class='flex-1 border border-blue-50 overflow-auto')
-						pre(class='px-2 text-slate-700') #{JSON.stringify(logedInUser, null, 2)}
+						pre(class='px-2 text-slate-700') #{JSON.stringify(profileUser, null, 2)}
 
 					//- div(class='flex-1 border border-blue-500')
 						p right

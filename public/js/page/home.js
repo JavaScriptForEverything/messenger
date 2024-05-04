@@ -64,6 +64,8 @@ const dragAndDropFileInput = $('[id=drag-and-drop-file]')
 const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 
+// by default hide file sharing on page load
+attachmentInputCheckbox.checked = false
 
 
 

@@ -46,12 +46,15 @@ block script
 						p(class='') @#{profileUser.username || fullName.replace(' ', '')}
 
 						div(class='flex gap-2 items-center')
-							p
-								span(class='text-slate-900') 1 
+							- const followings = profileUser.followings.length
+							- const followers = profileUser.followers.length
+							p(class='flex gap-1')
+								span(class='text-slate-900') #{followings}
 								a(href='#') following 
-							p
-								span(class='text-slate-900') 2 
+							p(class='flex gap-1')
+								span(class='text-slate-900') #{followers}
 								a(href='#') followers
+
 
 				div(
 					class=`${logedInUser._id.toString() === profileUser._id.toString() ? 'hidden' : 'flex'}`
@@ -77,7 +80,37 @@ block script
 						class=profileUser.followers.includes( logedInUser._id ) ? 'active' : ''
 					)= profileUser.followers.includes( logedInUser._id ) ? 'following' : 'follow'
 					
-			div(name='user-info' class='my-2 border-b border-slate-300 px-3')
+
+			//- Followers & Followings Section 
+			div(class='border border-slate-100 shadow-sm mt-1')
+				nav(name='tabs-container' class='grid grid-cols-2 ')
+					a(
+						href="#followers-tab" 
+						class='border-b border-slate-100 hover:bg-blue-100 text-center p-2 '
+						class='active [&.active]:border-blue-400 [&.active]:text-blue-500'
+					) Followers
+
+					a(
+						href="#followings-tab" 
+						class='border-b border-slate-100 hover:bg-blue-100 text-center p-2 '
+						class='[&.active]:border-blue-400 [&.active]:text-blue-500'
+					) Followings
+
+
+				//- if has .active then shows 2nd tab, else first tab
+				div(name='tabs-content-container' class='group border-b border-slate-200 py-1.5 px-3 mb-1')
+					div(name='followers-container' class='block group-[&.active]:hidden' ) 
+						p followers is empty
+					div(name='followings-container' class='hidden group-[&.active]:block') 
+						p followings is empty
+
+					div(name='loading-container' hidden class='h-full flex flex-col justify-center items-center') 
+						p(name='not-found' class='hidden text-slate-500') No tweets founds
+						span(name='loading-icon' class='text-blue-500')
+							<svg class='w-12 h-12' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="2" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(45 12 12)"><animate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(90 12 12)"><animate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(135 12 12)"><animate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(180 12 12)"><animate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(225 12 12)"><animate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(270 12 12)"><animate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(315 12 12)"><animate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>
+
+
+			//- div(name='user-info' class='my-2 border-b border-slate-300 px-3')
 				p(class='text-2xl text-slate-800') Basic Information
 
 				div(name='' class='flex flex-col md:flex-row gap-2 ')

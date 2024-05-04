@@ -232,3 +232,23 @@ export const updateUserPhotos = async (userId, body) => {
 		return err
 	}
 }
+
+
+// GET 	/api/users/:id/followers-followings
+export const getFollowFollowing = async (selectedUserId) => {
+	try {
+		const res = await fetch(`/api/users/${selectedUserId}/followers-followings`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			},
+		})
+		if( !res.ok ) throw await res.json()
+
+		return await res.json()
+
+	} catch (err) {
+		return err
+	}
+}

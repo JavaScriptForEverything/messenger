@@ -25,4 +25,7 @@ const router = Router()
 	router.route('/:id/follow-unfollow')
 		.patch(authController.protect, userController.toggleFollow)
 
+	router.route('/:id/followers-followings')
+		.get(authController.protect, userController.getFollowFollowing)
+
 module.exports = router

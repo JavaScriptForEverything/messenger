@@ -194,7 +194,7 @@ exports.updateUserPhotos = catchAsync( async (req, res, next) => {
 
 
 
-// PATCH /api/users/:id/follow-unfollow + protect
+// PATCH /api/users/:id/follow-unfollow 		+ protect
 exports.toggleFollow = catchAsync( async (req, res, next) => {
 	const logedInUserId = req.userId
 	const activeUserId = req.params.id
@@ -219,5 +219,26 @@ exports.toggleFollow = catchAsync( async (req, res, next) => {
 	res.status(200).json({
 		status: 'success',
 		data: updatedActiveUser 	
+	})
+})
+
+
+// GET /api/users/:id/followers-followings 		+ protect
+exports.getFollowFollowing = catchAsync(async (req, res, next) => {
+	const userId = req.params.id
+
+	const users = await User.findById(userId).select('followers followings')
+	.populate({
+		path: 'followers',
+		select: 'avatar firstName lastName'
+	})
+	.populate({
+		path: 'followings',
+		select: 'avatar firstName lastName'
+	})
+
+	res.status(200).json({
+		status: 'success',
+		data: users
 	})
 })

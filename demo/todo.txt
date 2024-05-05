@@ -5,6 +5,8 @@
 - on new message: update friendsList latest message, instanly, without page refresh
 
 
+Probme:
+	- webRTC screenShare got nested screens
 
 Problem:
 	. call recording stopped when switching webCam <==> screenShare

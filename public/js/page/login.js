@@ -4,6 +4,7 @@ const loginForm = $('[name=login-form]')
 
 const errorSmall = $('[name=file-container] [name=error-message]')
 const inputElements = document.querySelectorAll('[name=field-container] input')
+const loginButton = $('[name=login]')
 
 
 // clear form on page load
@@ -26,6 +27,10 @@ loginForm.addEventListener('submit', async (evt) => {
 	const formData = new FormData(evt.target)
 	const fields = Object.fromEntries( formData )
 
+	console.log('login')
+	loginButton.disabled = true
+
+
 
 	try {
 		const res = await fetch('/api/auth/login', {
@@ -40,6 +45,7 @@ loginForm.addEventListener('submit', async (evt) => {
 
 		const { status, data } = await res.json()
 		// console.log(data)
+		loginButton.disabled = false
 		if(status === 'success') redirectTo('/')
 
 	} catch (err) {

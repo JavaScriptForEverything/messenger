@@ -1,4 +1,4 @@
-import { $, readAsDataURL, redirectTo, showError } from '../module/utils.js'
+import { $, readAsDataURL, redirectTo, showError, showSuccess } from '../module/utils.js'
 
 const registerForm = $('[name=register-form]')
 
@@ -7,6 +7,7 @@ const avatarImg = $('[name=avatar-img]')
 const avatarInput = $('[name=avatar]')
 const errorSmall = $('[name=file-container] [name=error-message]')
 const inputElements = document.querySelectorAll('[name=field-container] input')
+const registerButton = $('[name=register]')
 
 
 // clear form on page load
@@ -55,11 +56,10 @@ registerForm.addEventListener('submit', async (evt) => {
 	const fields = Object.fromEntries( formData )
 
 	fields.avatar = avatarImg.src.startsWith('data:image') ? avatarImg.src : ''
+	registerButton.disabled = true
+
 
 	try {
-		// const { data } = await axios.post('/api/auth/register', fields)
-		// console.log(data.data)
-
 		const res = await fetch('/api/auth/register', {
 			method: 'POST',
 			body: JSON.stringify( fields ),
@@ -70,10 +70,14 @@ registerForm.addEventListener('submit', async (evt) => {
 
 		// throw error
 		if(!res.ok) throw await res.json()
-
 		const { data } = await res.json()
-		console.log(data)
-		// redirectTo('/login')
+
+		registerButton.disabled = false
+		showSuccess('Registation is successfull')
+		
+		setTimeout(() => {
+			redirectTo('/login')
+		}, 2000);
 
 	} catch (err) {
 		console.log(err)

@@ -18,6 +18,15 @@ export const showError = (message, reason) => {
 		closeTime: 3000
 	})
 }
+export const showSuccess = (message, reason) => {
+	// console.log(message)
+	Snackbar({
+		severity: 'success',
+		message,
+		autoClose: true,
+		closeTime: 3000
+	})
+}
 
 // it prevent HTML XSS Attack
 export const encodeHTML = (string) => string

@@ -16,14 +16,14 @@ block script
 						label: 'First Name',
 						name: 'firstName',
 						placeholder: 'First Name',
-						value: firstName || 'ayan',
+						value: firstName || '',
 						required: true,
 					})
 					+TextField({
 						label: 'Last Name',
 						name: 'lastName',
 						placeholder: 'Last Name',
-						value: lastName || 'hossain',
+						value: lastName || '',
 						required: true,
 					})
 
@@ -32,7 +32,7 @@ block script
 					name: 'email',
 					type: 'email',
 					placeholder: 'abc@gmail.com',
-					value: email || 'ayan@gmail.com',
+					value: email || '',
 					helperText: 'email address is invalied',
 					required: true
 				})
@@ -41,7 +41,7 @@ block script
 					name: 'password',
 					type: 'password',
 					placeholder: 'yourPa$$w0rd',
-					value: password || 'asdfasdf',
+					value: password || '',
 					helperText: 'password is too short',
 					required: true
 				})
@@ -51,7 +51,7 @@ block script
 					id: 'confirmPassword',
 					type: 'password',
 					placeholder: 're-type your password again',
-					value: confirmPassword || 'asdfasdf',
+					value: confirmPassword || '',
 					helperText: 'confirmPassword not matched',
 					required: true
 				})
@@ -75,12 +75,18 @@ block script
 
 
 				div(class='mt-1 ')
-					+Button({
-						value: 'Register',
-						type: 'submit',
-						size: 'py-2',
-						variant: 'contained',
-					})
+					button( name='register' 
+						class='w-full py-2 bg-blue-500 text-slate-50 uppercase'
+						class='flex justify-center items-center'
+						class='rounded shadow border border-blue-600'
+						class='hover:bg-blue-600/90 active:bg-blue-600'
+						class='disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-400/30'
+						class='group'
+					) 
+						span(class='block group-disabled:hidden') Register
+						span(class='hidden group-disabled:block') 
+							<svg class='pointer-events-none w-6 h-6' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+			
 			
 			.text-center
 				a.text-blue-500.underline.decoration-dotted(href="/login") Already have an account ? login here

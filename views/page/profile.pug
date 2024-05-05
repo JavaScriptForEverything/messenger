@@ -10,6 +10,7 @@ block script
 		const profileUser = !{profileUserJs} 		// pass profileUser to client-side too
 
 	- const fullName = `${profileUser.firstName} ${profileUser.lastName}`
+	- const isOwner = profileUser._id.toString() === logedInUser._id.toString() 
 	div(class='min-h-screen container mx-auto font-roboto')
 		div(class='relative w-full md:w-3/4 mx-auto border-x border-slate-200 rounded-md')
 			img( name='cover-photo' src=profileUser.coverPhoto || '/images/users/coverPhoto.png'
@@ -18,6 +19,7 @@ block script
 			button(name='cover-photo-edit-button'
 				class=' bg-slate-50 text-blue-500 shadow rounded-full p-1 '
 				class='absolute right-3 top-3 hover:scale-105 transition-transform duration-75'
+				class=isOwner ? 'block' : 'hidden'
 				)
 				<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m14.06 9.02l.92.92L5.92 19H5v-.92zM17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/></svg>
 
@@ -37,7 +39,8 @@ block script
 							class='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
 							class='bg-blue-400/50 p-20 text-blue-700'
 							class='opacity-0 group-hover:opacity-100 transition-opacity duration-100'
-						)
+							class=isOwner ? 'block' : 'hidden'
+							)
 							<svg class='w-14 h-14 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m8 3a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 2a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3"/></svg>
 
 

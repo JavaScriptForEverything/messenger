@@ -119,10 +119,16 @@ exports.updateUserById = catchAsync( async (req, res, next) => {
 	})
 })
 
-// PATCH /api/users/:id/photos
+// PATCH /api/users/:id/photos + protected
 exports.updateUserPhotos = catchAsync( async (req, res, next) => {
-	const userId = req.params.id
+	const logedInUserId = req.userId
+	const userId = req.params.id 			// profileUser.id
 	if( !isValidObjectId(userId) ) return next(appError(`userId: ${userId} is invalid, please provide valid Id`))
+
+	if( logedInUserId !== userId ) {
+		return next(appError('sorry only logedInUser can update his photos'))
+	} 
+
 
 	const { avatar, coverPhoto } = req.body
 

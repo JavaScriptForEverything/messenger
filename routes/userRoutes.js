@@ -20,7 +20,7 @@ const router = Router()
 		.patch(userController.updateUserById)
 
 	router.route('/:id/photos')
-		.patch(userController.updateUserPhotos)
+		.patch(authController.protect, userController.updateUserPhotos)
 
 	router.route('/:id/follow-unfollow')
 		.patch(authController.protect, userController.toggleFollow)

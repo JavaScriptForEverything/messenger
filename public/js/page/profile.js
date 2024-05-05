@@ -45,7 +45,7 @@ const coverPhotoEditButtonHandler = (evt) => {
 				dialog.remove()
 				return
 			}
-			console.log(data)
+			// console.log(data)
 			coverPhotoImg.src = data.coverPhoto
 			dialog.remove()
 

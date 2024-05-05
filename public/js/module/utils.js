@@ -10,7 +10,7 @@ export const redirectTo = (path, { base='' } = {}) => {
 }
 
 export const showError = (message, reason) => {
-	console.log(message)
+	// console.log(message)
 	Snackbar({
 		severity: 'error',
 		message,

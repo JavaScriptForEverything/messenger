@@ -1,4 +1,4 @@
-import { $, readAsDataURL, redirectTo } from '../module/utils.js'
+import { $, readAsDataURL, redirectTo, showError } from '../module/utils.js'
 
 const registerForm = $('[name=register-form]')
 
@@ -23,7 +23,10 @@ avatarInput.addEventListener('change', async (evt) => {
 	errorSmall.hidden = true
 	errorSmall.textContent = ''
 
+	const maxSize = 1*1024*1024
 	const file = evt.target.files[0]
+	if(file.size > maxSize) return showError('please add file bellow 1 MB')
+
 	try {
 		const dataUrl = await readAsDataURL(file)
 		avatarImg.src = dataUrl

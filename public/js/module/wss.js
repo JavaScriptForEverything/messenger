@@ -36,7 +36,7 @@ export const registerSocketEvents = (socket) => {
 	})
 
 	socket.on('error', ({ message, reason }) => {
-		ui.showError(message, reason)
+		showError(message, reason)
 	})
 	socket.on('user-joinded', async ({ rooms }) => {
 
@@ -109,7 +109,7 @@ export const registerSocketEvents = (socket) => {
 			ui.calleeNotFoundHandler()
 		}
 		if(offerType === OFFER_TYPE.CALL_UNAVAILABLE) {
-			ui.showError('call CALL_UNAVAILABLE')
+			showError('call CALL_UNAVAILABLE')
 			// console.log({ offerType, callStatus })
 		}
 

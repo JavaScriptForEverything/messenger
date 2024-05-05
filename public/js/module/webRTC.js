@@ -2,6 +2,7 @@ import * as ui from './ui.js'
 import * as store from './store.js'
 import * as wss from './wss.js'
 import { CALL_TYPE } from './constants.js'
+import { showError } from './utils.js'
 
 // // comes from streamSaver cdn attached to layout.pug file
 // const streamSaver = window.streamSaver
@@ -38,7 +39,7 @@ export const getLocalPreview = async () => {
 		ui.updateLocalStream(stream)
 
 	} catch (err) {
-		ui.showError(err.message)
+		showError(err.message)
 		// console.log(err)		
 	}
 }
@@ -137,6 +138,7 @@ export const createPeerConnection = () => {
 	
 	// Step-4.1: add localStream to peerConnection
 	const { localStream } = store.getState()
+	if(!localStream) return showError('localStream missing')
 	localStream.getTracks().forEach( track => {
 		peerConnection.addTrack(track, localStream)
 	})
@@ -263,7 +265,7 @@ export const sendWebRTCOffer = async () => {
 		})
 
 	} catch (err) {
-		ui.showError(`send offer failed: ${err.message}`)
+		showError(`send offer failed: ${err.message}`)
 		// console.log(err)
 	}
 }
@@ -285,7 +287,7 @@ export const handleWebRTCOfferAndSendAnswer = async ({ callerUserId, offer }) =>
 
 
 	} catch (err) {
-		ui.showError(`send answer failed: ${err.message}`)
+		showError(`send answer failed: ${err.message}`)
 		// console.log(err)
 	}
 }
@@ -299,7 +301,7 @@ export const handleWebRTCAnswer = async ({ answer }) => {
 		await peerConnection.setRemoteDescription(answer)
 		
 	} catch (err) {
-		ui.showError(`handle answer failed: ${err.message}`)
+		showError(`handle answer failed: ${err.message}`)
 		// console.log(err)
 	}
 }
@@ -314,7 +316,7 @@ export const handleIceCandidate = async ({ candidate }) => {
 		await peerConnection.addIceCandidate(candidate)
 		
 	} catch (err) {
-		ui.showError(`handle icecandidate failed: ${err.message}`)
+		showError(`handle icecandidate failed: ${err.message}`)
 		// console.log(err)
 	}
 }
@@ -333,7 +335,7 @@ export const closeHandler = async () => {
 		ui.turnOffWebCam()
 		
 	} catch (err) {
-		ui.showError(`webRTC close failed: ${err.message}`)
+		showError(`webRTC close failed: ${err.message}`)
 		// console.log(err)
 	}
 	
@@ -383,7 +385,7 @@ export const turnOnScreenShare = async () => {
 
 
 	} catch (err) {
-		ui.showError(`screenShare failed: ${err.message}`)
+		showError(`screenShare failed: ${err.message}`)
 		// console.log(err)
 	}
 }
@@ -413,7 +415,7 @@ export const turnOffScreenShare = async () => {
 
 
 	} catch (err) {
-		ui.showError(`screenShare failed: ${err.message}`)
+		showError(`screenShare failed: ${err.message}`)
 		// console.log(err)
 	}
 }

@@ -15,8 +15,8 @@ export const addOnlineProperty = (data) => {
 	const rooms = store.getState().rooms
 	const logedInUser = store.getState().logedInUser
 	
-	// const usersIds = []
-	const usersIds = tempUserIds
+	const usersIds = []
+	// const usersIds = tempUserIds
 	let output = null
 
 	rooms

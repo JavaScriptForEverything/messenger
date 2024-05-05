@@ -41,7 +41,7 @@ const coverPhotoEditButtonHandler = (evt) => {
 				aspectRatio: 'video',
 			})
 			if(message) {
-				// ui.showError(message)
+				// showError(message)
 				dialog.remove()
 				return
 			}

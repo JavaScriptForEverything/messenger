@@ -105,7 +105,7 @@ microphoneInsideInput.addEventListener('click', async (evt) => {
 
 		} catch (err) {
 			const message = `Microphone Permission: ${err.message}`
-			ui.showError(message)
+			showError(message)
 		}
 
 
@@ -317,8 +317,8 @@ attachmentsFilterAudioButton.addEventListener('click', handleAttachment('audio')
 attachmentsFilterVideoButton.addEventListener('click', handleAttachment('video'))
 attachmentsFilterFileButton.addEventListener('click', handleAttachment('file'))
 attachmentsViewAllButton.addEventListener('click', (evt) => {
-	ui.showError('handle view all ')
-	console.log('view all')
+	showError('handle view all ')
+	// console.log('view all')
 })
 
 

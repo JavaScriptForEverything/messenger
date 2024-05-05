@@ -183,7 +183,6 @@ exports.updateUserPhotos = catchAsync( async (req, res, next) => {
 		try {
 			const { error, url } = await fileService.handleBase64File(avatar, '/users')
 			if(error) throw new Error(url)
-			console.log({ url })
 
 			user.avatar = url
 			updatedUser = await user.save() 								// save changes

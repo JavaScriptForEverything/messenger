@@ -5,13 +5,6 @@
 - on new message: update friendsList latest message, instanly, without page refresh
 
 
-Error-message dialog:
-	- add auto-close after 5sec
-	- hide others before shows new one (if exists)
-
-
-Problem:
-	. can't close call if call accepted and without closing navigating to /profile page
 
 Problem:
 	. call recording stopped when switching webCam <==> screenShare
@@ -28,12 +21,6 @@ Problem:
 	. multiple image 
 	. set uploaded image size
 	. show image size crose limit error in both frontend and backend side
-
-
-handle audio/video call
-	. handle drag and drop file upload
-	 		. add progress bar in bottom,
-	 		. show file-upload progress on file uploading type
 
 
 

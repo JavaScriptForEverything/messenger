@@ -13,7 +13,9 @@ export const showError = (message, reason) => {
 	console.log(message)
 	Snackbar({
 		severity: 'error',
-		message
+		message,
+		autoClose: true,
+		closeTime: 3000
 	})
 }
 

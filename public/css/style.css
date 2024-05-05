@@ -872,8 +872,8 @@ video {
   margin-top: auto;
 }
 
-.mb-10 {
-  margin-bottom: 2.5rem;
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .block {
@@ -1189,12 +1189,12 @@ video {
   grid-auto-flow: column;
 }
 
-.grid-cols-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .grid-rows-12 {
@@ -2265,14 +2265,6 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.hover\:border-b:hover {
-  border-bottom-width: 1px;
-}
-
-.hover\:border-none:hover {
-  border-style: none;
-}
-
 .hover\:border-blue-500:hover {
   --tw-border-opacity: 1;
   border-color: rgb(59 130 246 / var(--tw-border-opacity));
@@ -2307,14 +2299,9 @@ video {
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
-.hover\:border-blue-300:hover {
-  --tw-border-opacity: 1;
-  border-color: rgb(147 197 253 / var(--tw-border-opacity));
-}
-
-.hover\:border-blue-400:hover {
-  --tw-border-opacity: 1;
-  border-color: rgb(96 165 250 / var(--tw-border-opacity));
+.hover\:bg-blue-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(219 234 254 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-blue-50:hover {
@@ -2418,11 +2405,6 @@ video {
 
 .hover\:bg-slate-700\/70:hover {
   background-color: rgb(51 65 85 / 0.7);
-}
-
-.hover\:bg-blue-100:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(219 234 254 / var(--tw-bg-opacity));
 }
 
 .hover\:text-blue-500:hover {
@@ -2805,10 +2787,6 @@ video {
   display: block;
 }
 
-.group>*:not(.active) .group-\[\&\>\*\:not\(\.active\)\]\:block {
-  display: block;
-}
-
 .group.active .group-\[\&\.active\]\:hidden {
   display: none;
 }
@@ -2966,14 +2944,14 @@ video {
   background-color: rgb(59 130 246 / 0.9);
 }
 
-.\[\&\.active\]\:text-slate-50.active {
-  --tw-text-opacity: 1;
-  color: rgb(248 250 252 / var(--tw-text-opacity));
-}
-
 .\[\&\.active\]\:text-blue-500.active {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
+}
+
+.\[\&\.active\]\:text-slate-50.active {
+  --tw-text-opacity: 1;
+  color: rgb(248 250 252 / var(--tw-text-opacity));
 }
 
 .\[\&\.active\]\:hover\:bg-blue-500\/95:hover.active {

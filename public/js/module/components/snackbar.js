@@ -136,7 +136,7 @@ export const Snackbar = (props={}) => {
 
 
 	const snackbarWrapper = `
-		<div class="max-w-sm shadow-2xl z-50 absolute ${position} ">
+		<div name='alert-dialog' class="max-w-sm shadow-2xl z-50 absolute ${position} ">
 			${htmlString}
 		</div>
 	`
@@ -148,6 +148,8 @@ export const Snackbar = (props={}) => {
 	if( !element ) return console.error('element is null')
 	const closeButton = element.querySelector('button')
 
+	// delete all opened alert before show new one
+	document.querySelectorAll('[name=alert-dialog]').forEach( el => el.remove())
 	document.body.insertAdjacentElement('beforeend', element)
 
 	const closeHandler = () => element.remove()

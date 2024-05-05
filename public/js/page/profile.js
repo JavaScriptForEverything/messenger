@@ -34,10 +34,9 @@ const coverPhotoEditButtonHandler = (evt) => {
 		type: 'image',
 		round: false,
 		onSave: async ({ dialog, files }) => {
-			const { logedInUserId } = store.getState()
 			const coverPhoto = files[0].dataUrl
 
-			const { message, data } = await http.updateUserPhotos(logedInUserId, { 
+			const { message, data } = await http.updateUserPhotos(profileUser._id, { 
 				coverPhoto,
 				aspectRatio: 'video',
 			})
@@ -59,10 +58,9 @@ const avatarEditButtonHandler = (evt) => {
 		type: 'image',
 		round: true,
 		onSave: async ({ dialog, files }) => {
-			const { logedInUserId } = store.getState()
 			const avatar = files[0].dataUrl
 
-			const { message, data } = await http.updateUserPhotos(logedInUserId, { 
+			const { message, data } = await http.updateUserPhotos(profileUser._id, { 
 				avatar,
 				aspectRatio: 'square',
 			})

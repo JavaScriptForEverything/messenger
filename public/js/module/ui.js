@@ -1,5 +1,5 @@
 import { Snackbar } from './components/index.js'
-import { $, redirectTo, readAsDataURL, followFollowingHandler } from './utils.js'
+import { $, showError, redirectTo, readAsDataURL, followFollowingHandler } from './utils.js'
 import * as elements from '../module/elements.js'
 import * as http from './http.js'
 import * as wss from './wss.js'
@@ -618,13 +618,13 @@ export const hideVideoContainer = () => {
 }
 
 
-export const showError = (message, reason) => {
-	// console.log(message)
-	Snackbar({
-		severity: 'error',
-		message
-	})
-}
+// export const showError = (message, reason) => {
+// 	// console.log(message)
+// 	Snackbar({
+// 		severity: 'error',
+// 		message
+// 	})
+// }
 
 export const showFriendsNotFoundUI = () => leftMainContainer.classList.remove('active')
 export const showFriendsListContainerUI = () => leftMainContainer.classList.add('active')

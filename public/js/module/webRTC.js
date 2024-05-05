@@ -138,8 +138,8 @@ export const createPeerConnection = () => {
 	
 	// Step-4.1: add localStream to peerConnection
 	const { localStream } = store.getState()
-	if(!localStream) return showError('localStream missing')
-	localStream.getTracks().forEach( track => {
+
+	localStream?.getTracks().forEach( track => {
 		peerConnection.addTrack(track, localStream)
 	})
 

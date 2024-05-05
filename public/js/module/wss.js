@@ -2,7 +2,8 @@ import * as ui from './ui.js'
 import * as store from './store.js'
 import * as http from './http.js'
 import * as webRTC from './webRTC.js'
-import { CALL_STATUS, OFFER_TYPE, WEB_RTC_SIGNAL } from '../module/constants.js'
+import { showError } from './utils.js'
+import { CALL_STATUS, OFFER_TYPE } from '../module/constants.js'
 
 /* Global Variables 	
 		. io
@@ -43,13 +44,17 @@ export const registerSocketEvents = (socket) => {
 
 		const { data: friends, message } = await http.getFilteredUsers()
 		if(message) {
-			ui.showError(message)
+			showError(message)
+
 			ui.showFriendsNotFoundUI()
 			return
 		}
 
+		// friends.forEach( friend => store.setFriend(friend))
 		ui.showFriendsListContainerUI()
 		ui.showFriendLists(friends)
+		// ui.showFriendLists(store.getState().friends)
+		// console.log(friends)
 	})
 
 	socket.on('typing', ({ activeUserId }) => {

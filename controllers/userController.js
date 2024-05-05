@@ -25,11 +25,26 @@ exports.getAllUsers = catchAsync( async (req, res, next) => {
 exports.getAllFriends = catchAsync( async (req, res, next) => {
 	const logedInUserId = req.userId
 
-	// friends = followers + followings
-	const filter = { _id: { $ne: logedInUserId }}
-	const users = await apiFeatures(User, req.query, filter).populate('latestMessage')
+	// // friends = followers + followings
+	// const filter = { _id: { $ne: logedInUserId }}
+	// const users = await apiFeatures(User, req.query, filter).populate('latestMessage')
+	// // filter users fields and instead of populate user populate frields virtual property of followers + followings
 
-	// filter users fields and instead of populate user populate frields virtual property of followers + followings
+	const logedInUser = await User.findById(logedInUserId)
+	const filter = { 
+		$and: [
+			{ _id: { $ne: logedInUserId }, },
+			{ _id: { $in: logedInUser.followings } }
+		]
+	}
+	// get those users who are in followings 
+	// const users = await apiFeatures(User, req.query, filter).populate('latestMessage')
+
+
+	const users = await User.find( filter )
+		.select('firstName lastName avatar latestMessage')
+		.populate('latestMessage')
+
 
 
 	// setTimeout(() => {

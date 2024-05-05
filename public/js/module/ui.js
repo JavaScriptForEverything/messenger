@@ -455,7 +455,11 @@ const selectedUserHandler = (user) => {
 	const avatarBadge = selectedUserListContainer.querySelector('[name=avatar-badge]')
 	const name = selectedUserListContainer.querySelector('[name=username]')
 	
-	if(!user) return showError(` user._id = ${user?._id} error`)
+	if(!user) {
+		showFriendsNotFoundUI()
+		// showError(` user._id = ${user?._id} error`)
+		return 
+	}
 	
 	store.setActiveUserId(user._id)
 	
@@ -626,6 +630,7 @@ export const hideVideoContainer = () => {
 // 	})
 // }
 
+// => selectedUserHandler()
 export const showFriendsNotFoundUI = () => leftMainContainer.classList.remove('active')
 export const showFriendsListContainerUI = () => leftMainContainer.classList.add('active')
 	
@@ -650,8 +655,8 @@ export const showFriendLists = (friends=[]) => {
 
 			// --- Notification details
 			// isNoNotification: true, 			// hide both new notification + success notification
-			isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
-			notificationValue:  2,
+			// isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
+			// notificationValue:  2,
 			// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 		})
 	})
@@ -1050,11 +1055,38 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 			if(evt.target.tagName === 'BUTTON') {
 				const container = evt.target.closest('[name=list-container]')
 
-				const { error, data } = await http.toggleFollow(container.id)
+				const { error, data:friend } = await http.toggleFollow(container.id)
 				if(error) return showError(error)
 
 				// make current users active style
-				followFollowingHandler(evt)
+				followFollowingHandler(evt) 					// style button
+				// getAllFriends again
+
+				const friends = Array.from(friendsListContainer.children)
+				const findFriend = friends.find( currentFriend => currentFriend.id === friend.id )
+				if(!findFriend) {
+					elements.createFirendList(friendsListContainer, {
+						// --- user details
+						id: friend.id,
+						avatar: friend.avatar,
+						name: friend.fullName,
+						isActive: friend.isOnline,
+
+						// --- latestMessage 	details
+						type: friend.latestMessage?.type,
+						message: friend.latestMessage?.message,			
+						createdAt: friend.latestMessage?.createdAt, 
+
+						// --- Notification details
+						// isNoNotification: true, 			// hide both new notification + success notification
+						// isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
+						// notificationValue:  2,
+						// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
+					})
+				} else {
+					findFriend.remove()
+				}
+
 
 
 			} else {

@@ -26,9 +26,9 @@
 ![complete-large-file-shared](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/complete-large-file-shared.png)
 
 
-#### Project Design 	[/public/images/project_design](https://github.com/JavaScriptForEverything/messenger/tree/master/public/images/project_design)
+#### Project Demo 	[youtube](https://youtu.be/kSjMMZKbKgQ)
 
-#### Project Demo 	[youtube]()
+#### Project Design 	[/public/images/project_design](https://github.com/JavaScriptForEverything/messenger/tree/master/public/images/project_design)
 
 
 

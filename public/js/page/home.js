@@ -140,9 +140,10 @@ rightSideVideoCallButton.addEventListener('click', (evt) => {
 })
 
 
+
+
 callPanelMicrophoneButton.addEventListener('click', (evt) => {
 	// console.log('microphone')
-
 	if(evt.target.classList.contains('called')) {
 		evt.target.classList.remove('called')
 		webRTC.toggleMute(true)

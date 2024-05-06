@@ -124,6 +124,9 @@ Problem: `icecandidate` event not triggering after successfully set offer and an
 */
 
 export const createPeerConnection = () => {
+	ui.resetCallMute()
+	ui.resetCallCamera()
+
 	const constrains = {
 		iceServers: [ { urls: 'stun:stun.1.google.com:13902' } ]
 	}

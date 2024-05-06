@@ -7,21 +7,13 @@ import * as webRTC from './webRTC.js'
 import * as store from './store.js'
 import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
 
-// const middleTop = $('[name=middle-top]')
-// const middleTopAvatar = middleTop.querySelector('[name=avatar]')
-// const middleTopUsername = middleTop.querySelector('[name=username]')
-// console.log(middleTopAvatar, middleTopUsername)
 const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
 const leftPannelSlideButtonInputCheckbox = $('#left-side-checkbox')
-// const friendsNotFound = $('[name=friends-not-found]') 	
 const leftMainContainer = $('[name=left-main]')
 const friendsListContainer = $('[name=friends-list-container]') 	
 const middleMainContainer = $('[name=middle-main]')
 const chatContainer = $('[name=chat-container]') 	
-// const messageContainer = $('[name=message-container]') 	
-// const textMessagesContainer = $('[name=text-message-container]') 			// only override messages not video containers too used for video call
 
-// const attachmentButtonInput = $('#attachment-icon-button')
 const sendMessageForm = $('form[name=middle-bottom]')
 const writeMessageInput = $('[name=write-message-input]') 	
 const cameraIconButtonInput = $('#camera-icon-button')
@@ -38,10 +30,9 @@ const rightSideVideoCallButton = $('[name=right-side] [name=video-call-button]')
 const messagesContainer = $('[name=message-container]') 	
 const callPanel = $('[name=call-panel]') 	
 
-// const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
-// const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
-// const callPanelScreenShareButton = $('[name=call-panel] [name=flip-camera]') 	
 const callPanelRecordingButton = $('[name=call-panel] [name=recording]') 	
+const callPanelMicrophoneButton = $('[name=call-panel] [name=microphone-on-off]') 	
+const callPanelCameraButton = $('[name=call-panel] [name=camera-on-off]') 	
 
 const recordingPanel = $('[name=recording-panel]') 	
 const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause]') 	
@@ -54,6 +45,18 @@ let controller = null
 
 
 
+// webRTC: createPeerConnection()
+export const resetCallMute = () => {
+	if(callPanelMicrophoneButton.classList.contains('called')) {
+		callPanelMicrophoneButton.classList.remove('called')
+	} 
+}
+// webRTC: createPeerConnection()
+export const resetCallCamera = () => {
+	if(callPanelCameraButton.classList.contains('called')) {
+		callPanelCameraButton.classList.remove('called')
+	} 
+}
 
 
 

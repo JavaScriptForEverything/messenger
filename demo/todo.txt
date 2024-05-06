@@ -1,5 +1,3 @@
-- when add user in left-side friendsList, add active if he is online
-
 - File upload show progress bar
 	. 
 

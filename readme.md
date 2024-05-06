@@ -17,6 +17,15 @@
 ![incomming-and-outgoing-call](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/incomming-outgoing-dialog.png)
 
 
+![call-engaged](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/called-engaged.png)
+
+![active-users](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/active-users.png)
+
+![start-larg-file-sharing](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/start-larg-file-sharing.png)
+
+![complete-large-file-shared](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/complete-large-file-shared.png)
+
+
 #### Project Design 	[/public/images/project_design](https://github.com/JavaScriptForEverything/messenger/tree/master/public/images/project_design)
 
 

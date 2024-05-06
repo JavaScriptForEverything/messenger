@@ -780,18 +780,20 @@ export const audioCallHandler = async () => {
 		const callType = CALL_TYPE.AUDIO_CALL 
 		store.setCallType(callType)
 
-		webRTC.getLocalPreview() 		// caller-side
-		wss.sendPreOffer({ 
-			callerUserId: logedInUserId,
-			calleeUserId: activeUserId, 
-			callType
-		})
+		try {
+			webRTC.getLocalPreview() 		// caller-side
+			wss.sendPreOffer({ 
+				callerUserId: logedInUserId,
+				calleeUserId: activeUserId, 
+				callType
+			})
 
+			const isSuccess = await elements.outGoingCallDialog()
+			if(!isSuccess) calleeSideRejectCallHandler()
 
-
-		const isSuccess = await elements.outGoingCallDialog()
-		if(!isSuccess) calleeSideRejectCallHandler()
-
+		} catch (err) {
+			showError(err.message)
+		}
 	}
 }
 
@@ -814,28 +816,20 @@ export const videoCallHandler = async () => {
 		const callType = CALL_TYPE.VIDEO_CALL
 		store.setCallType(callType)
 
-		webRTC.getLocalPreview() 		// caller-side
-		wss.sendPreOffer({ 
-			callerUserId: logedInUserId,
-			calleeUserId: activeUserId, 
-			callType
-		})
+		try {
+			webRTC.getLocalPreview() 		// caller-side
+			wss.sendPreOffer({ 
+				callerUserId: logedInUserId,
+				calleeUserId: activeUserId, 
+				callType
+			})
 
-		const isSuccess = await elements.outGoingCallDialog()
-		if(!isSuccess) calleeSideRejectCallHandler()
+			const isSuccess = await elements.outGoingCallDialog()
+			if(!isSuccess) calleeSideRejectCallHandler()
 
-		// callPanel.classList.remove('audio') 		// show all buttons of video call
-
-		// if(!isSuccess) {
-		// 	hideCallingDialog() 	// hide others if exists
-		// 	wss.sendPreOfferAnswer({ 
-		// 		callerUserId: logedInUserId,
-		// 		calleeUserId: activeUserId, 
-		// 		offerType: OFFER_TYPE.CALL_REJECTED, 
-		// 	})
-
-		// 	showVideoContainer()
-		// }
+		} catch (err) {
+			showError(err.message)	
+		}
 	}
 
 
@@ -1098,7 +1092,7 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 					})
 				} else {
 					findFriend.remove()
-					if(!friend.length) return showFriendsNotFoundUI()
+					if(!friends.length) return showFriendsNotFoundUI()
 				}
 
 

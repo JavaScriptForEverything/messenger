@@ -245,7 +245,6 @@ module.exports = (io) => (socket) => {
 		// Step-0: call before remove active peer from connectedPeers
 		const peer = getPeer(socket.id)
 		io.emit('close-connection', { callerUserId: peer?.userId })
-		// socket.broadcast.emit('close-connection', { callerUserId: peer?.userId })
 
 
 		// Step-1: Reset connectedPeers

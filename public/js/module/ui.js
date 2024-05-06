@@ -631,14 +631,26 @@ export const hideVideoContainer = () => {
 // }
 
 // => selectedUserHandler()
-export const showFriendsNotFoundUI = () => leftMainContainer.classList.remove('active')
-export const showFriendsListContainerUI = () => leftMainContainer.classList.add('active')
+// => showFriendLists()
+// => wss.on('user-join', {...})
+export const showFriendsNotFoundUI = () => {
+	if(leftMainContainer.classList.contains('active')) {
+		leftMainContainer.classList.remove('active')
+	}
+}
+export const showFriendsListContainerUI = () => {
+	if(!leftMainContainer.classList.contains('active')) {
+		leftMainContainer.classList.add('active')
+	}
+}
 	
 
 
 // wss.js => const registerSocketEvents = () => {...}
 export const showFriendLists = (friends=[]) => {
 	friendsListContainer.innerHTML = ''
+
+	if(!friends.length) return showFriendsNotFoundUI()
 
 	friends.forEach((friend) => {
 		elements.createFirendList(friendsListContainer, {
@@ -1065,6 +1077,7 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 				const friends = Array.from(friendsListContainer.children)
 				const findFriend = friends.find( currentFriend => currentFriend.id === friend.id )
 				if(!findFriend) {
+					showFriendsListContainerUI() 	// hide no friends message and show frindslist
 					elements.createFirendList(friendsListContainer, {
 						// --- user details
 						id: friend.id,
@@ -1085,6 +1098,7 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 					})
 				} else {
 					findFriend.remove()
+					if(!friend.length) return showFriendsNotFoundUI()
 				}
 
 

@@ -2407,10 +2407,6 @@ video {
   background-color: rgb(51 65 85 / 0.7);
 }
 
-.hover\:bg-blue-600\/80:hover {
-  background-color: rgb(37 99 235 / 0.8);
-}
-
 .hover\:text-blue-500:hover {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
@@ -2682,22 +2678,13 @@ video {
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
+.disabled\:border-slate-400\/30:disabled {
+  border-color: rgb(148 163 184 / 0.3);
+}
+
 .disabled\:border-slate-500:disabled {
   --tw-border-opacity: 1;
   border-color: rgb(100 116 139 / var(--tw-border-opacity));
-}
-
-.disabled\:border-slate-300:disabled {
-  --tw-border-opacity: 1;
-  border-color: rgb(203 213 225 / var(--tw-border-opacity));
-}
-
-.disabled\:border-slate-400\/80:disabled {
-  border-color: rgb(148 163 184 / 0.8);
-}
-
-.disabled\:border-slate-400\/30:disabled {
-  border-color: rgb(148 163 184 / 0.3);
 }
 
 .disabled\:bg-slate-300:disabled {

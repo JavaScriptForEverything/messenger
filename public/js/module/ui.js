@@ -1052,10 +1052,6 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 
 		// Show searched selected user in the UI as we did with friend list item clicked (selection)
 		searchPeopleModal.addEventListener('click', async (evt) => {
-			// const selectedUser = friends.find( user => user.id === selectedUserId )
-			// selectedUserHandler(selectedUser)
-
-			// searchPeopleModal.classList.add('hidden') 	// hide searched friends modal after select one
 			// searchPeopleModal.innerHTML = '' 					// Clear search result so that next click on search modal remain empty
 
 			if(evt.target.tagName === 'BUTTON') {
@@ -1070,6 +1066,9 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 
 				const friends = Array.from(friendsListContainer.children)
 				const findFriend = friends.find( currentFriend => currentFriend.id === friend.id )
+				const { rooms } = store.getState()
+				const isOnline = rooms.find( room => room.userId === friend.id )
+
 				if(!findFriend) {
 					showFriendsListContainerUI() 	// hide no friends message and show frindslist
 					elements.createFirendList(friendsListContainer, {
@@ -1077,7 +1076,7 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 						id: friend.id,
 						avatar: friend.avatar,
 						name: friend.fullName,
-						isActive: friend.isOnline,
+						isActive: isOnline,
 
 						// --- latestMessage 	details
 						type: friend.latestMessage?.type,

@@ -26,6 +26,8 @@ const tabsContentContainer = $('[name=tabs-content-container]')
 const followersContainer = $('[name=followers-container]')
 const followingsContainer = $('[name=followings-container]')
 const loadingContainer = $('[name=loading-container]')
+const followingsCount = $('[name=followings-count]')
+const followersCount = $('[name=followers-count]')
 
 
 const coverPhotoEditButtonHandler = (evt) => {
@@ -88,16 +90,20 @@ coverPhotoEditButton.addEventListener('click', coverPhotoEditButtonHandler)
 avatarEditButton.addEventListener('click', avatarEditButtonHandler)
 goToMessageButton.addEventListener('click', goToMessageButtonHandler)
 followUnfollowButton.addEventListener('click', async (evt) => {
-	// step-1: toggle follow/following
+	// Step-1: toggle follow/following
 	const { message, data } = await http.toggleFollow(profileUser._id)
 	if(message) return showError(message)
-	// console.log(data)
 
-	// step-2: if toggle success then update follow/following button style
+	// Step-2: if toggle success then update follow/following button style
 	followFollowingHandler(evt) 	
 
-	// step-3: if toggle success then update follow/following count value too
-	console.log('update count value')
+	// Step-3: update followings and followers count value
+	const { followers, followings } = data
+	followingsCount.textContent = followings.length
+	followersCount.textContent = followers.length
+
+	// Step-4: update followings and followers tab list items
+	showFollowersAndFollowingsList() 		// re-fetch profileUser to see updated followers/followings 
 })
 
 
@@ -110,16 +116,17 @@ tabsContainer.addEventListener('click', (evt) => {
 		tabsContentContainer.classList.toggle('active', tab.href === evt.target.href)
 	})
 
-	if(evt.target.href.includes('followers-tab') ) {
-		// console.log('followers')
-		showFollowersAndFollowingsList()
-	}
-	if(evt.target.href.includes('#followings-tab')) {
-		// console.log('followints')
-		showFollowersAndFollowingsList()
-	}
+	// if(evt.target.href.includes('followers-tab') ) {
+	// 	// console.log('followers')
+	// 	// showFollowersAndFollowingsList()
+	// }
+	// if(evt.target.href.includes('#followings-tab')) {
+	// 	// console.log('followints')
+	// 	// showFollowersAndFollowingsList()
+	// }
 
 })
+
 
 
 
@@ -132,9 +139,10 @@ const showFollowersAndFollowingsList = async () => {
 	loadingContainer.classList.add('hidden') 	// hide loading container
 	const { followers, followings } = data
 	// console.log(data)
+	followersContainer.innerHTML = ''
+	followingsContainer.innerHTML = ''
 
 	followers.forEach( friend => {
-		followersContainer.innerHTML = ''
 		elements.createFirendList(followersContainer, {
 			id: friend.id,
 			avatar: friend.avatar,
@@ -142,12 +150,12 @@ const showFollowersAndFollowingsList = async () => {
 		})
 	})
 	followings.forEach( friend => {
-		followingsContainer.innerHTML = ''
 		elements.createFirendList(followingsContainer, {
 			id: friend.id,
 			avatar: friend.avatar,
 			name: friend.fullName,
 		})
 	})
+
 }
 showFollowersAndFollowingsList() 	// get at first page load

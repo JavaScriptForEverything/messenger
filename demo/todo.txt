@@ -1,7 +1,9 @@
 
+. caller-side: uploading...
+. callee-side: downloading...
+
 . production: don't load images properly after logout.
 
-. profile page not shows all follers/followings
 . change webrtc-signal to multiple seperate listener 
 . use store like redux store
 

@@ -18,7 +18,8 @@ const store = {
 	remoteStream: null,
 	screenShareStream: null,
 	callType: CALL_TYPE.AUDIO_CALL,
-	isDownloading: false
+	isDownloading: false,
+	donwnloadedFileSize: 0
 }
 
 export const getState = () => store
@@ -35,6 +36,7 @@ export const setLocalStream = (stream) => store.localStream = stream
 export const setRemoteStream = (stream) => store.remoteStream = stream
 export const setScreenShareScream = (stream) => store.screenShareStream = stream
 export const setIsDownloading = (boolean) => store.isDownloading = boolean
+export const setDownloadedFileSize = (size) => store.donwnloadedFileSize = size
 
 
 

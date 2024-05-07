@@ -1,4 +1,5 @@
 import WaveSurfer from '/js/plugins/wavesurfer/index.js'
+import * as store from './store.js'
 
 import { 
 	calculateAudioCurrentTimeValue, 
@@ -546,6 +547,63 @@ export const dropList = ({ fileName='filename.txt', fileSize='5.5 MB' }) => {
 	})
 	return element
 }
+
+// Updated with download progress bar
+// export const dropList = (options = {}) => {
+// 	const { donwnloadedFileSize, isDownloading } = store.getState()
+// 	// console.log('store => ', { donwnloadedFileSize, isDownloading })
+
+// 	const { 
+// 		fileName='filename.txt', 
+// 		fileSize='5.5 MB',
+// 	} = options
+
+// 	//- if has .active class then show progress bar else hide
+// 	//- if has .done class then show success button else show close button
+// 	const htmlString =`
+// 		<div name="drop-list' class='group flex flex-col active ${isDownloading ? 'done' : ''}">
+// 			<div class='flex items-center gap-1 px-2 py-1 border border-slate-200'>
+// 				<span>
+// 					<svg class='w-5 h-5' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="m210.83 85.17l-56-56A4 4 0 0 0 152 28H56a12 12 0 0 0-12 12v176a12 12 0 0 0 12 12h144a12 12 0 0 0 12-12V88a4 4 0 0 0-1.17-2.83M156 41.65L198.34 84H156ZM200 220H56a4 4 0 0 1-4-4V40a4 4 0 0 1 4-4h92v52a4 4 0 0 0 4 4h52v124a4 4 0 0 1-4 4"/></svg>
+// 				</span>
+
+// 				<p name='drop-text' class='flex-1 flex gap-2'>
+// 					<span class='text-slate-700 max-w-48 truncate'> ${fileName} </span>
+// 					<span class=''> ( ${fileSize} ) </span>
+// 				</p>
+
+// 				<button name='success-close-button' type='button' 
+// 					class='p-0.5 border active:border-slate-300 rounded-full hover:text-slate-600 hover:scale-110'
+// 				>
+// 					<svg name='close' class='block group-[&.active.done]:hidden pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/></svg>
+// 					<svg name='tick' class='hidden group-[&.active.done]:block pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.75 8.75l3.5 3.5l7-7.5"/></svg>
+// 				</button>
+// 			</div>
+
+// 			<div class='relative hidden group-[&.active]:flex group-[&.active.done]:hidden'>
+// 				<progress name='progress-meter' min='0' max='100' value=${donwnloadedFileSize} class='w-full h-3 peer ' />
+// 				<span name='progress-value'
+// 					class='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs  '
+// 					class='text-blue-700 peer-[&.active]:text-slate-50'
+// 				> 50% </span> 
+// 			</div> 
+// 		</div> 
+// 	` 
+
+// 	const element = stringToElement( htmlString )
+// 	const closeButton = element.querySelector('[name=success-close-button]')
+
+// 	closeButton.addEventListener('click', (evt) => {
+
+// 		if( element.classList.contains('done') ) {
+// 			console.log('done button')
+// 		} else {
+// 			console.log('close button')
+// 			element.remove()
+// 		}
+// 	})
+// 	return element
+// }
 
 
 

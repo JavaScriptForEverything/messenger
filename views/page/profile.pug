@@ -52,10 +52,10 @@ block script
 							- const followings = profileUser.followings.length
 							- const followers = profileUser.followers.length
 							p(class='flex gap-1')
-								span(class='text-slate-900') #{followings}
-								a(href='#') following 
+								span(name='followings-count' class='text-slate-900') #{followings}
+								a(href='#') followings
 							p(class='flex gap-1')
-								span(class='text-slate-900') #{followers}
+								span(name='followers-count' class='text-slate-900') #{followers}
 								a(href='#') followers
 
 

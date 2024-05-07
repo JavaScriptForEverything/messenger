@@ -23,6 +23,8 @@ const searchPeopleInput = $('#search-people')
 const searchPeopleModal = $('[name=search-people-modal]')
 const searchMessageInput = $('#search-messages')
 
+const yourVideo = $('[name=your-video')
+const theirVideo = $('[name=their-video')
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
 const rightSideAudioCallButton = $('[name=right-side] [name=audio-call-button]') 	
@@ -578,18 +580,42 @@ export const disableDragAndDropFileSharing = () => {
 	dragAndDropPanel.classList.add('disabled')
 }
 
-// webRTC.js: peerConnection.addEventListener('datachannel', {...})
+
+
+// Caller-Side: home.js: showDragItemsInUI = (fileArray) => {}
+export const addDragAndDropUploadingIndicator = () => {
+	if( !dragAndDropDownloadingIndicator.classList.contains('active') ) {
+		dragAndDropDownloadingIndicator.classList.add('active')	
+		dragAndDropDownloadingIndicator.classList.add('upload')	
+	}
+}
+// Caller-Side: home.js: showDragItemsInUI = (fileArray) => {}
+export const removeDragAndDropUploadingIndicator = () => {
+	if( dragAndDropDownloadingIndicator.classList.contains('active') ) {
+		dragAndDropDownloadingIndicator.classList.remove('active')	
+		dragAndDropDownloadingIndicator.classList.remove('upload')	
+	}
+}
+
+
+
+// Callee-Side: webRTC.js: peerConnection.addEventListener('datachannel', {...})
 export const addDragAndDropDownloadingIndicator = () => {
 	if( !dragAndDropDownloadingIndicator.classList.contains('active') ) {
 		dragAndDropDownloadingIndicator.classList.add('active')	
+		dragAndDropDownloadingIndicator.classList.add('download')	
 	}
 }
-// webRTC.js: peerConnection.addEventListener('datachannel', {...})
+// Callee-Side: webRTC.js: peerConnection.addEventListener('datachannel', {...})
 export const removeDragAndDropDownloadingIndicator = () => {
 	if( dragAndDropDownloadingIndicator.classList.contains('active') ) {
 		dragAndDropDownloadingIndicator.classList.remove('active')	
+		dragAndDropDownloadingIndicator.classList.remove('dialog')	
 	}
 }
+
+
+
 
 export const showVideoContainer = () => {
 	middleMainContainer.classList.add('call') 	 			// show videoContainer on top of messageContainer
@@ -952,49 +978,6 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 
 
 
-// --- handle in home page: [ drag-and-drop ]
-// ----------[ file upload: via webRTC ]----------
-// attachmentButtonInput.addEventListener('change', async (evt) => {
-// 	const message = 'only share large file via WebRTC'
-// 	console.log(message)
-// 	showError(message)
-
-// 	try {
-// 		const selectedUserListContainer = $('[name=selected-user-list-container]')
-// 		const dataUrl = await readAsDataURL(evt.target.files[0], { type: 'file' })
-
-
-// 		// const payload = {
-// 		// 	sender: logedInUser._id,
-// 		// 	receiver: selectedUserListContainer.id,
-// 		// 	message: dataUrl,
-// 		// 	type: 'file'
-// 		// }
-// 		// Don't store file in backend, just transfer via webRTC client <==> client
-
-
-// 		// elements.createYourMessage(textMessagesContainer, { 
-// 		// 	type: 'image', 
-// 		// 	message: dataUrl
-// 		// })
-
-
-// 		// send this element via wss + webRTC
-// 			// elements.createTheirMessage(textMessagesContainer, { 
-// 			// 	type: 'image', 
-// 			// 	// message: messageDoc.message,
-// 			// 	// avatar: messageDoc.sender.avatar
-// 			// })
-
-// 	} catch (err) {
-// 		showError(err.message)
-// 	}
-// })
-
-
-
-
-
 //----------[ Search Friends: left-panel ]----------
 // Step-1: show modal on input click
 searchFriendsInput.addEventListener('click', showSearchModal(searchFriendsModel))
@@ -1165,9 +1148,6 @@ searchMessageInput.addEventListener('input', async (evt) => {
 
 
 // ----------[ video ]----------
-const yourVideo = $('[name=your-video')
-const theirVideo = $('[name=their-video')
-
 export const updateLocalStream = (stream) => {
 	yourVideo.src = undefined 				// 1. must remove src (if has)
 	yourVideo.srcObject = stream 			// 2. add readable stream
@@ -1181,3 +1161,7 @@ export const updateRemoteStream = (stream) => {
 	theirVideo.autoplay = true 				// 3. make sure plays continusly
 	theirVideo.addEventListener('metadataloaded', () => theirVideo.play() ) // 4. when video ready only play then
 }
+
+
+
+

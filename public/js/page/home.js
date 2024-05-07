@@ -64,7 +64,7 @@ const dragAndDropFileInput = $('[id=drag-and-drop-file]')
 const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 
-// by default hide file sharing on page load
+// by default hide file sharing dialog on page load
 attachmentInputCheckbox.checked = false
 
 
@@ -215,6 +215,101 @@ recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecording
 **	3. change corsor style show that visual effect of allowed/not-allowed
 */
 
+// // --- testing: trying add download progress-bar
+// attachmentInputCheckbox.checked = true
+// dragAndDropPanel.classList.remove('disabled')
+
+// // dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
+// // 	fileName: 'name.txt',
+// // 	fileSize: getReadableFileSizeString(4987293),
+// // }))
+
+// const dropList = elements.dropList({
+// 	fileName: 'name.txt',
+// 	fileSize: getReadableFileSizeString(4987293),
+// })
+// dropListContainer.insertAdjacentElement('beforeend', dropList)
+
+// 	console.log(dropList)
+// 	console.log(dropList.name)
+// 	console.log(dropList.class)
+// 	setTimeout(() => {
+// 		console.log(dropList.classList.contains('active'))
+// 	}, 1000);
+
+// // let timer = 0
+// // setInterval(() => {
+// // 	// if( true ) clearInterval(timer)
+// // 	// const { donwnloadedFileSize, isDownloading } = store.getState()
+// // 	// console.log({ donwnloadedFileSize, isDownloading })
+// // 	console.log(
+// // 		dropList.classList
+// // 	)
+// // }, 1000);
+
+// const showDragItemsInUI = (fileArray) => {
+// 	fileArray.forEach( async (file) => {
+
+// 		const maxFileSize = 2*1024*1024*1024 		// => 2 GB
+// 		if(file.size > maxFileSize) {
+// 			showError('max file-size: 2 GB')
+// 			// return
+// 		} 
+
+// 		const dropList = elements.dropList({
+// 			fileName: file.name,
+// 			fileSize: getReadableFileSizeString(file.size),
+// 		})
+// 		dropListContainer.insertAdjacentElement('beforeend', dropList)
+
+// 		let downloadedSize = 0
+
+// 		try {
+// 			const stream = file.stream()
+// 			const reader = stream.getReader()
+
+// 			const handleReading = (done, value) => {
+// 				if(done) {
+// 					// webRTC.sendFileByDataChannel(JSON.stringify({ done: true, name: file.name, type: file.type }))
+// 					ui.removeDragAndDropDownloadingIndicator()
+
+
+// 					setTimeout(() => {
+// 						store.setDownloadedFileSize(downloadedSize)
+// 						// store.setIsDownloading(false)
+// 					}, 1000);
+
+// 					console.log({ downloadedSize, totalSize: file.size })
+
+// 					return
+// 				}
+
+// 				downloadedSize += value.length
+// 				store.setDownloadedFileSize(downloadedSize)
+// 				console.log({ downloadedSize })
+
+// 				// webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
+// 				ui.addDragAndDropDownloadingIndicator() 	// 
+
+// 				reader.read().then( ({ done, value }) => {
+// 					handleReading(done, value)
+// 				})
+// 			}
+
+// 			reader.read().then( ({ done, value }) => {
+// 				handleReading(done, value)
+// 			})
+
+
+
+
+// 		} catch (err) {
+// 			console.log('file.arrayBuffer() failed')	
+// 		}
+// 	})
+// }
+// // --- end testing
+
 const showDragItemsInUI = (fileArray) => {
 	fileArray.forEach( async (file) => {
 
@@ -233,13 +328,13 @@ const showDragItemsInUI = (fileArray) => {
 				if(done) {
 					webRTC.sendFileByDataChannel(JSON.stringify({ done: true, name: file.name, type: file.type }))
 					store.setIsDownloading(false)
-					ui.removeDragAndDropDownloadingIndicator()
+					ui.removeDragAndDropUploadingIndicator()
 					return
 				}
 
 				webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
 				store.setIsDownloading(true) 							// no use for now
-				ui.addDragAndDropDownloadingIndicator() 	// 
+				ui.addDragAndDropUploadingIndicator()
 
 				reader.read().then( ({ done, value }) => {
 					handleReading(done, value)

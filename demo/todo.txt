@@ -1,10 +1,6 @@
-
-. caller-side: uploading...
-. callee-side: downloading...
-
 . production: don't load images properly after logout.
 
-. change webrtc-signal to multiple seperate listener 
+. change webrtc-signal on server-side to multiple seperate listener  to reduce complexity
 . use store like redux store
 
 
@@ -58,20 +54,6 @@ task:
 . add tick mark to your audio message
 . add active indicator in left panel list item
 . hide the scroll bar or style scroll bar too, but don't disable scrolling completely, mouse scroll must be available
-
-
-Problem-1: Layout not 100% fit in small mobile
-	- Reason: in left-panel position `absolute` applied and it also have padding p-1
-						which add top and bottom too which is extra space cause the problem
-						if we remove padding our layout need to adject so that always have 4px badding in all side
-	
-	- Target always keep 4px space in all side:
-	- solution: 
-			1. try add margin to parrent instead of padden self
-
-
-
-
 
 
 - add documentation + routes

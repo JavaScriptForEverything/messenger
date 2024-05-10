@@ -321,7 +321,7 @@ export const createFirendList = (selector, data) => {
 				` : ''}
 
 				<div name='message-container' class=' relative flex items-center justify-between'>
-					<p for='title' class='text-slate-600 font-light text-sm max-w-40 capitalize truncate'> 
+					<p name='message-label' for='title' class='text-slate-600 font-light text-sm max-w-40 capitalize truncate'> 
 
 						${
 							type === 'text' ? message 

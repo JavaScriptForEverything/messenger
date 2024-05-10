@@ -29,7 +29,8 @@ export const setLogedInUser = (logedInUser) => {
 }
 export const setActiveUserId = (activeUserId) => store.activeUserId = activeUserId
 export const setRooms = (rooms) => store.rooms = rooms
-export const setFriend = (friend) => store.friends.push(friend)
+// export const setFriend = (friend) => store.friends.push(friend)
+// export const resetFriendsList = () => store.friends = []
 
 export const setCallType = (callType) => store.callType = callType
 export const setLocalStream = (stream) => store.localStream = stream

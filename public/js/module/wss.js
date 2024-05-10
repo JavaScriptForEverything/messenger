@@ -50,19 +50,12 @@ export const registerSocketEvents = (socket) => {
 			return
 		}
 
-		// friends.forEach( friend => store.setFriend(friend))
 		ui.showFriendsListContainerUI()
 		ui.showFriendLists(friends)
-		// ui.showFriendLists(store.getState().friends)
-		// console.log(friends)
 	})
 
 	socket.on('typing', handleMessageTypingIndicator)
-
 	socket.on('message', handleSendMessage)
-	// socket.on('message', ({ type, activeUserId, message }) => {
-	// 	ui.receiveMessage({ type, activeUserId, message })
-	// })
 
 	socket.on('call-status', ({ callStatus }) => {
 		// console.log('call-status: ', { callStatus })
@@ -158,6 +151,12 @@ const handleMessageTypingIndicator = ({ callerUserId, calleeUserId }) => {
 // ui.js: sendMessageForm.addEventListener('submit', async (evt) => {...})
 // ui.js: cameraIconButtonInput.addEventListener('change', async (evt) => {...})
 export const sendMessage = ({ callerUserId, calleeUserId, message, type }) => {
+
+	ui.updateSelectedUserMessageLabel({ 
+		type: message.type,
+		message: message.message
+	})
+
 	socketIo.emit('message', { callerUserId, calleeUserId, message, type })
 }
 // => used on top

@@ -96,12 +96,20 @@ export const receiveMessage = ({ callerUserId, calleeUserId, message, type }) =>
 	// Step-2: Update firendList subtile with message type:
 	console.log('update friendList label with ', { type })
 
+	/* Step-3: Update UI
+			. if( callerUserId === activeUserId )  that means selectedUser then add message in messageContainer
+			. else add message notification counts in callee-side left-panel: targeted friend list
+	*/ 
 	// Step-3: add message in UI
-	// Only add message on UI: (If callerUserId === calleeSelectedUserId )
 	const { activeUserId } = store.getState()
-	if( callerUserId !== activeUserId ) return
+	if( callerUserId !== activeUserId ) { 		// then only callee-side add notification label
+		
 
-	// show text or image message
+		console.log('update callee-side')
+		return 	// don't let go to add message in UI
+	}
+
+	// Step-4: add messages in UI: text or image 
 	if(type === 'text' || type === 'image') {
 		elements.createTheirMessage(messagesContainer, { 
 			type: message.type,
@@ -491,6 +499,17 @@ const selectedUserHandler = (user) => {
 
 	showAllMessagesInUI(user.id) 				
 	leftPannelSlideButtonInputCheckbox.checked = false 	// hide left-panel
+
+
+	// // Step-?: Remove notification label
+	// const notificationEl = selectedUserListContainer.querySelector('[name=notification-value]')
+	// console.log( selectedUserListContainer )
+	// console.log( notificationEl)
+
+	// if(!notificationEl) return 
+	// notificationEl.textContent = ''
+	// // notificationEl.classList.add('hidden')
+	console.log('remove notification if exists: by sending PATCH request to server')
 }
 
 
@@ -692,6 +711,7 @@ export const showFriendLists = (friends=[]) => {
 	if(!friends.length) return showFriendsNotFoundUI()
 
 	friends.forEach((friend) => {
+		store.setActiveFriend(friend)
 		elements.createFirendList(friendsListContainer, {
 			// --- user details
 			id: friend.id,
@@ -714,44 +734,83 @@ export const showFriendLists = (friends=[]) => {
 	handleListSelection(friends)
 }
 
-
-
 // wss.js: sendMessage()
-export const updateSelectedUserMessageLabel = ({ type, message } = {}) => {
-	const { activeUserId } = store.getState()
+export const updateSelectedUserMessageLabel = (message) => {
+	const { friends, activeUserId } = store.getState()
 
 	const friendsList = Array.from(friendsListContainer.children)
-	const activeFriend = friendsList.find( friend => friend.id === activeUserId )
+	const activeFriendEl = friendsList.find( friend => friend.id === activeUserId )
+	if(!activeFriendEl) return console.log('update active user label failed')
 
+	const friend = friends.find(friend => friend.id === activeUserId )
+	if(!friend) return showError('can not find activeUser: UI update failed')
 
-	/* instead of copy paste htmlString add class to show/hide any portion: for example:
-			. if has class .text => show text message section
-			. if has class .image => show image label section
-			. if has class .audio => show image label section
-	*/
-	const htmlString = `
-		${
-			type === 'text' ? `<span>${message} </span>` 
-		: type === 'image' ? 
-		`<span class='flex gap-1 items-center text-slate-600'>
-			<svg class='w-4 h-4 ' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M9.75 13a2.25 2.25 0 1 1 4.5 0a2.25 2.25 0 0 1-4.5 0"/><path fill="currentColor" fill-rule="evenodd" d="M7.474 7.642A3.142 3.142 0 0 1 10.616 4.5h2.768a3.142 3.142 0 0 1 3.142 3.142a.03.03 0 0 0 .026.029l2.23.18c.999.082 1.82.82 2.007 1.805a22.07 22.07 0 0 1 .104 7.613l-.097.604a2.505 2.505 0 0 1-2.27 2.099l-1.943.157a56.61 56.61 0 0 1-9.166 0l-1.943-.157a2.505 2.505 0 0 1-2.27-2.1l-.097-.603c-.407-2.525-.371-5.1.104-7.613a2.226 2.226 0 0 1 2.007-1.804l2.23-.181a.028.028 0 0 0 .026-.029M12 9.25a3.75 3.75 0 1 0 0 7.5a3.75 3.75 0 0 0 0-7.5" clip-rule="evenodd"/></svg>
-			<span> Image
-		</span>`
-		: type === 'audio' ? 
-		`<span class='flex gap-1 items-center text-slate-500'>
-			<svg class='w-4 h-4 ' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3m7 9c0 3.53-2.61 6.44-6 6.93V21h-2v-3.07c-3.39-.49-6-3.4-6-6.93h2a5 5 0 0 0 5 5a5 5 0 0 0 5-5z"/></svg>
-			<span> Audio
-		</span>`
-		: ''}
-	`
+	// Step-1: create new list element
+	const currentListEl = elements.createFirendList(null, {
+		// --- user details
+		id: friend.id,
+		avatar: friend.avatar,
+		name: friend.fullName,
+		isActive: friend.isOnline,
 
-	const messageLebel = activeFriend.querySelector('[name=message-label]')
-	messageLebel.innerHTML = ''
-	const element = stringToElement(htmlString)
+		// --- latestMessage 	details
+		type: message?.type,
+		message: message?.message,			
+		createdAt: message?.createdAt, 
 
-	console.log(element)
-	messageLebel.insertAdjacentElement('beforeend', element)
+		// --- Notification details
+		// isNoNotification: true, 			// hide both new notification + success notification
+		// isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
+		// notificationValue:  2,
+		// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
+	})
 
+	// Step-2: Replace current listItem with newly created one 
+	currentListEl.classList.add('selected') 	// make selected backgroun-color
+	friendsListContainer.replaceChild(currentListEl, activeFriendEl)
+}
+
+// => wss.js: handleSendMessage()
+export const updateNonSelectedUserNotificationLabel = ({ callerUserId, message }) => {
+	const { friends, activeUserId } = store.getState()
+
+	if(activeUserId === callerUserId) return console.log('dont update selectedUser notification label')
+
+	const friendsList = Array.from(friendsListContainer.children)
+	const targetFriendEl = friendsList.find( friend => friend.id === callerUserId )
+	const notificationEl = targetFriendEl.querySelector('[name=notification-value]')
+	if(!notificationEl) return 
+
+	console.log('await Notification.create() to create notification then update UI too')
+	// const notificationValue = Notification.find({ visited: false }).length
+	const notificationValue = +notificationEl.textContent  // use above one not this hack
+
+	const friend = friends.find(friend => friend.id === callerUserId )
+	if(!friend) return showError('can not find callerUser: UI update failed')
+
+	// Step-1: create new list element
+	const currentListEl = elements.createFirendList(null, {
+		// --- user details
+		id: friend.id,
+		avatar: friend.avatar,
+		name: friend.fullName,
+		isActive: friend.isOnline,
+
+		// --- latestMessage 	details
+		type: friend.latestMessage?.type,
+		message: friend.latestMessage?.message,			
+		createdAt: friend.latestMessage?.createdAt, 
+
+		// --- Notification details
+		// isNoNotification: true, 			// hide both new notification + success notification
+		isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
+		notificationValue:  notificationValue + 1
+		// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
+	})
+
+	// Step-2: Replace current listItem with newly created one 
+	currentListEl.classList.add('selected') 	// make selected backgroun-color
+	friendsListContainer.replaceChild(currentListEl, targetFriendEl)
 }
 
 // ----------[ audio upload ]----------

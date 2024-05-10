@@ -12,6 +12,7 @@ const store = {
 	logedInUserId: null,
 	activeUserId: null,
 	rooms: [],
+	activeFriend: {},
 	friends: [],
 
 	localStream: null,
@@ -29,6 +30,8 @@ export const setLogedInUser = (logedInUser) => {
 }
 export const setActiveUserId = (activeUserId) => store.activeUserId = activeUserId
 export const setRooms = (rooms) => store.rooms = rooms
+export const setActiveFriend = (friend) => store.activeFriend = friend
+export const setFriends = (friends) => store.friends = friends
 // export const setFriend = (friend) => store.friends.push(friend)
 // export const resetFriendsList = () => store.friends = []
 

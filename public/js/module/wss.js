@@ -52,6 +52,7 @@ export const registerSocketEvents = (socket) => {
 
 		ui.showFriendsListContainerUI()
 		ui.showFriendLists(friends)
+		store.setFriends(friends)
 	})
 
 	socket.on('typing', handleMessageTypingIndicator)
@@ -151,17 +152,13 @@ const handleMessageTypingIndicator = ({ callerUserId, calleeUserId }) => {
 // ui.js: sendMessageForm.addEventListener('submit', async (evt) => {...})
 // ui.js: cameraIconButtonInput.addEventListener('change', async (evt) => {...})
 export const sendMessage = ({ callerUserId, calleeUserId, message, type }) => {
-
-	ui.updateSelectedUserMessageLabel({ 
-		type: message.type,
-		message: message.message
-	})
-
+	ui.updateSelectedUserMessageLabel(message) 	// message => messageDoc = { id, message, type, ... }
 	socketIo.emit('message', { callerUserId, calleeUserId, message, type })
 }
 // => used on top
 const handleSendMessage = ({ callerUserId, calleeUserId, message, type }) => {
 	ui.receiveMessage({ callerUserId, calleeUserId, message, type })
+	ui.updateNonSelectedUserNotificationLabel({ callerUserId, message })
 }
 
 // ui.js: audioCallHandler

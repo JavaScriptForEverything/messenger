@@ -68,9 +68,13 @@ export const turnOffWebCam = () => {
 }
 
 // ----------[ Other user Side ]----------
-export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
+// wss.js: socket.on('message', () => {...})
+export const receiveUpdateMessageTypingIndicator = ({ callerUserId, calleeUserId }) => {
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
 	const titleP = selectedUserListContainer.querySelector('[name=title]')
+
+	const { activeUserId } = store.getState()
+	if( callerUserId !== activeUserId ) return
 
 	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
 
@@ -82,7 +86,7 @@ export const receiveUpdateMessageTypingIndicator = ({ activeUserId }) => {
 
 
 // wss.js: socket.on('message', ({ ... }) => {})
-export const receiveMessage = ({ type, activeUserId, message }) => {
+export const receiveMessage = ({ callerUserId, calleeUserId, message, type }) => {
 
 	// Add incomming-message-sound:
 	const audio = document.createElement('audio')
@@ -90,6 +94,8 @@ export const receiveMessage = ({ type, activeUserId, message }) => {
 	audio.play()
 
 	// console.log(message)
+	const { activeUserId } = store.getState()
+	if( callerUserId !== activeUserId ) return
 
 	// show text or image message
 	if(type === 'text' || type === 'image') {
@@ -720,10 +726,13 @@ export const showAudio = async (blob, audio, audioDuration) => {
 		//- URL.revokeObjectURL(dataUrl) 	// Don't remove url, else audio will be no more
 
 		// Step-2: Send audio to backend
-		const selectedUserListContainer = $('[name=selected-user-list-container]')
-		const activeUserId = selectedUserListContainer.id
+		// const selectedUserListContainer = $('[name=selected-user-list-container]')
+		// const activeUserId = selectedUserListContainer.id
+		const { activeUserId, logedInUserId } = store.getState()
+
 		const payload = {
-			sender: logedInUser._id,
+			// sender: logedInUser._id,
+			sender: logedInUserId,
 			receiver: activeUserId,
 			message: dataUrl,
 			type: 'audio',
@@ -734,7 +743,12 @@ export const showAudio = async (blob, audio, audioDuration) => {
 
 
 		// Step-3: Send MessageDoc to other-user: WebSocket + and show in UI
-		wss.sendMessage({ type: 'audio', activeUserId, message: messageDoc })
+		wss.sendMessage({ 
+			type: 'audio', 
+			callerUserId: logedInUserId,
+			calleeUserId: activeUserId, 
+			message: messageDoc 
+		})
 
 		// Step-4: Show Audio in sender: user himself
 		elements.createYourAudio(messagesContainer, { 
@@ -897,10 +911,15 @@ leftPanelAvatar.addEventListener('click', async (evt) => {
 writeMessageInput.addEventListener('input', () => {
 	const selectedUserListContainer = $('[name=selected-user-list-container]')
 	const titleP = selectedUserListContainer.querySelector('[name=title]')
-	const activeUserId = selectedUserListContainer.id
+	// const activeUserId = selectedUserListContainer.id
+
+	const { activeUserId, logedInUserId } = store.getState()
 
 	if(titleP.classList.contains('hidden')) titleP.classList.remove('hidden') 
-	wss.sendMessageTypingIndicator({ activeUserId })
+	wss.sendMessageTypingIndicator({ 
+		callerUserId: logedInUserId,
+		calleeUserId: activeUserId 
+	})
 	
 	clearTimeout(timer)
 	timer = setTimeout(() => {
@@ -910,11 +929,13 @@ writeMessageInput.addEventListener('input', () => {
 sendMessageForm.addEventListener('submit', async (evt) => {
 	evt.preventDefault()
 
-	const selectedUserListContainer = $('[name=selected-user-list-container]')
-	const activeUserId = selectedUserListContainer.id
+	// const selectedUserListContainer = $('[name=selected-user-list-container]')
+	// const activeUserId = selectedUserListContainer.id
+	const { logedInUserId, activeUserId } = store.getState()
 
 	const payload = {
-		sender: logedInUser._id,
+		// sender: logedInUser._id,
+		sender: logedInUserId,
 		receiver: activeUserId,
 		message: writeMessageInput.value,
 		type: 'text',
@@ -933,9 +954,13 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	})
 	writeMessageInput.value = '' 	// reset
 
-	wss.sendMessage({ type: 'text', activeUserId, message: messageDoc })
-	// send the messageDoc via wss to other end to handle and update activeFriendList 
-	// friend.latestMessage = message
+	// wss.sendMessage({ type: 'text', activeUserId, message: messageDoc })
+	wss.sendMessage({ 
+		type: 'text', 
+		callerUserId: logedInUserId,
+		calleeUserId: activeUserId, 
+		message: messageDoc 
+	})
 
 })
 
@@ -944,12 +969,15 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 // Step-1: Show typing indicator in self UI
 cameraIconButtonInput.addEventListener('change', async (evt) => {
 	try {
-		const selectedUserListContainer = $('[name=selected-user-list-container]')
 		const dataUrl = await readAsDataURL(evt.target.files[0])
-		const activeUserId = selectedUserListContainer.id
+		// const selectedUserListContainer = $('[name=selected-user-list-container]')
+		// const activeUserId = selectedUserListContainer.id
+
+		const { logedInUserId, activeUserId } = store.getState()
 
 		const payload = {
-			sender: logedInUser._id,
+			// sender: logedInUser._id,
+			sender: logedInUserId,
 			receiver: activeUserId,
 			message: dataUrl,
 			type: 'image'
@@ -969,7 +997,14 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 		})
 
 		// send this element via wss
-		wss.sendMessage({ type: 'image', activeUserId, message: messageDoc })
+		// wss.sendMessage({ type: 'image', activeUserId, message: messageDoc })
+
+		wss.sendMessage({ 
+			type: 'image', 
+			callerUserId: logedInUserId,
+			calleeUserId: activeUserId, 
+			message: messageDoc 
+		})
 
 	} catch (err) {
 		showError(err.message)

@@ -57,12 +57,12 @@ export const registerSocketEvents = (socket) => {
 		// console.log(friends)
 	})
 
-	socket.on('typing', ({ activeUserId }) => {
-		ui.receiveUpdateMessageTypingIndicator({ activeUserId })
-	})
-	socket.on('message', ({ type, activeUserId, message }) => {
-		ui.receiveMessage({ type, activeUserId, message })
-	})
+	socket.on('typing', handleMessageTypingIndicator)
+
+	socket.on('message', handleSendMessage)
+	// socket.on('message', ({ type, activeUserId, message }) => {
+	// 	ui.receiveMessage({ type, activeUserId, message })
+	// })
 
 	socket.on('call-status', ({ callStatus }) => {
 		// console.log('call-status: ', { callStatus })
@@ -144,11 +144,25 @@ export const registerSocketEvents = (socket) => {
 
 }
 
-export const sendMessageTypingIndicator = ({ activeUserId }) => {
-	socketIo.emit('typing', { activeUserId })
+// ui.js: writeMessageInput.addEventListener('input', () => {...})
+export const sendMessageTypingIndicator = ({ callerUserId, calleeUserId }) => {
+	socketIo.emit('typing', { callerUserId, calleeUserId })
 }
-export const sendMessage = ({ type, activeUserId, message }) => {
-	socketIo.emit('message', { type, activeUserId, message })
+// => used on top
+const handleMessageTypingIndicator = ({ callerUserId, calleeUserId }) => {
+	ui.receiveUpdateMessageTypingIndicator({ callerUserId, calleeUserId })
+}
+
+
+// ui.js: export const showAudio = async (blob, audio, audioDuration) => {...})
+// ui.js: sendMessageForm.addEventListener('submit', async (evt) => {...})
+// ui.js: cameraIconButtonInput.addEventListener('change', async (evt) => {...})
+export const sendMessage = ({ callerUserId, calleeUserId, message, type }) => {
+	socketIo.emit('message', { callerUserId, calleeUserId, message, type })
+}
+// => used on top
+const handleSendMessage = ({ callerUserId, calleeUserId, message, type }) => {
+	ui.receiveMessage({ callerUserId, calleeUserId, message, type })
 }
 
 // ui.js: audioCallHandler

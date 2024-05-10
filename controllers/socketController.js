@@ -65,17 +65,17 @@ module.exports = (io) => (socket) => {
 		// usersInRoom(io)('aaa')
 	})
 
-	socket.on('typing', ({ activeUserId }) => {
-		if( !isUserExists(activeUserId) ) return  // only send typing if activeUser is selected in front-end
+	socket.on('typing', ({ callerUserId, calleeUserId }) => {
+		if( !isUserExists(calleeUserId) ) return  // only send typing if activeUser is selected in front-end
 
 		// emit to this user : by private roomId === activeUser._id
-		socket.to(activeUserId).emit('typing', { activeUserId })
+		socket.to(calleeUserId).emit('typing', { callerUserId, calleeUserId })
 	})
 
-	socket.on('message', ({ type, activeUserId, message }) => {
-		if( !isUserExists(activeUserId) ) return  // if callee not exists then return
+	socket.on('message', ({ callerUserId, calleeUserId, message, type }) => {
+		if( !isUserExists(calleeUserId) ) return  // if callee not exists then return
 
-		socket.to(activeUserId).emit('message', { type, activeUserId, message })
+		socket.to(calleeUserId).emit('message', { callerUserId, calleeUserId, message, type })
 	})
 
 

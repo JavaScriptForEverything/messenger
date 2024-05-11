@@ -1,3 +1,5 @@
+WebRTC Call need time to open camera ready
+	- how to wait for them
 
 production: 
 	. don't load images properly after logout.

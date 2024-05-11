@@ -171,8 +171,11 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 
 
 	try {
-		webRTC.getLocalPreview() 		// callee-side
+		// const isWebCam = await webRTC.getLocalPreview() 		// callee-side
+		// if(!isWebCam) return showError('webcam not found')
 
+		console.log('callee-side: 2')
+		webRTC.getLocalPreview() 		// callee-side
 		const isSucceed = await elements.incommingCallDialog({ type })
 
 		if(isSucceed) {
@@ -926,7 +929,12 @@ export const callerSideBusyCallHandler = () => {
 	elements.calleeBusyCallDialog()
 }
 
-// force user to stop audio call if already in video call 
+/* home.js: 
+		audioCallButton.addEventListener('click', (evt) => {...})
+		rightSideAudioCallButton.addEventListener('click', (evt) => {...})
+
+	- force user to stop audio call if already in video call 
+*/
 export const audioCallHandler = async () => {
 	if(videoCallButton.disabled || rightSideVideoCallButton.disabled) {
 		showError('Your video call must be terminate first')
@@ -948,7 +956,9 @@ export const audioCallHandler = async () => {
 		store.setCallType(callType)
 
 		try {
-			webRTC.getLocalPreview() 		// caller-side
+			webRTC.getLocalPreview() 		// caller-side: audio-call
+			console.log('caller-side: 1')
+
 			wss.sendPreOffer({ 
 				callerUserId: logedInUserId,
 				calleeUserId: activeUserId, 
@@ -958,6 +968,7 @@ export const audioCallHandler = async () => {
 			const isSuccess = await elements.outGoingCallDialog()
 			if(!isSuccess) calleeSideRejectCallHandler()
 
+
 		} catch (err) {
 			showError(err.message)
 		}
@@ -965,6 +976,12 @@ export const audioCallHandler = async () => {
 }
 
 
+/* home.js: 
+		videoCallButton.addEventListener('click', (evt) => {...})
+		rightSideVideoCallButton.addEventListener('click', (evt) => {...})
+
+	- force user to stop audio call if already in video call 
+*/
 export const videoCallHandler = async () => {
 	if(audioCallButton.disabled || rightSideAudioCallButton.disabled) {
 		showError('Your audio call must be terminate first')
@@ -983,8 +1000,11 @@ export const videoCallHandler = async () => {
 		const callType = CALL_TYPE.VIDEO_CALL
 		store.setCallType(callType)
 
+
 		try {
-			webRTC.getLocalPreview() 		// caller-side
+			console.log('caller-side: step-1')
+			webRTC.getLocalPreview() 		// callee-side
+
 			wss.sendPreOffer({ 
 				callerUserId: logedInUserId,
 				calleeUserId: activeUserId, 
@@ -992,7 +1012,8 @@ export const videoCallHandler = async () => {
 			})
 
 			const isSuccess = await elements.outGoingCallDialog()
-			if(!isSuccess) calleeSideRejectCallHandler()
+			if( !isSuccess ) calleeSideRejectCallHandler()
+
 
 		} catch (err) {
 			showError(err.message)	

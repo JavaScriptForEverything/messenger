@@ -35,12 +35,17 @@ export const getLocalPreview = async () => {
 
 	try {
 		const stream = await navigator.mediaDevices.getUserMedia( options )
-		store.setLocalStream(stream)
-		ui.updateLocalStream(stream)
+		if(stream) {
+			store.setLocalStream(stream)
+			ui.updateLocalStream(stream)
+		} 
+
+		// return true
 
 	} catch (err) {
 		showError(err.message)
 		// console.log(err)		
+		// return false
 	}
 }
 

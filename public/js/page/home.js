@@ -64,8 +64,8 @@ const dragAndDropFileInput = $('[id=drag-and-drop-file]')
 const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 
-// by default hide file sharing dialog on page load
-attachmentInputCheckbox.checked = false
+// // by default hide file sharing dialog on page load
+// attachmentInputCheckbox.checked = false
 
 
 
@@ -240,7 +240,7 @@ recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecording
 // 	console.log(dropList.class)
 // 	setTimeout(() => {
 // 		console.log(dropList.classList.contains('active'))
-// 	}, 1000);
+// 	}, 2000);
 
 // // let timer = 0
 // // setInterval(() => {
@@ -324,6 +324,35 @@ const showDragItemsInUI = (fileArray) => {
 			return
 		} 
 
+		const element = elements.dropList({
+			fileName: file.name,
+			fileSize: getReadableFileSizeString(file.size),
+		})
+		dropListContainer.insertAdjacentElement('beforeend', element)
+
+		const progressEl = element.querySelector('[name=progress-meter]')
+		const progressValueSpan = element.querySelector('[name=progress-value]')
+		const closeButton = element.querySelector('[name=success-close-button]')
+		const totalSize = file.size
+		let progressValue = 0
+
+		const downloadFinished = () => element.classList.add('done') 
+		const increaseProgressValue = (parcentage) => {
+			progressEl.value = parcentage
+			progressValueSpan.textContent = `${parcentage.toFixed()}/%`
+			progressEl.classList.toggle('active', parcentage >= 50)
+		}
+
+		closeButton.addEventListener('click', (evt) => {
+			if( element.classList.contains('done') ) {
+				// console.log('done button')
+				element.remove()
+			} else {
+				// console.log('close button')
+				element.remove()
+			}
+		})
+
 
 		try {
 			const stream = file.stream()
@@ -332,18 +361,22 @@ const showDragItemsInUI = (fileArray) => {
 			const handleReading = (done, value) => {
 				if(done) {
 					webRTC.sendFileByDataChannel(JSON.stringify({ done: true, name: file.name, type: file.type }))
-					store.setIsDownloading(false)
 					ui.removeDragAndDropUploadingIndicator()
+					downloadFinished()
 					return
 				}
-
-				webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
-				store.setIsDownloading(true) 							// no use for now
-				ui.addDragAndDropUploadingIndicator()
 
 				reader.read().then( ({ done, value }) => {
 					handleReading(done, value)
 				})
+
+				webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
+				ui.addDragAndDropUploadingIndicator()
+
+				const parcentage = (progressValue / totalSize ) * 100
+				increaseProgressValue(parcentage)
+
+				progressValue += value.length
 			}
 
 			reader.read().then( ({ done, value }) => {
@@ -351,10 +384,10 @@ const showDragItemsInUI = (fileArray) => {
 			})
 
 
-			dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
-				fileName: file.name,
-				fileSize: getReadableFileSizeString(file.size),
-			}))
+			// dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
+			// 	fileName: file.name,
+			// 	fileSize: getReadableFileSizeString(file.size),
+			// }))
 
 		} catch (err) {
 			console.log('file.arrayBuffer() failed')	

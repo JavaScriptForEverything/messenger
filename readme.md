@@ -26,6 +26,9 @@
 ![complete-large-file-shared](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/complete-large-file-shared.png)
 
 
+![file-upload-progress-bar-preview](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/file-upload-progress-bar.png)
+
+
 #### Project Demo 	[youtube](https://youtu.be/kSjMMZKbKgQ)
 
 #### Project Design 	[/public/images/project_design](https://github.com/JavaScriptForEverything/messenger/tree/master/public/images/project_design)

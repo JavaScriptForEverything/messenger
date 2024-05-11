@@ -2756,11 +2756,11 @@ video {
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 
-.group:hover .group-hover\:block {
+.group\/close:hover .group-hover\/close\:block {
   display: block;
 }
 
-.group:hover .group-hover\:hidden {
+.group\/close:hover .group-hover\/close\:hidden {
   display: none;
 }
 
@@ -2772,6 +2772,16 @@ video {
 .group:hover .group-hover\:bg-slate-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
+.group\/close:hover .group-hover\/close\:text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity));
+}
+
+.group\/close:hover .group-hover\/close\:text-red-500 {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 
 .group:hover .group-hover\:opacity-100 {
@@ -2828,18 +2838,6 @@ video {
 }
 
 .group\/firend-list.active .group-\[\.active\]\/firend-list\:block {
-  display: block;
-}
-
-.group>* .group-\[\&\>\*\]\:block {
-  display: block;
-}
-
-.group>*::hover .group-\[\&\>\*\:\:hover\]\:block {
-  display: block;
-}
-
-.group>*:hover .group-\[\&\>\*\:hover\]\:block {
   display: block;
 }
 
@@ -2925,10 +2923,6 @@ video {
 .peer\/search-people:focus ~ .peer-focus\/search-people\:text-blue-500 {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
-}
-
-.peer>*:hover ~ .peer-\[\&\>\*\:hover\]\:block {
-  display: block;
 }
 
 .peer.active ~ .peer-\[\&\.active\]\:text-slate-50 {
@@ -3104,6 +3098,15 @@ video {
   display: block;
 }
 
+.hover\:\[\&\>\*\:first-child\]\:block>*:first-child:hover {
+  display: block;
+}
+
+.hover\:\[\&\>\*\:first-child\]\:text-red-500>*:first-child:hover {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
 .group\/firend-list.message-success .group-\[\.message-success\]\/firend-list\:\[\&\>\*\:first-child\]\:block>*:first-child {
   display: block;
 }
@@ -3126,6 +3129,15 @@ video {
 
 .\[\&\>\*\:last-child\]\:hidden>*:last-child {
   display: none;
+}
+
+.hover\:\[\&\>\*\:last-child\]\:hidden>*:last-child:hover {
+  display: none;
+}
+
+.hover\:\[\&\>\*\:last-child\]\:text-blue-500>*:last-child:hover {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
 .group\/firend-list.message-notification .group-\[\.message-notification\]\/firend-list\:\[\&\>\*\:last-child\]\:block>*:last-child {

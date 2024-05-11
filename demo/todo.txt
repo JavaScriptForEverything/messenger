@@ -1,9 +1,3 @@
-Waveform shows 2 tracks instead of single one
-
-in Write Your Message Section:
-	- When active microphone disable/hides buttons nd when stoped reenable/show buttons back
-
-
 
 production: 
 	. don't load images properly after logout.

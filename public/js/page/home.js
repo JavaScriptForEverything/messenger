@@ -33,7 +33,7 @@ const microphoneInsideInput = $('form[name=middle-bottom] [for=microphone-icon-b
 const writeMessageInput = $('[name=write-message-input]') 	
 const pickerContainer = $('[name=picker-container]')
 const emojiInput = $('#emoji-icon-button') 	
-const audio = $('[name=microphone-audio') // required for microphone audio capture
+const microphoneAudio = $('[name=microphone-audio') // required for microphone audio capture
 
 const audioCallButton = $('[name=audio-call-button]') 	
 const videoCallButton = $('[name=video-call-button]') 	
@@ -90,12 +90,14 @@ picker.addEventListener('emoji:select', (evt) => {
 })
 
 //----------[ message audio ]----------
+const sendMessageRightSideIconsContainer = $('[name=message-icons-container]')
+
 microphoneInsideInput.addEventListener('click', async (evt) => {
 	const isHasBlinkClass = evt.target.classList.contains('blink')
 
 	if(!isHasBlinkClass) {
 		try {
-			await recording.startRecording(audio)
+			await recording.startRecording(microphoneAudio)
 			
 			evt.target.classList.add('blink')
 			writeMessageInput.placeholder = ''
@@ -103,20 +105,24 @@ microphoneInsideInput.addEventListener('click', async (evt) => {
 			writeMessageInput.readOnly = !isHasBlinkClass  // make input un-editable
 			writeMessageInput.style.border = '1px solid #cbd5e1'
 
+			sendMessageRightSideIconsContainer.classList.add('hidden')
+
 		} catch (err) {
 			const message = `Microphone Permission: ${err.message}`
 			showError(message)
 		}
 
 
-	} else if(isHasBlinkClass) {
+	} else if(isHasBlinkClass) { 			// reset to default UI
 		writeMessageInput.removeAttribute('style')
 		writeMessageInput.value = ''
 		writeMessageInput.placeholder = 'Write Your Message'
 		evt.target.classList.remove('blink')
 		writeMessageInput.readOnly = false
 
-		recording.stopRecording(audio)
+		sendMessageRightSideIconsContainer.classList.remove('hidden')
+
+		recording.stopRecording(microphoneAudio)
 	}
 
 	// toggleClass(evt.target, 'blink') // evt.target.classList.toggle('blink', !evt.target.classList.contains('blink') )

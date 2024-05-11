@@ -1,9 +1,11 @@
-const Message = require('../models/messageModel')
+const { promisify } = require('node:util')
+const { isValidObjectId } = require('mongoose')
 const { apiFeatures } = require('../utils')
 const { catchAsync, appError } = require('./errorController')
 const messageDto = require('../dtos/messageDto')
 const fileService = require('../services/fileService')
 const User = require('../models/userModel')
+const Message = require('../models/messageModel')
 
 // GET /api/messages
 exports.getAllMessages = catchAsync( async (req, res, next) => {
@@ -94,3 +96,37 @@ exports.createMessage = catchAsync( async (req, res, next) => {
 		next(appError(err.message)) 
 	}
 })
+
+// DELETE /api/messages/:id
+exports.deleteMessageById = catchAsync( async (req, res, next) => {
+	const messageId = req.params.id
+	if( !isValidObjectId(messageId) ) return next(appError('Not valid ObjectId'))
+
+	/* if delete-for-me 					=> then don't delete just hide from that user
+			if delete-for-every-one 	=> then delete
+
+			and must be logedInUser to delete for everyone
+	*/ 
+
+	try {
+		// const message = await Message.findById(messageId)
+		const message = await Message.findByIdAndDelete(messageId)
+		if(!message) throw new Error('no message found') 
+
+		if(message.type === 'image' || message.type === 'audio') {
+			const url = message.message 	// => /upload/messages/audios/1c26df24-fda8-483d-9531-414c50f7f4b2.ogg
+
+			// fileService.removeFile(url) 						// => non-promise version
+			promisify(fileService.removeFile)(url) 		// => convert to promise
+		}
+
+		res.status(200).json({
+			status: 'success',
+			// data: message
+		})
+
+	} catch (err) {
+		next(appError(err.message)) 
+	}
+})
+

@@ -1456,6 +1456,10 @@ video {
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
+.border-slate-400\/60 {
+  border-color: rgb(148 163 184 / 0.6);
+}
+
 .border-slate-50 {
   --tw-border-opacity: 1;
   border-color: rgb(248 250 252 / var(--tw-border-opacity));
@@ -1650,6 +1654,10 @@ video {
 
 .p-4 {
   padding: 1rem;
+}
+
+.p-5 {
+  padding: 1.25rem;
 }
 
 .p-8 {
@@ -2247,6 +2255,10 @@ video {
   border-color: rgb(239 68 68 / var(--tw-border-opacity));
 }
 
+.hover\:block:hover {
+  display: block;
+}
+
 .hover\:scale-105:hover {
   --tw-scale-x: 1.05;
   --tw-scale-y: 1.05;
@@ -2744,6 +2756,14 @@ video {
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 
+.group:hover .group-hover\:block {
+  display: block;
+}
+
+.group:hover .group-hover\:hidden {
+  display: none;
+}
+
 .group:hover .group-hover\:border-slate-300 {
   --tw-border-opacity: 1;
   border-color: rgb(203 213 225 / var(--tw-border-opacity));
@@ -2808,6 +2828,18 @@ video {
 }
 
 .group\/firend-list.active .group-\[\.active\]\/firend-list\:block {
+  display: block;
+}
+
+.group>* .group-\[\&\>\*\]\:block {
+  display: block;
+}
+
+.group>*::hover .group-\[\&\>\*\:\:hover\]\:block {
+  display: block;
+}
+
+.group>*:hover .group-\[\&\>\*\:hover\]\:block {
   display: block;
 }
 
@@ -2877,6 +2909,10 @@ video {
   display: block;
 }
 
+.peer:hover ~ .peer-hover\:block {
+  display: block;
+}
+
 .peer\/avatar:hover ~ .peer-hover\/avatar\:opacity-100 {
   opacity: 1;
 }
@@ -2889,6 +2925,10 @@ video {
 .peer\/search-people:focus ~ .peer-focus\/search-people\:text-blue-500 {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
+}
+
+.peer>*:hover ~ .peer-\[\&\>\*\:hover\]\:block {
+  display: block;
 }
 
 .peer.active ~ .peer-\[\&\.active\]\:text-slate-50 {

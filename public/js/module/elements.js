@@ -6,6 +6,7 @@ import {
 	calculateAudioTotalTimeValue, 
 	encodeHTML, 
 	readAsDataURL, 
+	showError, 
 	stringToElement 
 } from './utils.js'
 
@@ -20,29 +21,61 @@ import {
 
 
 // elements.createTheirMessage(messageContainer, 'hi')
+/*
+const messagesContainer = $('[name=demo]')
+
+elements.createTheirMessage(messagesContainer, { 
+	// type: 'image',
+	// message: '/images/logo.png',
+
+	type: 'text',
+	message: 'my message',
+	avatar: '/images/logo.png',
+	onClose: ({ target }) => {
+		console.log(target)
+		target.remove()
+	}
+})
+*/
 export const createTheirMessage = (selector, payload) => {
 	const { 
+		id='',
 		message='',
 		type='text', 
 		avatar='',
+
+		onClose=null
 
 	} = payload
 
 	const encodedMessage = encodeHTML(message)
 	const htmlString = `
-		<div name='their-message-container' class='flex items-start gap-2 mb-2'> 
+		<div name='their-message-container' id='${id}' class='flex items-start gap-2 mb-2'> 
+
 			<img src=${avatar || ''} alt='their avatar' class='w-6 h-6 rounded-full border border-slate-300' />
 				${
 					type === 'image'
 					? `
-						<div class='max-w-[80%] p-0.5 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
-							<img name='their-message' src='${message}' class='object-cover' />
+						<div class='relative max-w-[80%] p-0.5 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
+							<img name='their-message' src='${message}' class='peer object-cover' />
+							<button name='close-message' class='absolute top-0 right-0 bg-slate-200 
+							hover:bg-slate-300 p-1 rounded-full border border-slate-400/60 
+							peer-hover:block hover:block'>
+								<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+							</button>	
 						</div>
 					` 
 					: `
-						<div class='max-w-[80%] px-2 py-1 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
-							<p name='their-message' class='text-slate-600'> ${encodedMessage} </p>
+						<div class='relative max-w-[80%] px-2 py-1 bg-slate-200 border border-slate-300 rounded-md rounded-tl-none'>
+							<p name='their-message' class='peer text-slate-600'> ${encodedMessage} </p>
+
+							<button name='close-message' class='absolute top-0 right-0 bg-slate-200 hover:bg-slate-300 p-1 rounded-full border border-slate-400/60
+								hidden peer-hover:block hover:block
+							'>
+								<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+							</button>	
 						</div>
+
 					`
 				}
 		</div>
@@ -51,23 +84,38 @@ export const createTheirMessage = (selector, payload) => {
 	const element = stringToElement(htmlString)
 	selector.insertAdjacentElement('beforeend', element)
 	element.querySelector('[name=their-message]').scrollIntoView({ behavior: 'smooth' })
+
+	const closeButton = element.querySelector('[name=close-message]')
+	closeButton.addEventListener('click', (evt) => {
+		if( onClose instanceof Function ) return onClose({ target : element })
+		// element.remove()
+		evt.container = element
+	})
+
 }
 
 // elements.createYourMessage(messageContainer, 'whats up')
-export const createYourMessage = (selector, { type='text', message='', }) => {
+export const createYourMessage = (selector, { id='', type='text', message='', onClose=null }) => {
 	const encodedMessage = encodeHTML(message)
 	const htmlString = `
-		<div name='your-message-container' class='flex items-end gap-2 mt-2'>
+		<div name='your-message-container' id='${id}' class='flex items-end gap-2 mt-2'>
 			${
 				type === 'image'
 				? `
-					<div class='max-w-[80%] ml-auto p-0.5 bg-blue-200 border border-blue-300 rounded'>
-						<img name='your-message' src='${message}' class='object-cover' />
+					<div class='relative max-w-[80%] ml-auto p-0.5 bg-blue-200 border border-blue-300 rounded'>
+						<img name='your-message' src='${message}' class='peer object-cover' />
+						<button name='close-message' class='absolute top-0 right-0 bg-slate-200 hover:bg-slate-300 p-1 
+						rounded-full border border-slate-400/60 hidden peer-hover:block hover:block'>
+							<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+						</button>	
 					</div>
 				` 
 				: `
-					<div class='max-w-[80%] ml-auto px-2 py-1 bg-blue-200 border border-blue-300 rounded-md rounded-br-none'>
-						<p name='your-message' class='text-blue-950/80'>${encodedMessage}</p>
+					<div class='relative max-w-[80%] ml-auto px-2 py-1 bg-blue-200 border border-blue-300 rounded-md rounded-br-none'>
+						<p name='your-message' class='peer text-blue-950/80'>${encodedMessage}</p>
+						<button name='close-message' class='absolute top-0 right-0 bg-slate-200 hover:bg-slate-300 p-1 rounded-full border border-slate-400/60 hidden peer-hover:block hover:block '>
+							<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+						</button>	
 					</div>
 				`
 			}
@@ -83,24 +131,42 @@ export const createYourMessage = (selector, { type='text', message='', }) => {
 	const element = stringToElement(htmlString)
 	selector.insertAdjacentElement('beforeend', element)
 	element.querySelector('[name=your-message]').scrollIntoView({ behavior: 'smooth' })
+
+	const closeButton = element.querySelector('[name=close-message]')
+	closeButton.addEventListener('click', (evt) => {
+		if( onClose instanceof Function ) return onClose({ target : element })
+		// element.remove()
+		evt.container = element
+	})
+
 }
 
-// elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
+
+
+/*
+elements.createTheirAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
+elements.createTheirAudio(messagesContainer, { 
+	audioUrl: '/music/ignite.mp3',  
+	onClose: ({ target }) => {
+		console.log(target)
+		target.remove()
+	}
+})
+*/
 export const createTheirAudio = (selector, { 
 	id=null, 
 	avatar='',
 	audioUrl='',
 	audioDuration='00:00',
 	createdAt=Date.now(),
+	onClose = null
+
 }) => {
 	if(!audioUrl) return console.log('audioUrl missing')
 
-	let containerId = id || crypto.randomUUID()
-			containerId = `wrapper-${containerId}` 
-
-	const playPauseCheckbox = `${containerId}-play-pause-checkbox`
 	const htmlString = `
-		<div name='their-audio' id=${containerId} class='mb-2 max-w-[80%] p-1 flex gap-1 items-center bg-slate-100  border border-slate-200 rounded-md'>
+		<div name='their-audio' id=${id} class='relative mb-2 max-w-[80%] p-1 flex gap-1 items-center bg-slate-100  border border-slate-200 rounded-md'>
+
 			<div class='relative'>
 				<img src=${avatar || '/images/users/default.jpg'} alt='sender' class='w-10 h-10 rounded-full p-0.1 bg-white' />
 				<button type='button' class='p-[1px] rounded-full bg-slate-50 text-blue-500 absolute bottom-0.5 -right-0.5'>
@@ -108,93 +174,15 @@ export const createTheirAudio = (selector, {
 				</button>
 			</div>
 
-			<div name='wavefrom-container' class='flex-1 flex gap-2'>
-				<input type='checkbox' id='${playPauseCheckbox}' hidden class='peer/play-pause hidden' />
-				<label name='play-pause' for='${playPauseCheckbox}' class=" cursor-pointer 
-					peer-checked/play-pause:[&>*:first-child]:hidden [&>*:first-child]:block
-					peer-checked/play-pause:[&>*:nth-child(2)]:block [&>*:nth-child(2)]:hidden
-				">
-					<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"/></svg>
-					<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19V5h4v14zm-8 0V5h4v14z"/></svg>
-				</label>
-
-				<div class='flex-1'>
-					<div id="waveform" class='flex-1'> </div>
-					<div class='mb-0.5 flex justify-between items-center px-4 font-light text-xs text-slate-800'>
-						<span> ${calculateAudioCurrentTimeValue(audioDuration)} </span>
-						<span> ${new Date( createdAt ).toLocaleTimeString('en', {
-							hour: '2-digit',
-							minute: 'numeric'
-						})} </span>
-					</div>
-				</div>
-			</div>
-		</div>
-	`
-
-	const element = stringToElement(htmlString)
-	selector.insertAdjacentElement('beforeend', element)
-	element.scrollIntoView({ behavior: 'smooth' })
-
-	/* 	element.name 									=> undefined	 ?
-			element.getAttribute('name') 	=> their-audio */
-
-	const playPauseButton = element.querySelector('[name=play-pause]')
-	const wavesurfer = WaveSurfer.create({
-		container: `#${containerId} #waveform`, 	
-		waveColor: '#7ca4d0aa',
-		progressColor: '#3b82f6',
-		url: audioUrl,
-
-		height: 32,
-		response: true,
-		barWidth: 2,
-		barRadius: 2,
-	})
-
-	playPauseButton.addEventListener('click', () => {
-		wavesurfer.playPause() 	
-	})
-
-}
-
-
-// elements.createYourAudio(messageContainer, { audioUrl: '/music/ignite.mp3' })
-export const createYourAudio = (selector, { 
-	id=null, 
-	avatar='',
-	audioUrl='',
-	audioDuration='00:00',
-	createdAt=Date.now(),
-}) => {
-	if(!audioUrl) return console.log('audioUrl missing')
-
-	let containerId = id || crypto.randomUUID()
-			containerId = `wrapper-${containerId}` 
-
-	const playPauseCheckbox = `${containerId}-play-pause-checkbox`
-	const htmlString = `
-		<div name='your-audio' id='${containerId}' class='mb-2 max-w-[80%] ml-auto p-1 flex gap-1 items-center bg-blue-200 text-blue-700 border border-blue-200 rounded-md'>
-			<div class='relative order-1'>
-				<img src=${avatar || '/images/users/default.jpg'} alt='sender' class='w-10 h-10 rounded-full p-0.1 bg-white' />
-				<button type='button' class='p-[1px] rounded-full bg-slate-50 text-blue-500 absolute bottom-0.5 -left-0.5'>
-					<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3m7 9c0 3.53-2.61 6.44-6 6.93V21h-2v-3.07c-3.39-.49-6-3.4-6-6.93h2a5 5 0 0 0 5 5a5 5 0 0 0 5-5z"/></svg>
+			<div name='wavefrom-container' class='peer flex-1 flex gap-2'>
+				<button name='play-pause' class="group ">
+					<svg class='block group-[&.active]:hidden w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"/></svg>
+					<svg class='hidden group-[&.active]:block w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19V5h4v14zm-8 0V5h4v14z"/></svg>
 				</button>
-			</div>
-
-			<div name='wavefrom-container' class='flex-1 flex gap-2'>
-				<input type='checkbox' id='${playPauseCheckbox}' class='peer/play-pause hidden' />
-				<label name='play-pause' for='${playPauseCheckbox}' class="cursor-pointer 
-					peer-checked/play-pause:[&>*:first-child]:hidden [&>*:first-child]:block
-					peer-checked/play-pause:[&>*:nth-child(2)]:block [&>*:nth-child(2)]:hidden
-				" >
-					<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"/></svg>
-					<svg class='w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19V5h4v14zm-8 0V5h4v14z"/></svg>
-				</label>
 
 				<div class='flex-1'>
-					<div id="waveform" class='flex-1'> </div>
-					<div class='mb-0.5 flex justify-between items-center px-4 font-light text-xs text-slate-800'>
+					<div id="their-audio-waveform" class='flex-1'> </div>
+					<div class='flex justify-between items-center px-4 font-light text-xs text-slate-800'>
 						<span> ${calculateAudioCurrentTimeValue(audioDuration)} </span>
 						<span> ${new Date( createdAt ).toLocaleTimeString('en', {
 							hour: '2-digit',
@@ -203,6 +191,12 @@ export const createYourAudio = (selector, {
 					</div>
 				</div>
 			</div>
+
+			<button name='close-message' class='z-10 absolute top-0 right-0 bg-slate-200 hover:bg-slate-300 p-1 rounded-full 
+			border border-slate-400/60 hidden peer-hover:block hover:block'>
+				<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+			</button>	
+
 		</div>
 	`
 
@@ -214,11 +208,8 @@ export const createYourAudio = (selector, {
 			element.getAttribute('name') 	=> their-audio */
 
 	const playPauseButton = element.querySelector('[name=play-pause]')
-	const inputCheckbox = element.querySelector('[type=checkbox]')
-
-
 	const wavesurfer = WaveSurfer.create({
-		container: `#${containerId} #waveform`, 	
+		container: element.querySelector('#their-audio-waveform'),
 		waveColor: '#7ca4d0aa',
 		progressColor: '#3b82f6',
 		url: audioUrl,
@@ -230,12 +221,120 @@ export const createYourAudio = (selector, {
 	})
 
 	wavesurfer.on('finish', () => {
-		inputCheckbox.checked = false
+		playPauseButton.classList.toggle('active', false)
+		wavesurfer.stop() 	
 	})
-	playPauseButton.addEventListener('click', () => {
+	playPauseButton.addEventListener('click', (evt) => {
 		wavesurfer.playPause() 	
+
+		const isPlaying = wavesurfer.isPlaying()
+		evt.target.classList.toggle('active', isPlaying)
 	})
 
+	const closeButton = element.querySelector('[name=close-message]')
+	closeButton.addEventListener('click', (evt) => {
+		if( onClose instanceof Function ) return onClose({ target : element })
+		// element.remove()
+		evt.container = element
+	})
+
+}
+
+
+/*
+elements.createYourAudio(messagesContainer, { audioUrl: '/music/ignite.mp3' })
+elements.createYourAudio(messagesContainer, { 
+	audioUrl: '/music/ignite.mp3',
+	onClose: ({ target }) => {
+		console.log(target)
+		target.remove()
+	}
+})
+*/
+export const createYourAudio = (selector, { 
+	id=null, 
+	avatar='',
+	audioUrl='',
+	audioDuration='00:00',
+	createdAt=Date.now(),
+}) => {
+	if(!audioUrl) return console.log('audioUrl missing')
+
+	const htmlString = `
+		<div name='your-audio' id='${id}' class='relative mb-2 max-w-[80%] ml-auto p-1 flex gap-1 items-center bg-blue-200 text-blue-700 border border-blue-200 rounded-md'>
+
+			<div class='peer relative order-1'>
+				<img src=${avatar || '/images/users/default.jpg'} alt='sender' class='w-10 h-10 rounded-full p-0.1 bg-white' />
+				<button type='button' class='p-[1px] rounded-full bg-slate-50 text-blue-500 absolute bottom-0.5 -left-0.5'>
+					<svg class='w-4 h-4 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3m7 9c0 3.53-2.61 6.44-6 6.93V21h-2v-3.07c-3.39-.49-6-3.4-6-6.93h2a5 5 0 0 0 5 5a5 5 0 0 0 5-5z"/></svg>
+				</button>
+			</div>
+
+			<div name='wavefrom-container' class='peer flex-1 flex gap-2'>
+				<button name='play-pause' class="group ">
+					<svg class='block group-[&.active]:hidden w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"/></svg>
+					<svg class='hidden group-[&.active]:block w-6 h-6 pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19V5h4v14zm-8 0V5h4v14z"/></svg>
+				</button>
+
+				<div class='flex-1'>
+					<div id="your-audio-waveform" class='flex-1 '></div>
+					<div class='flex justify-between items-center px-4 font-light text-xs text-slate-800'>
+						<span> ${calculateAudioCurrentTimeValue(audioDuration)} </span>
+						<span> ${new Date( createdAt ).toLocaleTimeString('en', {
+							hour: '2-digit',
+							minute: 'numeric'
+						})} </span>
+					</div>
+				</div>
+			</div>
+
+			<button name='close-message' class='z-10 absolute top-0 right-0 bg-slate-200 hover:bg-slate-300 p-1 rounded-full 
+			border border-slate-400/60 hidden peer-hover:block hover:block'>
+				<svg class='pointer-events-none' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+			</button>	
+
+		</div>
+	`
+
+	const element = stringToElement(htmlString)
+	selector.insertAdjacentElement('beforeend', element)
+	element.scrollIntoView({ behavior: 'smooth' })
+
+	/* 	element.name 									=> undefined	 ?
+			element.getAttribute('name') 	=> their-audio */
+
+	const playPauseButton = element.querySelector('[name=play-pause]')
+
+	const waveFormContainer = element.querySelector('#your-audio-waveform')
+	if(!waveFormContainer) return showError('waveform container is null')
+
+	const wavesurfer = WaveSurfer.create({
+		container: waveFormContainer,
+		waveColor: '#7ca4d0aa',
+		progressColor: '#3b82f6',
+		url: audioUrl,
+
+		height: 32,
+		response: true,
+		barWidth: 2,
+		barRadius: 2,
+	})
+
+	wavesurfer.on('finish', () => {
+		playPauseButton.classList.toggle('active', false)
+		wavesurfer.stop() 	
+	})
+	playPauseButton.addEventListener('click', (evt) => {
+		wavesurfer.playPause() 	
+
+		const isPlaying = wavesurfer.isPlaying()
+		evt.target.classList.toggle('active', isPlaying)
+	})
+
+	const closeButton = element.querySelector('[name=close-message]')
+	closeButton.addEventListener('click', (evt) => {
+		evt.container = element
+	})
 
 }
 

@@ -1,4 +1,12 @@
-. production: don't load images properly after logout.
+Waveform shows 2 tracks instead of single one
+
+in Write Your Message Section:
+	- When active microphone disable/hides buttons nd when stoped reenable/show buttons back
+
+
+
+production: 
+	. don't load images properly after logout.
 
 . change webrtc-signal on server-side to multiple seperate listener  to reduce complexity
 . use store like redux store

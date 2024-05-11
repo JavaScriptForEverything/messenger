@@ -95,6 +95,7 @@ export const getAllMessages = async () => {
 	}
 }
 
+// ui.js: showAllMessagesInUI()
 export const getAllChatMessages = async (payload = {}) => {
 	try {
 		if(!payload.sender || !payload.receiver) throw new Error('psease provide senderId and receiverId')
@@ -125,6 +126,25 @@ export const createMessage = async (payload) => {
 		const res = await fetch('/api/messages', {
 			method: 'POST',
 			body: JSON.stringify(payload),
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			}
+		})
+		if( !res.ok ) throw await res.json()
+
+		return await res.json()
+
+	} catch (error) {
+		return error
+	}
+}
+
+// ui.js: ----------[ Messages Delete Handling ]----------
+export const deleteMessageById = async (messageId) => {
+	try {
+		const res = await fetch(`/api/messages/${messageId}`, {
+			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',

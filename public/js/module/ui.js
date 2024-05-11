@@ -111,12 +111,22 @@ export const receiveMessage = ({ callerUserId, calleeUserId, message, type }) =>
 
 	// Step-4: add messages in UI: text or image 
 	if(type === 'text' || type === 'image') {
+		// one for middle block
+		console.log({ messageId: message.id })
 		elements.createTheirMessage(messagesContainer, { 
+			id: message._id,
 			type: message.type,
 			message: message.message,
-			avatar: message.sender.avatar
+			avatar: message.sender.avatar,
+
+			onClose: ({ target }) => {
+				console.log(target)
+				target.remove()
+			}
 		})
+		// one for right block
 		elements.createTheirMessage(chatContainer, { 
+			id: message._id,
 			type: message.type,
 			message: message.message,
 			avatar: message.sender.avatar
@@ -127,12 +137,14 @@ export const receiveMessage = ({ callerUserId, calleeUserId, message, type }) =>
 	// show audio message
 	if(type === 'audio') {
 		elements.createTheirAudio(messagesContainer, { 
+			id: message._id,
 			avatar: message.sender.avatar,
 			audioUrl: message.message,
 			audioDuration: message.duration,
 			createdAt: message.createdAt,
 		})
 		elements.createTheirAudio(chatContainer, { 
+			id: message._id,
 			avatar: message.sender.avatar,
 			audioUrl: message.message,
 			audioDuration: message.duration,
@@ -521,12 +533,15 @@ const addMessage = (messageDoc) => {
 
 		if(messageDoc.type === 'audio') {
 			elements.createYourAudio(messagesContainer, { 
+				id: messageDoc._id,
 				avatar: logedInUser.avatar,
 				audioUrl: messageDoc.message,
 				audioDuration: messageDoc.duration,
 				createdAt: messageDoc.createdAt
 			})
+
 			elements.createYourAudio(chatContainer, { 
+				id: messageDoc._id,
 				avatar: logedInUser.avatar,
 				audioUrl: messageDoc.message,
 				audioDuration: messageDoc.duration,
@@ -535,10 +550,12 @@ const addMessage = (messageDoc) => {
 
 		} else {
 			elements.createYourMessage(messagesContainer, { 
+				id: messageDoc._id,
 				type: messageDoc.type,
 				message: messageDoc.message 
 			})
 			elements.createYourMessage(chatContainer, { 
+				id: messageDoc._id,
 				type: messageDoc.type,
 				message: messageDoc.message 
 			})
@@ -548,12 +565,14 @@ const addMessage = (messageDoc) => {
 	} else {
 		if(messageDoc.type === 'audio') {
 			elements.createTheirAudio(messagesContainer, { 
+				id: messageDoc._id,
 				avatar: logedInUser.avatar,
 				audioUrl: messageDoc.message,
 				audioDuration: messageDoc.duration,
 				createdAt: messageDoc.createdAt
 			})
 			elements.createTheirAudio(chatContainer, { 
+				id: messageDoc._id,
 				avatar: logedInUser.avatar,
 				audioUrl: messageDoc.message,
 				audioDuration: messageDoc.duration,
@@ -562,11 +581,13 @@ const addMessage = (messageDoc) => {
 
 		} else {
 			elements.createTheirMessage(messagesContainer, { 
+				id: messageDoc._id,
 				type: messageDoc.type,
 				message: messageDoc.message,
 				avatar: messageDoc.sender.avatar
 			})
 			elements.createTheirMessage(chatContainer, { 
+				id: messageDoc._id,
 				type: messageDoc.type,
 				message: messageDoc.message,
 				avatar: messageDoc.sender.avatar
@@ -853,12 +874,14 @@ export const showAudio = async (blob, audio, audioDuration) => {
 
 		// Step-4: Show Audio in sender: user himself
 		elements.createYourAudio(messagesContainer, { 
+			id: messageDoc._id,
 			avatar: logedInUser.avatar,
 			audioUrl: dataUrl,
 			audioDuration,
 			createdAt: messageDoc.createdAt
 		})
 		elements.createYourAudio(chatContainer, { 
+			id: messageDoc._id,
 			avatar: logedInUser.avatar,
 			audioUrl: dataUrl,
 			audioDuration,
@@ -1046,10 +1069,12 @@ sendMessageForm.addEventListener('submit', async (evt) => {
 	if(message) return showError(message)
 
 	elements.createYourMessage(messagesContainer, { 
+		id: messageDoc._id,
 		type: messageDoc.type, 
 		message: messageDoc.message
 	})
 	elements.createYourMessage(chatContainer, { 
+		id: messageDoc._id,
 		type: messageDoc.type, 
 		message: messageDoc.message
 	})
@@ -1089,10 +1114,12 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 		// console.log(messageDoc)
 
 		elements.createYourMessage(messagesContainer, { 
+			id: messageDoc._id,
 			type: 'image', 
 			message: messageDoc.message,
 		})
 		elements.createYourMessage(chatContainer, { 
+			id: messageDoc._id,
 			type: 'image', 
 			message: messageDoc.message,
 		})
@@ -1280,7 +1307,20 @@ searchMessageInput.addEventListener('input', async (evt) => {
 })
 
 
+//----------[ Messages Delete Handling ]----------
+messagesContainer.addEventListener('click', async (evt) => {
+	if(evt.target.name !== 'close-message') return
 
+	const containerEl = evt.container
+	if(!containerEl) return showError(`container: ${containerEl} can't delete operation`)
+
+	const messageId = containerEl.id
+	const { status, message } = await http.deleteMessageById(messageId)
+	if(message) return showError(message)
+
+	// // remove element
+	if(status === 'success') containerEl.remove()
+})
 
 
 // ----------[ video ]----------

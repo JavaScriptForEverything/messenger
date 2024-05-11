@@ -1,30 +1,52 @@
-import '../plugins/cropper/cropper.min.js'
+import * as elements from '../module/elements.js'
 
 const $ = (selector) => document.querySelector(selector)
 
-const avatar = $('[name=avatar]')
-const imagePreview = $('[name=crop-preview]')
-const cropButton = $('[name=crop-button]')
-const cropDownload = $('[name=crop-download]')
+const messagesContainer = $('[name=demo]')
 
-
-const cropper = new Cropper(avatar, { })
-
-cropButton.addEventListener('click', () => {
-	const canvas = cropper.getCroppedCanvas()
-	const dataUrl = canvas.toDataURL()
-
-	imagePreview.src = dataUrl
+elements.createTheirMessage(messagesContainer, { 
+	type: 'text',
+	message: 'my message',
+	avatar: '/images/logo.png',
+	onClose: ({ target }) => {
+		console.log(target)
+		target.remove()
+	}
+})
+elements.createTheirMessage(messagesContainer, { 
+	type: 'image',
+	// message: 'my message',
+	message: '/images/logo.png',
+	avatar: '/images/logo.png',
+	onClose: ({ target }) => {
+		console.log(target)
+		target.remove()
+	}
+})
+elements.createYourMessage(messagesContainer, { 
+	type: 'image',
+	message: '/images/logo.png',
+	onClose: ({ target }) => {
+		console.log(target)
+		target.remove()
+	}
 })
 
-cropDownload.addEventListener('click', () => {
-	const canvas = cropper.getCroppedCanvas()
-	const dataUrl = canvas.toDataURL()
 
-	// const dataUrl = imagePreview.src  		// or get from previous image
+// elements.createTheirAudio(messagesContainer, { 
+// 	audioUrl: '/music/ignite.mp3',  
+// 	onClose: ({ target }) => {
+// 		console.log(target)
+// 		target.remove()
+// 	}
+// })
 
-	const a = document.createElement('a')
-	a.href = dataUrl
-	a.download = 'crop-download.png'
-	a.click()
-})
+
+elements.createYourAudio(messagesContainer, { audioUrl: '/music/ignite.mp3' })
+// elements.createYourAudio(messagesContainer, { 
+// 	audioUrl: '/music/ignite.mp3',
+// 	onClose: ({ target }) => {
+// 		console.log(target)
+// 		target.remove()
+// 	}
+// })

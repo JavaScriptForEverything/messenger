@@ -171,10 +171,7 @@ export const handlePreOffer = async ({ callerUserId, calleeUserId, callType }) =
 
 
 	try {
-		// const isWebCam = await webRTC.getLocalPreview() 		// callee-side
-		// if(!isWebCam) return showError('webcam not found')
-
-		console.log('callee-side: 2')
+		// console.log('callee-side: 2')
 		webRTC.getLocalPreview() 		// callee-side
 		const isSucceed = await elements.incommingCallDialog({ type })
 
@@ -957,7 +954,7 @@ export const audioCallHandler = async () => {
 
 		try {
 			webRTC.getLocalPreview() 		// caller-side: audio-call
-			console.log('caller-side: 1')
+			// console.log('caller-side: 1')
 
 			wss.sendPreOffer({ 
 				callerUserId: logedInUserId,
@@ -1002,7 +999,7 @@ export const videoCallHandler = async () => {
 
 
 		try {
-			console.log('caller-side: step-1')
+			// console.log('caller-side: step-1')
 			webRTC.getLocalPreview() 		// callee-side
 
 			wss.sendPreOffer({ 

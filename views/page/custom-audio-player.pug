@@ -132,9 +132,9 @@ block body
 					sliderInputRange.value = audio.currentTime
 					sliderInputRange.max = audio.duration 	// set slider range === audio duration
 
-					currentTimeSpan.textContent = audio.currentTime
-					//- currentTimeSpan.textContent = formatTime(audio.currentTime)
-					songDurationSpan.textContent = formatTime(audio.duration)
+					currentTimeSpan.textContent = calculateAudioCurrentTimeValue( audio.currentTime )
+					songDurationSpan.textContent = calculateAudioTotalTimeValue(audio.duration)
+					//- songDurationSpan.textContent = formatTime(audio.duration)
 
 					// if audio ends
 					if(audio.currentTime == audio.duration) {
@@ -144,7 +144,7 @@ block body
 						//- clearInterval( timer )
 						//- playPauseButton.classList.remove('active')
 					}
-				}, 500)
+				}, 300)
 
 			} else {
 				stopSong()
@@ -159,15 +159,35 @@ block body
 			audio.currentTime = evt.target.value 		// already set sliderInputRange.max = song.duration
 		})
 
-		const formatTime = (time) => {
-			let minutes = Math.floor( time / 60 )
-			if( minutes < 10 ) minutes = `0${minutes}`
+		const calculateAudioCurrentTimeValue = (currentTime) => {
+			const currentHour = parseInt( currentTime / (60*60) ) % 24
+			const currentMinute = parseInt( currentTime / 60 ) % 60
+			const currentSecondsLong = currentTime % 60
+			const currentSeconds = currentSecondsLong.toFixed()
 
-			let seconds = Math.floor( minutes % 60 )
-			if( seconds < 10 ) seconds = `0${seconds}`
+			currentTime = (currentMinute < 10 ?  "0" + currentMinute : currentMinute) + " :" +  (currentSeconds < 10 ? "0" + currentSeconds : currentSeconds)
 
-			return `${minutes}:${seconds}`
+			return currentTime
 		}
+
+		const calculateAudioTotalTimeValue = (length) => {
+			const minutes = Math.floor( length / 60)
+			const secondsInt = length - (minutes * 60)
+			const secondsStr = secondsInt.toString()
+			const seconds = secondsStr.substr(0, 2)
+			const time = minutes + ':' + seconds
+
+			return time
+		}
+		//- const formatTime = (time) => {
+		//- 	let minutes = Math.floor( time / 60 )
+		//- 	if( minutes < 10 ) minutes = `0${minutes}`
+
+		//- 	let seconds = Math.floor( minutes % 60 )
+		//- 	if( seconds < 10 ) seconds = `0${seconds}`
+
+		//- 	return `${minutes}:${seconds}`
+		//- }
 
 		const setSong = (index) => {
 			sliderInputRange.value = 0 	// set song start position on song changes 

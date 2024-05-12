@@ -387,10 +387,12 @@ const showDragItemsInUI = (fileArray) => {
 				webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
 				ui.addDragAndDropUploadingIndicator()
 
+
 				const parcentage = (progressValue / totalSize ) * 100
 				increaseProgressValue(parcentage)
 
-				progressValue += value.length
+				// NB: sender-side: need to send parcentage value later, else shows wrong parcentageValue
+				progressValue += value.length 						// NB: this value is chunk of string
 			}
 
 			reader.read().then( ({ done, value }) => {

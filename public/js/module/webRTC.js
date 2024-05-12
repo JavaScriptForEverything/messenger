@@ -464,10 +464,11 @@ const handleFileComesByDataChannel = ({ data }) => {
 	// Step-3: handle  every chunks: data is Blob : 
 	worker.postMessage(data)
 	
+	// NB: If progressValue shows after parcentageValue then it show wrong parcentage
+	progressValue += data.size 		// => data === Blob constructor
+
 	const parcentageValue = (progressValue / totalSize ) * 100
 	ui.addDragAndDropDownloadingIndicator(parcentageValue)
-
-	progressValue += data.size 		// => data === Blob constructor
 }
 
 // const downloadFile = (name) => {

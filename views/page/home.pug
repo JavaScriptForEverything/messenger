@@ -352,9 +352,15 @@ block script
 								//- add .active to enable
 								//- add .upload class to show uploading text
 								//- add .download class to show downloading text
-								div(name='drag-and-drop-downloading-indicator' class='hidden group [&.active]:block absolute top-0 left-0 right-0 animate-pulse text-slate-500 ')
+								div(name='drag-and-drop-downloading-indicator' class=' hidden group [&.active]:block absolute top-0 left-0 right-0 animate-pulse text-slate-500 ')
 									p(class='p-2 text-center hidden group-[&.upload]:block') uploading...
-									p(class='p-2 text-center hidden group-[&.download]:block') downloading...
+									//- p(class='p-2 hidden group-[&.upload]:flex gap-2 justify-center') 
+										span uploading...
+										span(name='upload-value') 0%
+
+									p(class='p-2 hidden group-[&.download]:flex gap-2 justify-center') 
+										span downloading...
+										span(name='show-download-parcentage-value') 0%
 
 
 								div(class='hidden group-[&.disabled]:block absolute top-0 left-0 right-0 bg-red-400 text-white')

@@ -358,9 +358,22 @@ const showDragItemsInUI = (fileArray) => {
 			const stream = file.stream()
 			const reader = stream.getReader()
 
+			// WebRTC-Step-1: send start indication: send totalSize to show progress bar on callee-side too
+			webRTC.sendFileByDataChannel(JSON.stringify({ 
+				start: true, 
+				// name: file.name, 
+				// type: file.type,
+				size: file.size,
+			}))
+
 			const handleReading = (done, value) => {
 				if(done) {
-					webRTC.sendFileByDataChannel(JSON.stringify({ done: true, name: file.name, type: file.type }))
+					// WebRTC-Step-3: send finished indication
+					webRTC.sendFileByDataChannel(JSON.stringify({ 
+						done: true, 
+						name: file.name, 
+						// type: file.type 
+					}))
 					ui.removeDragAndDropUploadingIndicator()
 					downloadFinished()
 					return
@@ -370,6 +383,7 @@ const showDragItemsInUI = (fileArray) => {
 					handleReading(done, value)
 				})
 
+				// WebRTC-Step-3: send chunks as Blob
 				webRTC.sendFileByDataChannel(value) 			// send arrayBuffer of stream
 				ui.addDragAndDropUploadingIndicator()
 

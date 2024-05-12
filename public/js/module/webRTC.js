@@ -439,18 +439,35 @@ export const sendFileByDataChannel = (payload) => {
 	// payload can be: string | Blob | arrayBuffer | TypedArray | DataView
 }
 
-const handleFileComesByDataChannel = ({ data }) => {
-	if( data.toString().includes('done') ) {
-		
-		const { name, type } = JSON.parse(data)
-		// downloadFile(name)
-		downloadFromBlob(name)
+let totalSize = 0
+let progressValue = 0
 
-	}	else {
-		worker.postMessage(data)
-		store.setIsDownloading(true)
-		ui.addDragAndDropDownloadingIndicator()
-	}
+const handleFileComesByDataChannel = ({ data }) => {
+	// Step-1: handle first-request to get file size: require to show progress bar in callee-side: downloading side
+
+	if( data.toString().includes('start') ) {
+		const { size } = JSON.parse(data)
+		totalSize = size
+
+		return
+	} 
+	
+	// Step-2: handle  last request: to get file name: (also for confirmation)
+	if( data.toString().includes('done') ) {
+		const { name } = JSON.parse(data)
+		downloadFromBlob(name)
+		totalSize = 0
+
+		return
+	}	
+
+	// Step-3: handle  every chunks: data is Blob : 
+	worker.postMessage(data)
+	
+	const parcentageValue = (progressValue / totalSize ) * 100
+	ui.addDragAndDropDownloadingIndicator(parcentageValue)
+
+	progressValue += data.size 		// => data === Blob constructor
 }
 
 // const downloadFile = (name) => {

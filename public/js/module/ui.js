@@ -41,6 +41,7 @@ const recordingPanelPlayPauseButton = $('[name=recording-panel] [name=play-pause
 const rightPanelMainBlock = $('[name=right-main]')
 const dragAndDropPanel = $('[name=drag-and-drop-panel]')
 const dragAndDropDownloadingIndicator = $('[name=drag-and-drop-downloading-indicator]')
+const showDownloadParcentageEl = $('[name=show-download-parcentage-value]')
 
 let timer = 0
 let controller = null
@@ -649,12 +650,15 @@ export const removeDragAndDropUploadingIndicator = () => {
 
 
 
+
 // Callee-Side: webRTC.js: peerConnection.addEventListener('datachannel', {...})
-export const addDragAndDropDownloadingIndicator = () => {
+export const addDragAndDropDownloadingIndicator = (parcentageValue) => {
 	if( !dragAndDropDownloadingIndicator.classList.contains('active') ) {
 		dragAndDropDownloadingIndicator.classList.add('active')	
 		dragAndDropDownloadingIndicator.classList.add('download')	
 	}
+
+	showDownloadParcentageEl.textContent = `${parcentageValue.toFixed()}%`
 }
 // Callee-Side: webRTC.js: peerConnection.addEventListener('datachannel', {...})
 export const removeDragAndDropDownloadingIndicator = () => {
@@ -662,6 +666,7 @@ export const removeDragAndDropDownloadingIndicator = () => {
 		dragAndDropDownloadingIndicator.classList.remove('active')	
 		dragAndDropDownloadingIndicator.classList.remove('dialog')	
 	}
+
 }
 
 

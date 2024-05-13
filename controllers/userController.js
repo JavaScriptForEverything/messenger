@@ -41,7 +41,8 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 	// const users = await apiFeatures(User, req.query, filter).populate('latestMessage')
 
 
-	const users = await User.find( filter )
+	// const users = await User.find( filter )
+	const users = await apiFeatures(User, req.query, filter)
 		.select('firstName lastName avatar latestMessage')
 		.populate('latestMessage')
 		// .populate('notifications') 			// virtual Property

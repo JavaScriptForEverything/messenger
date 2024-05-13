@@ -148,6 +148,7 @@ const showFollowersAndFollowingsList = async () => {
 			avatar: friend.avatar,
 			name: friend.fullName,
 		})
+
 	})
 	followings.forEach( friend => {
 		elements.createFirendList(followingsContainer, {
@@ -159,3 +160,12 @@ const showFollowersAndFollowingsList = async () => {
 
 }
 showFollowersAndFollowingsList() 	// get at first page load
+
+
+
+tabsContentContainer.addEventListener('click', (evt) => {
+	const userId = evt.target.id
+	if(!userId) return
+
+	redirectTo(`/profile/${userId}`)
+})

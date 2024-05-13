@@ -405,7 +405,8 @@ const hideSearchModal = (modalSelector) => (evt) => {
 
 	if(leftSide || rightSide || topSide || bottomSide) {
 		modalSelector.classList.add('hidden')
-		searchPeopleInput.value = '' 		// reset-searh value on blur
+		searchFriendsInput.value = '' 		// reset-searh value on blur
+		searchPeopleInput.value = '' 			// reset-searh value on blur
 	}
 }
 

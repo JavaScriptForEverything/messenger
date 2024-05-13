@@ -88,7 +88,8 @@ cameraIconButtonInput.addEventListener('change', async (evt) => {
 	} catch (err) {
 		console.log(err.message)
 	}
-}) */
+}) 
+*/
 export const readAsDataURL = (file, { type='image' } = {}) => {
 	return new Promise((resolve, reject) => {
 

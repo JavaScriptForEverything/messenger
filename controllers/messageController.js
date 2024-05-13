@@ -93,10 +93,12 @@ exports.createMessage = catchAsync( async (req, res, next) => {
 
 		res.status(200).json({
 			status: 'success',
-			data: {
-				message: messageDto.filterMessage(message._doc),
-				notification: {}
-			}
+			data: messageDto.filterMessage(message._doc),
+			
+			// data: {
+			// 	message: messageDto.filterMessage(message._doc),
+			// 	notification: {}
+			// }
 		})
 
 	} catch (err) {

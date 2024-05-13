@@ -60,7 +60,6 @@ const dragAndDropPanel = $('[name=drag-and-drop-panel]')
 const dragAndDropContainer = $('[name=drag-and-drop-container]')
 const dropListContainer = $('[name=drop-list-container]')
 const dragAndDropFileInput = $('[id=drag-and-drop-file]')
-const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 
 // // by default hide file sharing dialog on page load

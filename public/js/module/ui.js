@@ -883,10 +883,11 @@ export const showAudio = async (blob, audio, audioDuration) => {
 			type: 'audio',
 			duration: audioDuration,
 		}
-		const { data:{ message, notification }, message:error } = await http.createMessage(payload)
+		const { data:message, message:error } = await http.createMessage(payload)
 		if(error) return showError(error)
 
-		console.log(message, notification)
+		// const { data:{ message, notification }, message:error } = await http.createMessage(payload)
+		// console.log(message, notification)
 
 		// Step-3: Send MessageDoc to other-user: WebSocket + and show in UI
 		wss.sendMessage({ 

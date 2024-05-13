@@ -443,8 +443,8 @@ let totalSize = 0
 let progressValue = 0
 
 const handleFileComesByDataChannel = ({ data }) => {
-	// Step-1: handle first-request to get file size: require to show progress bar in callee-side: downloading side
 
+	// Step-1: handle first-request to get file size: require to show progress bar in callee-side: downloading side
 	if( data.toString().includes('start') ) {
 		const { size } = JSON.parse(data)
 		totalSize = size
@@ -463,9 +463,11 @@ const handleFileComesByDataChannel = ({ data }) => {
 
 	// Step-3: handle  every chunks: data is Blob : 
 	worker.postMessage(data)
-	
+
 	// NB: If progressValue shows after parcentageValue then it show wrong parcentage
-	progressValue += data.size 		// => data === Blob constructor
+	if( data instanceof Blob ) progressValue += data.size
+	if( data instanceof ArrayBuffer ) progressValue += data.byteLength
+	// progressValue += data.size 		// => data === Blob constructor
 
 	const parcentageValue = (progressValue / totalSize ) * 100
 	ui.addDragAndDropDownloadingIndicator(parcentageValue)

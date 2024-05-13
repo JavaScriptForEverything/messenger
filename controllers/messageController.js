@@ -83,19 +83,19 @@ exports.createMessage = catchAsync( async (req, res, next) => {
 		if(!updatedUser) throw new Error('receiver user latestMessage update failed') 
 
 
-		const notification = await Notification.createNotification({
-			entryId: message._id, 									// Who which message this notification belongs to
-			userFrom: filteredBody.sender, 					// Who liked it ?
-			userTo: filteredBody.receiver, 					// which user create this tweet ?
-			type: 'new-message', 										// ['new-message', 'follow', 'call']
-		})
+		// const notification = await Notification.createNotification({
+		// 	entryId: message._id, 									// Who which message this notification belongs to
+		// 	userFrom: filteredBody.sender, 					// Who liked it ?
+		// 	userTo: filteredBody.receiver, 					// which user create this tweet ?
+		// 	type: 'new-message', 										// ['new-message', 'follow', 'call']
+		// })
 
 
 		res.status(200).json({
 			status: 'success',
 			data: {
 				message: messageDto.filterMessage(message._doc),
-				notification
+				notification: {}
 			}
 		})
 

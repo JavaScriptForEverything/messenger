@@ -44,7 +44,7 @@ exports.getAllFriends = catchAsync( async (req, res, next) => {
 	const users = await User.find( filter )
 		.select('firstName lastName avatar latestMessage')
 		.populate('latestMessage')
-		.populate('notifications') 			// virtual Property
+		// .populate('notifications') 			// virtual Property
 
 
 

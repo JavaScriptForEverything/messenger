@@ -121,12 +121,11 @@ userSchema.methods.comparePassword = function(password, hashedPassword) {
 	return bcryptjs.compare(password, hashedPassword)
 }
 
-userSchema.virtual('notifications', {
-	ref: 'Notification',
-	// foreignField: 'userTo', 						// Notification.userTo === User._id
-	foreignField: 'userFrom', 						// Notification.userTo === User._id
-	localField: '_id'
-})
+// userSchema.virtual('notifications', {
+// 	ref: 'Notification',
+// 	foreignField: 'userFrom', 						// Notification.userFrom === User._id
+// 	localField: '_id'
+// })
 
 const User = models.User || model('User', userSchema)
 module.exports = User

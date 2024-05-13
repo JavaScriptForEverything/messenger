@@ -739,21 +739,20 @@ export const showFriendLists = (friends=[]) => {
 	if(!friends.length) return showFriendsNotFoundUI()
 
 	friends.forEach((friend) => {
-		// console.log({ notifications: friend.notifications })
-
 		store.setActiveFriend(friend)
-		friend.notifications.map( notification => {
-			// if( friend.id === notification.userTo.id ) {
-			// 	console.log( friend.id === notification.userTo.id)
-			// }
-				console.log( friend.id === notification.userFrom.id)
 
-			// console.log({ 
-			// 	friendId: friend.id, 
-			// 	userTo: notification.userTo.id,
-			// 	userFrom: notification.userFrom.id,
-			// })
-		})
+		// friend.notifications.map( notification => {
+		// 	// if( friend.id === notification.userTo.id ) {
+		// 	// 	console.log( friend.id === notification.userTo.id)
+		// 	// }
+		// 		console.log( friend.id === notification.userFrom.id)
+
+		// 	// console.log({ 
+		// 	// 	friendId: friend.id, 
+		// 	// 	userTo: notification.userTo.id,
+		// 	// 	userFrom: notification.userFrom.id,
+		// 	// })
+		// })
 
 		elements.createFirendList(friendsListContainer, {
 			// --- user details
@@ -769,8 +768,8 @@ export const showFriendLists = (friends=[]) => {
 
 			// --- Notification details
 			// isNoNotification: true, 			// hide both new notification + success notification
-			isNotification: !!friend.notifications.length, 					// for New notification: to work 'isNoNotification' must be false
-			notificationValue: friend.notifications.length,
+			// isNotification: !!friend.notifications.length, 					// for New notification: to work 'isNoNotification' must be false
+			// notificationValue: friend.notifications.length,
 			// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 		})
 
@@ -1202,8 +1201,7 @@ searchPeopleInput.addEventListener('click', showSearchModal(searchPeopleModal))
 // Step-2: Hide modal when click outside of modal
 document.addEventListener('click', hideSearchModal(searchPeopleModal))
 
-
-// Step-3: Add searched friends and show them in that modal
+// Step-3: Add searched people and show them in that modal
 searchPeopleInput.addEventListener('input', async (evt) => {
 	if(controller) controller.abort()
 	controller = new AbortController()
@@ -1221,10 +1219,6 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 
 		searchPeopleModal.innerHTML = '' 	// empty old modal friends before add new friends
 		// evt.target.value = '' 							// empty input value after search success
-
-
-
-
 
 		people 		// people means profileUsers or non-logedInUsers
 			.filter(user => user._id != logedInUser._id ) 	// logedInUser globally available
@@ -1249,13 +1243,16 @@ searchPeopleInput.addEventListener('input', async (evt) => {
 			if(evt.target.tagName === 'BUTTON') {
 				const container = evt.target.closest('[name=list-container]')
 
+				evt.target.disabled = true
+
 				const { error, data:friend } = await http.toggleFollow(container.id)
 				if(error) return showError(error)
 
-				// make current users active style
+				// Step-1: toggle follow/unfollow tyle in the people search modal
 				followFollowingHandler(evt) 					// style button
-				// getAllFriends again
+				evt.target.disabled = false
 
+				// Step-2: Show or hide follow/unfollow people in the friendList
 				const friends = Array.from(friendsListContainer.children)
 				const findFriend = friends.find( currentFriend => currentFriend.id === friend.id )
 				const { rooms } = store.getState()

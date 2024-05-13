@@ -1,7 +1,6 @@
 // import { createPicker } from 'https://unpkg.com/picmo@latest/dist/index.js';
 // import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
 import { createPicker } from '../plugins/picmo/index.js';
-// import WaveSurfer from '../plugins/wavesurfer/index.js'
 import { $, getReadableFileSizeString, showError } from '../module/utils.js'
 import * as wss from '../module/wss.js' 		// ui imported in wss so UI is available too
 import * as ui from '../module/ui.js'
@@ -81,13 +80,6 @@ const attachmentInputCheckbox = $('[id=attachment-icon-button]')
 
 
 
-
-// ----------[ Emoji Picker ]----------
-const picker = createPicker({ rootElement: pickerContainer })
-picker.addEventListener('emoji:select', (evt) => {
-	emojiInput.checked = false
-	writeMessageInput.value += evt.emoji
-})
 
 //----------[ message audio ]----------
 const sendMessageRightSideIconsContainer = $('[name=message-icons-container]')
@@ -481,3 +473,11 @@ attachmentsButtonsContainer.addEventListener( 'click', (evt) => {
 
 
 
+
+// ----------[ Emoji Picker ]----------
+// add picker very end if no internet then don't slow down the app
+const picker = createPicker({ rootElement: pickerContainer })
+picker.addEventListener('emoji:select', (evt) => {
+	emojiInput.checked = false
+	writeMessageInput.value += evt.emoji
+})

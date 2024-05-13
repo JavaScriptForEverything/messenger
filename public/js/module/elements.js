@@ -457,7 +457,11 @@ export const createFirendList = (selector, data) => {
 			</div>
 
 			${isNoNotification && showFollowButton ? `
-				<button class='${isFollowing ? 'active' : '' } border border-blue-500 px-3 py-0.5 rounded text-blue-500 [&.active]:bg-blue-500 [&.active]:text-slate-50'>
+				<button class='${isFollowing ? 'active' : '' } border border-blue-500 px-3 py-0.5 rounded text-blue-500 
+				[&.active]:bg-blue-500 [&.active]:text-slate-50
+				disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-400
+				disabled:[&.active]:bg-slate-300 disabled:[&.active]:text-slate-500 disabled:[&.active]:border-slate-400
+				'>
 					${isFollowing ? 'following' : 'follow'}
 				</button>
 			`: ''}

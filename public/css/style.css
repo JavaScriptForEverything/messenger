@@ -2811,10 +2811,6 @@ video {
   display: block;
 }
 
-.group.download .group-\[\&\.download\]\:block {
-  display: block;
-}
-
 .group.upload .group-\[\&\.upload\]\:block {
   display: block;
 }

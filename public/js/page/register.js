@@ -58,6 +58,9 @@ registerForm.addEventListener('submit', async (evt) => {
 	fields.avatar = avatarImg.src.startsWith('data:image') ? avatarImg.src : ''
 	registerButton.disabled = true
 
+	// console.log(fields)
+	// registerButton.disabled = false 		// remove loading
+
 
 	try {
 		const res = await fetch('/api/auth/register', {
@@ -77,10 +80,33 @@ registerForm.addEventListener('submit', async (evt) => {
 		
 		setTimeout(() => {
 			redirectTo('/login')
-		}, 2000);
+		}, 500);
 
 	} catch (err) {
-		console.log(err)
+		// console.log(err)
+		registerButton.disabled = false 		// remove loading
+
+		const form = evt.target
+		const emailHelperText = form.querySelector('[name=email] > [name=error-message]')
+		const confirmPassword = form.querySelector('[name=confirmPassword] > [name=error-message]')
+
+		const errorElements = form.querySelectorAll('[name=error-message]')
+		errorElements.forEach( errorEl => {
+			errorEl.classList.add('hidden') // reset every error-message
+		})
+
+		if(err.message.includes('email')) {
+			emailHelperText.textContent = err.message
+			emailHelperText.classList.remove('hidden')
+			return
+		}
+		if(err.message.includes('confirmPassword')) {
+			confirmPassword.textContent = `confirm-password is required`
+			confirmPassword.classList.remove('hidden')
+			return
+		}
+
+		showError(err.message)
 	}
 
 })

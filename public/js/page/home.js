@@ -224,11 +224,6 @@ recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecording
 // attachmentInputCheckbox.checked = true
 // dragAndDropPanel.classList.remove('disabled')
 
-// // dropListContainer.insertAdjacentElement('beforeend', elements.dropList({
-// // 	fileName: 'name.txt',
-// // 	fileSize: getReadableFileSizeString(4987293),
-// // }))
-
 // const dropList = elements.dropList({
 // 	fileName: 'name.txt',
 // 	fileSize: getReadableFileSizeString(4987293),
@@ -242,15 +237,15 @@ recordingPanelStopRecordingButton.addEventListener('click', ui.stopCallRecording
 // 		console.log(dropList.classList.contains('active'))
 // 	}, 2000);
 
-// // let timer = 0
-// // setInterval(() => {
-// // 	// if( true ) clearInterval(timer)
-// // 	// const { donwnloadedFileSize, isDownloading } = store.getState()
-// // 	// console.log({ donwnloadedFileSize, isDownloading })
-// // 	console.log(
-// // 		dropList.classList
-// // 	)
-// // }, 1000);
+// let timer = 0
+// setInterval(() => {
+// 	// if( true ) clearInterval(timer)
+// 	// const { donwnloadedFileSize, isDownloading } = store.getState()
+// 	// console.log({ donwnloadedFileSize, isDownloading })
+// 	console.log(
+// 		dropList.classList
+// 	)
+// }, 1000);
 
 // const showDragItemsInUI = (fileArray) => {
 // 	fileArray.forEach( async (file) => {

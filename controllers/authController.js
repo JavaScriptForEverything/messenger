@@ -28,13 +28,14 @@ exports.protect = async (req, res, next) => {
 
 // POST /api/auth/register
 exports.register = async (req, res, next) => {
+
 	try {
 		const filteredBody = userDto.filterBody(req.body)
 		const { username, firstName, lastName, email } = filteredBody
 
 		if(username) {
 			const isUsernameExists = await User.findOne({ username })
-			if(isUsernameExists) return next(appError('this username already taken by someone'))
+			if(isUsernameExists) return next(appError('this email already taken by someone'))
 
 		} else {
 			filteredBody.username = slug(`${firstName} ${lastName} ${email}`, '-')

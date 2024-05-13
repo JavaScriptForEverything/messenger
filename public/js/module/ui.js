@@ -89,11 +89,6 @@ export const receiveUpdateMessageTypingIndicator = ({ callerUserId, calleeUserId
 // wss.js: socket.on('message', ({ ... }) => {})
 export const receiveMessage = ({ callerUserId, calleeUserId, message, type }) => {
 
-	// Step-1: Add incomming-message-sound:
-	const audio = document.createElement('audio')
-	audio.src = '/music/message/tab-tone.mp3'
-	audio.play()
-
 	// Step-2: Update firendList subtile with message type:
 	console.log('update friendList label with ', { type })
 
@@ -154,6 +149,13 @@ export const receiveMessage = ({ callerUserId, calleeUserId, message, type }) =>
 		return 
 	}
 
+
+	/* Step-last: Add incomming-message-sound: add to very end, because
+	** 	. if sound not play because of browser restriction then don't block other codes
+	*/ 
+	const audio = document.createElement('audio')
+	audio.src = '/music/message/tab-tone.mp3'
+	audio.play()
 }
 
 // wss.js
@@ -737,7 +739,22 @@ export const showFriendLists = (friends=[]) => {
 	if(!friends.length) return showFriendsNotFoundUI()
 
 	friends.forEach((friend) => {
+		// console.log({ notifications: friend.notifications })
+
 		store.setActiveFriend(friend)
+		friend.notifications.map( notification => {
+			// if( friend.id === notification.userTo.id ) {
+			// 	console.log( friend.id === notification.userTo.id)
+			// }
+				console.log( friend.id === notification.userFrom.id)
+
+			// console.log({ 
+			// 	friendId: friend.id, 
+			// 	userTo: notification.userTo.id,
+			// 	userFrom: notification.userFrom.id,
+			// })
+		})
+
 		elements.createFirendList(friendsListContainer, {
 			// --- user details
 			id: friend.id,
@@ -752,10 +769,12 @@ export const showFriendLists = (friends=[]) => {
 
 			// --- Notification details
 			// isNoNotification: true, 			// hide both new notification + success notification
-			// isNotification: true, 					// for New notification: to work 'isNoNotification' must be false
-			// notificationValue:  2,
+			isNotification: !!friend.notifications.length, 					// for New notification: to work 'isNoNotification' must be false
+			notificationValue: friend.notifications.length,
 			// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 		})
+
+
 	})
 	handleListSelection(friends)
 }
@@ -834,9 +853,9 @@ export const updateNonSelectedUserNotificationLabel = ({ callerUserId, message }
 		// isMessageSuccess: true, 				// for seen notification: to work 'isNotification' must be false
 	})
 
-	// Step-2: Replace current listItem with newly created one 
-	currentListEl.classList.add('selected') 	// make selected backgroun-color
-	friendsListContainer.replaceChild(currentListEl, targetFriendEl)
+	// // Step-2: Replace current listItem with newly created one 
+	// currentListEl.classList.add('selected') 	// make selected backgroun-color
+	// friendsListContainer.replaceChild(currentListEl, targetFriendEl)
 }
 
 // ----------[ audio upload ]----------
@@ -865,32 +884,33 @@ export const showAudio = async (blob, audio, audioDuration) => {
 			type: 'audio',
 			duration: audioDuration,
 		}
-		const { data:messageDoc, message } = await http.createMessage(payload)
-		if(message) return showError(message)
+		const { data:{ message, notification }, message:error } = await http.createMessage(payload)
+		if(error) return showError(error)
 
+		console.log(message, notification)
 
 		// Step-3: Send MessageDoc to other-user: WebSocket + and show in UI
 		wss.sendMessage({ 
 			type: 'audio', 
 			callerUserId: logedInUserId,
 			calleeUserId: activeUserId, 
-			message: messageDoc 
+			message,
 		})
 
 		// Step-4: Show Audio in sender: user himself
 		elements.createYourAudio(messagesContainer, { 
-			id: messageDoc._id,
+			id: message._id,
 			avatar: logedInUser.avatar,
 			audioUrl: dataUrl,
 			audioDuration,
-			createdAt: messageDoc.createdAt
+			createdAt: message.createdAt
 		})
 		elements.createYourAudio(chatContainer, { 
-			id: messageDoc._id,
+			id: message._id,
 			avatar: logedInUser.avatar,
 			audioUrl: dataUrl,
 			audioDuration,
-			createdAt: messageDoc.createdAt
+			createdAt: message.createdAt
 		})
 
 

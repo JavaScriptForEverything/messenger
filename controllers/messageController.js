@@ -6,6 +6,7 @@ const messageDto = require('../dtos/messageDto')
 const fileService = require('../services/fileService')
 const User = require('../models/userModel')
 const Message = require('../models/messageModel')
+const Notification = require('../models/notificationModel')
 
 // GET /api/messages
 exports.getAllMessages = catchAsync( async (req, res, next) => {
@@ -81,9 +82,21 @@ exports.createMessage = catchAsync( async (req, res, next) => {
 		const updatedUser = await User.findByIdAndUpdate(receiver, { latestMessage: message.id }, { new: true })
 		if(!updatedUser) throw new Error('receiver user latestMessage update failed') 
 
+
+		const notification = await Notification.createNotification({
+			entryId: message._id, 									// Who which message this notification belongs to
+			userFrom: filteredBody.sender, 					// Who liked it ?
+			userTo: filteredBody.receiver, 					// which user create this tweet ?
+			type: 'new-message', 										// ['new-message', 'follow', 'call']
+		})
+
+
 		res.status(200).json({
 			status: 'success',
-			data: messageDto.filterMessage(message._doc)
+			data: {
+				message: messageDto.filterMessage(message._doc),
+				notification
+			}
 		})
 
 	} catch (err) {

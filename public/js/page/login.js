@@ -1,4 +1,4 @@
-import { $, redirectTo } from '../module/utils.js'
+import { $, redirectTo, showError } from '../module/utils.js'
 
 const loginForm = $('[name=login-form]')
 
@@ -31,7 +31,6 @@ loginForm.addEventListener('submit', async (evt) => {
 	loginButton.disabled = true
 
 
-
 	try {
 		const res = await fetch('/api/auth/login', {
 			method: 'POST',
@@ -49,7 +48,32 @@ loginForm.addEventListener('submit', async (evt) => {
 		if(status === 'success') redirectTo('/')
 
 	} catch (err) {
-		console.log(err)		
+		loginButton.disabled = false 		// remove loading
+
+		const form = evt.target
+		const emailHelperText = form.querySelector('[name=email] > [name=error-message]')
+		const passwordHelperText = form.querySelector('[name=password] > [name=error-message]')
+
+		// passwordHelperText.classList.add('hidden') 	// reset to default
+		// emailHelperText.classList.add('hidden') 		// reset to default
+
+		const errorElements = form.querySelectorAll('[name=error-message]')
+		errorElements.forEach( errorEl => {
+			errorEl.classList.add('hidden') // reset every error-message
+		})
+
+		if(err.message.includes('password')) {
+			passwordHelperText.textContent = 'password is incorrect'
+			passwordHelperText.classList.remove('hidden')
+			return
+		}
+		if(err.message.includes('email')) {
+			emailHelperText.textContent = err.message
+			emailHelperText.classList.remove('hidden')
+			return
+		}
+
+		showError(err.message)
 	}
 })
 

@@ -25,7 +25,7 @@ mixin TextField(props = {})
 			border=true,
 		} = props
 
-	div(id=id name='field-container' )
+	div(id=id name=name || 'field-container' )
 		fieldSet(
 			class=border ? 'border border-slate-500 pl-2.5 rounded-md ' : ''
 			class='pointer-events-none focus-within:border-blue-500 invalid:border-red-500'

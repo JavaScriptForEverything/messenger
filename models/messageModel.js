@@ -45,7 +45,9 @@ const messageSchema = new Schema({
 	// 	required: true, 
 	// }], 	
 
-}, { timestamps: true })
+}, { 
+	timestamps: true,
+})
 
 messageSchema.pre(/^find/, function(next) {
 	this.populate('sender receiver')

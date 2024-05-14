@@ -29,7 +29,7 @@
 ![file-upload-progress-bar-preview](https://github.com/JavaScriptForEverything/messenger/blob/master/public/images/project_design/file-upload-progress-bar.png)
 
 
-#### Project Demo 	[youtube](https://youtu.be/kSjMMZKbKgQ)
+#### Project Demo 	[youtube](https://youtu.be/uQtPaz1XYVE)
 
 #### Project Design 	[/public/images/project_design](https://github.com/JavaScriptForEverything/messenger/tree/master/public/images/project_design)
 
@@ -97,6 +97,7 @@
 
 - File upload By `WebRTC` `datachannel`
 	- Upload Large file upto 2 GB 
+	- Shows uploading progress-bar in caller-side and downloading percentage in callee-side
 	- handle file upload via `service worker` which not block main `thread`
 	- file upload is `peer-to-peer` via WebRTC DataChannel secure tunnel
 	- Handle `Dran & Drop` file upload + Browse button to open `File Manager`

@@ -35,14 +35,16 @@ block script
 				)
 				div(name='left-top' class='h-14')
 					div(name='list-container' class='flex gap-2 h-full px-2 py-1 border border-slate-300 rounded')
-						div(class='h-full relative flex-shrink-0 grid place-items-center')
-							img(name='avatar' src=logedInUser.avatar || '' alt='avatar' title='Logout' class='w-12 h-12 border border-slate-300 rounded-full')
-							div(name='avatar-badge' class='active hidden [&.active]:block absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
+						a(href=`/profile/${logedInUser.username || logedInUser._id}` name='username' title='Profile')
+							div(class='h-full relative flex-shrink-0 grid place-items-center')
+								img(name='avatar' src=logedInUser.avatar || '' alt='avatar' title='Profile' class='w-12 h-12 border border-slate-300 rounded-full')
+								div(name='avatar-badge' class='active hidden [&.active]:block absolute bottom-1 right-0.5 w-2 h-2 rounded-full bg-green-500')
 
 						div(class='label-container' class='flex-1')
-							a(href=`/profile/${logedInUser.username || logedInUser._id}` name='username' 
-								class='hover:text-blue-700 text-blue-600 font-medium max-w-40 truncate capitalize'
-								) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
+							a(href=`/profile/${logedInUser.username || logedInUser._id}` name='username' title='Profile')
+								span(href=`/profile/${logedInUser.username || logedInUser._id}` name='username' 
+									class='hover:text-blue-700 text-blue-600 font-medium max-w-40 truncate capitalize'
+									) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
 
 							p(name='title' 
 								class='text-slate-600 font-light text-sm -mt-1 max-w-40 truncate capitalize'
@@ -480,6 +482,15 @@ block script
 									) #{ `${logedInUser.firstName} ${logedInUser.lastName}` || 'Riajul Islam'}
 								p(class='font-light text-sm text-slate-600 -mt-1 capitalize'
 								) #{logedInUser.title || 'Senior Web Developer'}
+
+								button(
+									name='logout-button'
+									class='my-4 px-3 py-1.5 rounded hover:border-slate-400 border border-slate-100 '
+									class='bg-slate-200/80'
+									class='hover:bg-slate-200'
+									class='text-slate-600'
+									class='hover:text-slate-950 '
+								) logout
 
 						div(name='call-container' class='flex justify-evenly mt-4')
 							div(name='audio-call-container' class='flex flex-col justify-center items-center gap-1')

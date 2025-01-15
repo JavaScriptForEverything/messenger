@@ -9,16 +9,16 @@ const userSchema = new Schema({
 		trim: true,
 		required: true,
 		lowercase: true,
-		minlength: 3,
-		maxlength: 20
+		minlength: 2,
+		maxlength: 200
 	},
 	lastName: {
 		type: String,
 		trim: true,
 		required: true,
 		lowercase: true,
-		minlength: 3,
-		maxlength: 20,
+		minlength: 2,
+		maxlength: 200,
 	},
 	// slug: { 											
 	// 	type: String,
@@ -32,7 +32,7 @@ const userSchema = new Schema({
 		trim: true,
 		unique: true,
 		lowercase: true,
-		maxlength: 40,
+		maxlength: 400,
 	},
 	email: {
 		type: String,
@@ -41,14 +41,14 @@ const userSchema = new Schema({
 		unique: true,
 		lowercase: true,
 		minlength: 6,
-		maxlength: 40,
+		maxlength: 250,
 		validate: validator.isEmail
 	},
 	password: {
 		type: String,
 		required: true,
 		minlength: 8,
-		maxlength: 40,
+		maxlength: 250,
 		select: false,
 	},
 	confirmPassword: {

@@ -1583,6 +1583,10 @@ video {
   background-color: rgb(226 232 240 / 0.6);
 }
 
+.bg-slate-200\/80 {
+  background-color: rgb(226 232 240 / 0.8);
+}
+
 .bg-slate-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(203 213 225 / var(--tw-bg-opacity));
@@ -2396,6 +2400,11 @@ video {
   background-color: rgb(241 245 249 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-slate-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-slate-200\/80:hover {
   background-color: rgb(226 232 240 / 0.8);
 }
@@ -2486,6 +2495,11 @@ video {
 .hover\:text-slate-900:hover {
   --tw-text-opacity: 1;
   color: rgb(15 23 42 / var(--tw-text-opacity));
+}
+
+.hover\:text-slate-950:hover {
+  --tw-text-opacity: 1;
+  color: rgb(2 6 23 / var(--tw-text-opacity));
 }
 
 .hover\:text-white:hover {
@@ -3149,6 +3163,15 @@ video {
 
 .peer\/play-pause:checked ~ .peer-checked\/play-pause\:\[\&\>\*\:nth-child\(2\)\]\:block>*:nth-child(2) {
   display: block;
+}
+
+.\[\&\>\.active\]\:font-medium>.active {
+  font-weight: 500;
+}
+
+.\[\&\>\.active\]\:text-blue-500>.active {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
 .\[\&\>svg\]\:pointer-events-none>svg {

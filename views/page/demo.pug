@@ -20,3 +20,31 @@ block body
 			//- button(name='crop-button' class='border border-slate-400 px-3 py-1.5') Crop
 			//- button(name='crop-download' class='border border-slate-400 px-3 py-1.5') Download
 
+		- 
+			const navTabs = ['Overview', 'Settings', 'Security', 'SMTP', 'SEO']
+
+		ul(
+			name='nav-tabs-container'
+			class='flex gap-2 text-slate-500'
+			class='[&>.active]:text-blue-500 [&>.active]:font-medium'
+			)
+			each tab in navTabs
+				li(
+					class='cursor-pointer' 
+				)= tab
+	
+	script.
+		//- console.log('hello')
+		const $ = (selector) => document.querySelector(selector)
+		const profileViewTabsContainer = $('[name=nav-tabs-container]')
+		const tabs = Array.from(profileViewTabsContainer.children)
+
+		profileViewTabsContainer.addEventListener('click', (evt) => {
+
+			tabs.forEach( (tab, index) => {
+				tab.classList.toggle('active', tab.textContent === evt.target.textContent)
+				//- if( tab[index] !== tabs[0][index]) tabs[0].classList.toggle('active', true)
+				//- profileViewTabsContainer.classList.toggle('active', tab.href === evt.target.href)
+			})
+
+		})

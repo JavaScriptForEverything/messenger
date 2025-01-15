@@ -105,14 +105,49 @@
 
 #### Routes
 ```
-GET 	/ 												: 
-GET 	/login 										: 
-GET 	/register 								: 
-GET 	/profile 									:
-GET 	/profile/:id 							:
+GET 	/ 							: 
+GET 	/login 							: 
+GET 	/register 						: 
+GET 	/profile 						:
+GET 	/profile/:id 						:
 
-GET 	/demo 	 									: Testing page
-GET 	/custom-audio-player 	 		: Custom Audio player 
+GET 	/demo 	 						: Testing page
+GET 	/custom-audio-player 	 		                : Custom Audio player 
 GET 	/drag-and-drop 	 					: To handle drag and drop file upload
+```
+
+
+
+
+#### Testing & Deploying
+We can build this application multiple ways:
+- Regular Node js application way
+- Deploy by Docker Engine
+
+
+
+###### Method-1: (Regular) Project Setup
+```
+# make sure mongodb is running on (default) port 27017
+$ sudo systemctl status mongod 	                                : in Linux OS
+
+$ yarn dev
+
+$ yarn install
+$ yarn start
+```
+
+###### Method-2: (Docker) Project Setup
+```
+# make sure docker and docker socket deamon running
+$ sudo systemctl status docker docker.socket 	                : in Linux OS
+
+$ docker compose build                          (optional)      : 
+$ docker compose up --detach                                    : Run containers
+$ docker compose stop
+$ docker compose start
+
+$ docker compose config --services 	                        : => mongodb backend 
+$ docker compose logs --follow backend                          : See logs of backend container
 ```
 

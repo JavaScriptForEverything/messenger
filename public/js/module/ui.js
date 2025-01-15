@@ -7,7 +7,7 @@ import * as webRTC from './webRTC.js'
 import * as store from './store.js'
 import { CALL_STATUS, CALL_TYPE, OFFER_TYPE } from '../module/constants.js'
 
-const leftPanelAvatar = $('[name=left-top] [name=list-container] img')
+const logoutButton = $('[name=logout-button]')
 const leftPannelSlideButtonInputCheckbox = $('#left-side-checkbox')
 const leftMainContainer = $('[name=left-main]')
 const friendsListContainer = $('[name=friends-list-container]') 	
@@ -1065,8 +1065,7 @@ export const videoCallHandler = async () => {
 
 
 // ----------[ Logout ]----------
-leftPanelAvatar.style.cursor = 'pointer'
-leftPanelAvatar.addEventListener('click', async (evt) => {
+logoutButton.addEventListener('click', async (evt) => {
 	const { status, message } = await http.logout()
 	if(status === 'success') return redirectTo('/login')
 	
